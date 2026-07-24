@@ -1,0 +1,1669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WhatIfWeBelieved — Exploring Faith, Seeking Truth</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --crimson: #7a1a2e;
+            --crimson-dark: #5c1220;
+            --crimson-light: #9a2a3e;
+            --gold: #c8a24e;
+            --gold-light: #e0c078;
+            --cream: #ffffff;
+            --cream-dark: #faf6f0;
+            --paper: #ffffff;
+            --ink: #2a1520;
+            --ink-light: #7a5a4a;
+            --muted: #b09888;
+            --border: #ede6dc;
+            --shadow: rgba(44,24,16,0.04);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--paper);
+            color: var(--ink);
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        h1, h2, h3, h4 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 32px;
+        }
+
+        /* --- NAV --- */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            border-bottom: 1px solid var(--border);
+            background: var(--paper);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .nav-logo .shield {
+            width: 36px;
+            height: 44px;
+            flex-shrink: 0;
+        }
+
+        .nav-logo .shield svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .nav-logo-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--crimson);
+            letter-spacing: -0.3px;
+        }
+
+        .nav-logo-text span {
+            color: var(--gold);
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--ink-light);
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: color 0.2s;
+            letter-spacing: 0.2px;
+        }
+
+        .nav-links a:hover {
+            color: var(--crimson);
+        }
+
+        .nav-btn {
+            background: var(--crimson);
+            color: #fff !important;
+            padding: 10px 24px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: background 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-btn:hover {
+            background: var(--crimson-dark) !important;
+        }
+
+        /* --- HERO --- */
+        .hero {
+            position: relative;
+            min-height: 85vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background: var(--ink);
+        }
+
+        .hero-video-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            overflow: hidden;
+            background: url('https://i.ytimg.com/vi/881ddNnGCfs/maxresdefault.jpg') center/cover no-repeat;
+        }
+
+        .hero-video-inner {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100vw;
+            height: 56.25vw;
+            min-height: 100%;
+            min-width: 177.78vh;
+            transform: translate(-50%, -50%);
+        }
+
+        .hero-video-inner iframe,
+        .hero-video-inner div {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            background: linear-gradient(
+                135deg,
+                rgba(255,255,255,0.3) 0%,
+                rgba(255,255,255,0.15) 50%,
+                rgba(255,255,255,0.2) 100%
+            );
+        }
+
+        .hero .container {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            padding: 80px 32px;
+        }
+
+        .hero-shield-deco {
+            display: none;
+        }
+
+        .hero-emblem-large {
+            width: 80px;
+            height: 96px;
+            margin: 0 auto 28px;
+        }
+
+        .hero-emblem-large svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .hero-emblem-large svg path:first-child {
+            stroke: var(--crimson);
+            opacity: 0.7;
+        }
+
+        .hero-emblem-large svg path:last-child {
+            stroke: var(--crimson-light);
+            opacity: 0.5;
+        }
+
+        .hero-emblem-large svg text {
+            fill: var(--crimson);
+            opacity: 0.6;
+        }
+
+        .hero-motto {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.6rem;
+            font-weight: 900;
+            font-style: italic;
+            color: var(--gold-light);
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin-bottom: 24px;
+            text-shadow: 0 2px 16px rgba(200,162,78,0.4), 0 1px 3px rgba(0,0,0,0.2);
+            line-height: 1.4;
+            position: relative;
+            display: inline-block;
+        }
+
+        .hero-motto::before,
+        .hero-motto::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 60px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+        }
+
+        .hero-motto::before {
+            right: calc(100% + 20px);
+        }
+
+        .hero-motto::after {
+            left: calc(100% + 20px);
+        }
+
+        .hero h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 4.2rem;
+            font-weight: 900;
+            color: var(--ink);
+            letter-spacing: -1.5px;
+            margin-bottom: 16px;
+            line-height: 1.15;
+            text-shadow: 0 1px 20px rgba(255,255,255,0.3);
+        }
+
+        .hero h1 .highlight {
+            color: var(--crimson);
+        }
+
+        .hero h1 .gold-highlight {
+            color: var(--gold);
+        }
+
+        .hero-ticker {
+            overflow: hidden;
+            white-space: nowrap;
+            max-width: 520px;
+            margin: 20px auto 24px;
+            height: 1.4em;
+            position: relative;
+        }
+
+        .hero-ticker-track {
+            display: inline-flex;
+            gap: 80px;
+            animation: ticker-scroll 20s linear infinite;
+            padding-right: 80px;
+        }
+
+        .hero-ticker:hover .hero-ticker-track {
+            animation-play-state: paused;
+        }
+
+        .hero-ticker-track span {
+            font-size: 0.75rem;
+            font-weight: 500;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--gold);
+            opacity: 0.6;
+            white-space: nowrap;
+        }
+
+        @keyframes ticker-scroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        .hero-subtitle {
+            font-size: 1.15rem;
+            color: var(--ink-light);
+            max-width: 600px;
+            margin: 0 auto 32px;
+            font-weight: 300;
+            line-height: 1.8;
+            text-shadow: 0 1px 8px rgba(255,255,255,0.2);
+        }
+
+        .hero-actions {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .hero .btn-primary {
+            background: var(--crimson);
+            color: #fff;
+        }
+
+        .hero .btn-primary:hover {
+            background: var(--crimson-dark);
+            color: #fff;
+        }
+
+        .hero .btn-secondary {
+            background: rgba(255,255,255,0.7);
+            color: var(--ink);
+            border-color: rgba(0,0,0,0.1);
+            backdrop-filter: blur(4px);
+        }
+
+        .hero .btn-secondary:hover {
+            background: rgba(255,255,255,0.9);
+            border-color: rgba(0,0,0,0.15);
+        }
+
+        .hero-divider {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            margin-top: 40px;
+            color: var(--muted);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .hero-divider::before,
+        .hero-divider::after {
+            content: '';
+            width: 60px;
+            height: 1px;
+            background: var(--border);
+        }
+
+        .btn-primary {
+            background: var(--crimson);
+            color: #fff;
+            padding: 14px 36px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 1rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: background 0.2s, transform 0.2s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-primary:hover {
+            background: var(--crimson-dark);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--ink);
+            padding: 14px 36px;
+            border-radius: 6px;
+            font-weight: 500;
+            font-size: 1rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            border: 1px solid var(--border);
+            transition: border-color 0.2s, background 0.2s;
+            cursor: pointer;
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--muted);
+            background: var(--cream);
+        }
+
+        /* --- SECTION HEADERS --- */
+        .section {
+            padding: 80px 0;
+        }
+
+        .section-dark {
+            background: var(--cream-dark);
+            color: var(--ink);
+        }
+
+        .section-dark .section-title {
+            color: var(--ink);
+        }
+
+        .section-dark .section-subtitle {
+            color: var(--ink-light);
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 56px;
+        }
+
+        .section-label {
+            display: inline-block;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 12px;
+        }
+
+        .section-title {
+            font-size: 2.6rem;
+            color: var(--ink);
+            margin-bottom: 16px;
+        }
+
+        .section-subtitle {
+            font-size: 1.05rem;
+            color: var(--ink-light);
+            max-width: 560px;
+            margin: 0 auto;
+            font-weight: 300;
+        }
+
+        .section-header-left {
+            text-align: left;
+            margin-bottom: 48px;
+        }
+
+        .section-header-left .section-title {
+            font-size: 2.2rem;
+        }
+
+        /* --- FEATURED VIDEOS --- */
+        .videos-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+
+        .video-card {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+            text-decoration: none;
+            display: block;
+        }
+
+        .video-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px var(--shadow);
+        }
+
+        .video-thumb {
+            position: relative;
+            aspect-ratio: 16/9;
+            background: #f0ede8;
+            overflow: hidden;
+        }
+
+        .video-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s;
+            filter: brightness(1.25) saturate(1.1);
+        }
+
+        .video-card:hover .video-thumb img {
+            transform: scale(1.05);
+        }
+
+        .video-thumb .play-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(122,26,46,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .video-card:hover .play-overlay {
+            opacity: 1;
+        }
+
+        .play-btn-circle {
+            width: 52px;
+            height: 52px;
+            background: rgba(255,255,255,0.9);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .play-btn-circle svg {
+            width: 20px;
+            height: 20px;
+            fill: var(--crimson);
+            margin-left: 3px;
+        }
+
+        .video-category {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            background: var(--crimson);
+            color: #fff;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 4px 12px;
+            border-radius: 4px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .video-info {
+            padding: 18px 20px 20px;
+        }
+
+        .video-info h3 {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--ink);
+            line-height: 1.4;
+            margin-bottom: 6px;
+        }
+
+        .video-info .video-meta {
+            font-size: 0.8rem;
+            color: var(--muted);
+        }
+
+        /* --- ABOUT / MISSION --- */
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 64px;
+            align-items: center;
+        }
+
+        .about-text .lead {
+            font-size: 1.15rem;
+            color: var(--ink-light);
+            margin-bottom: 24px;
+            line-height: 1.8;
+        }
+
+        .about-text p {
+            color: var(--ink-light);
+            margin-bottom: 20px;
+        }
+
+        .about-image {
+            background: var(--cream-dark);
+            border-radius: 8px;
+            aspect-ratio: 4/3;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .about-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .about-image .image-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 16px 20px;
+            background: linear-gradient(transparent, rgba(44,24,16,0.15));
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #fff;
+        }
+
+        /* --- CONTENT PILLARS --- */
+        .pillars-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 32px;
+        }
+
+        .pillar-card {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 40px 32px;
+            transition: box-shadow 0.3s, transform 0.3s;
+        }
+
+        .pillar-card:hover {
+            box-shadow: 0 8px 30px var(--shadow);
+            transform: translateY(-2px);
+        }
+
+        .pillar-number {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            font-weight: 900;
+            color: var(--gold);
+            opacity: 0.4;
+            line-height: 1;
+            margin-bottom: 16px;
+        }
+
+        .pillar-card h3 {
+            font-size: 1.5rem;
+            color: var(--ink);
+            margin-bottom: 8px;
+        }
+
+        .pillar-card .pillar-tagline {
+            font-size: 0.85rem;
+            color: var(--gold);
+            font-weight: 500;
+            margin-bottom: 16px;
+            letter-spacing: 0.5px;
+        }
+
+        .pillar-card p {
+            font-size: 0.9rem;
+            color: var(--muted);
+            line-height: 1.7;
+        }
+
+        .pillar-card ul {
+            list-style: none;
+            margin-top: 20px;
+        }
+
+        .pillar-card ul li {
+            font-size: 0.85rem;
+            color: var(--muted);
+            padding: 6px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .pillar-card ul li::before {
+            content: '';
+            width: 5px;
+            height: 5px;
+            background: var(--gold);
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        /* --- TESTIMONIALS --- */
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+
+        .testimonial-card {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 32px;
+            position: relative;
+        }
+
+        .testimonial-card .quote-mark {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            line-height: 1;
+            color: var(--crimson);
+            opacity: 0.15;
+            position: absolute;
+            top: 20px;
+            left: 24px;
+        }
+
+        .testimonial-card blockquote {
+            font-size: 0.95rem;
+            color: var(--ink-light);
+            line-height: 1.7;
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+
+        .testimonial-card .attribution {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .testimonial-card .attribution .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--cream-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            color: var(--crimson);
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+
+        .testimonial-card .attribution .name {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: var(--ink);
+        }
+
+        .testimonial-card .attribution .role {
+            font-size: 0.8rem;
+            color: var(--muted);
+        }
+
+        /* --- BOOK / RESOURCE --- */
+        .book-section {
+            background: #fff;
+            border-radius: 12px;
+            padding: 64px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 48px;
+            align-items: center;
+            border: 1px solid var(--border);
+        }
+
+        .book-visual {
+            aspect-ratio: 3/4;
+            background: var(--crimson);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 16px;
+            padding: 40px;
+            color: #fff;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .book-visual::before {
+            content: '';
+            position: absolute;
+            inset: 8px;
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 4px;
+            pointer-events: none;
+        }
+
+        .book-visual .book-icon-svg {
+            width: 56px;
+            height: 56px;
+            opacity: 0.6;
+        }
+
+        .book-visual h3 {
+            font-size: 1.4rem;
+            color: #fff;
+        }
+
+        .book-visual .book-sub {
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.6);
+            font-style: italic;
+        }
+
+        .book-info h2 {
+            font-size: 2rem;
+            margin-bottom: 16px;
+        }
+
+        .book-info h2 span {
+            color: var(--crimson);
+        }
+
+        .book-info p {
+            color: var(--ink-light);
+            font-size: 0.95rem;
+            margin-bottom: 20px;
+            line-height: 1.8;
+        }
+
+        .book-info .btn-download {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--crimson);
+            color: #fff;
+            padding: 14px 32px;
+            border-radius: 6px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: background 0.2s;
+            font-size: 0.95rem;
+        }
+
+        .book-info .btn-download:hover {
+            background: var(--crimson-dark);
+        }
+
+        .book-info .release-note {
+            margin-top: 12px;
+            font-size: 0.8rem;
+            color: var(--muted);
+        }
+
+        /* --- SECTION DIVIDER --- */
+        .section-divider {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            padding: 8px 0 16px;
+        }
+
+        .section-divider::before,
+        .section-divider::after {
+            content: '';
+            height: 1px;
+            width: 80px;
+            background: var(--border);
+        }
+
+        .section-divider .divider-diamond {
+            width: 8px;
+            height: 8px;
+            background: var(--gold);
+            transform: rotate(45deg);
+            flex-shrink: 0;
+        }
+
+        .section-divider.light::before,
+        .section-divider.light::after {
+            background: var(--border);
+        }
+
+        .section-divider.light .divider-diamond {
+            background: var(--gold);
+        }
+
+        /* --- NEWSLETTER --- */
+        .newsletter-section {
+            text-align: center;
+            padding: 64px 48px;
+            background: #fff;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .newsletter-section h3 {
+            font-size: 1.8rem;
+            color: var(--ink);
+            margin-bottom: 12px;
+        }
+
+        .newsletter-section p {
+            color: var(--ink-light);
+            font-size: 0.95rem;
+            margin-bottom: 28px;
+            max-width: 480px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .newsletter-form {
+            display: flex;
+            gap: 12px;
+            max-width: 440px;
+            margin: 0 auto;
+        }
+
+        .newsletter-form input {
+            flex: 1;
+            padding: 14px 18px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            background: #fff;
+            color: var(--ink);
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .newsletter-form input:focus {
+            border-color: var(--crimson);
+        }
+
+        .newsletter-form input::placeholder {
+            color: var(--muted);
+        }
+
+        .newsletter-form button {
+            background: var(--crimson);
+            color: #fff;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: background 0.2s;
+            white-space: nowrap;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .newsletter-form button:hover {
+            background: var(--crimson-dark);
+        }
+
+        .newsletter-note {
+            font-size: 0.8rem;
+            color: var(--muted);
+            margin-top: 16px;
+        }
+
+        /* --- CTA --- */
+        .cta-section {
+            text-align: center;
+            padding: 80px 0;
+        }
+
+        .cta-section .section-title {
+            font-size: 2.8rem;
+        }
+
+        .cta-section p {
+            color: var(--ink-light);
+            max-width: 500px;
+            margin: 0 auto 32px;
+            font-size: 1.05rem;
+        }
+
+        /* --- FOOTER --- */
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 40px 0;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 32px;
+        }
+
+        .footer-brand .nav-logo {
+            margin-bottom: 12px;
+        }
+
+        .footer-brand p {
+            font-size: 0.85rem;
+            color: var(--muted);
+            max-width: 280px;
+            line-height: 1.7;
+        }
+
+        .footer-col h4 {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--ink);
+            margin-bottom: 16px;
+        }
+
+        .footer-col a {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--ink-light);
+            text-decoration: none;
+            padding: 4px 0;
+            transition: color 0.2s;
+        }
+
+        .footer-col a:hover {
+            color: var(--crimson);
+        }
+
+        .footer-social {
+            display: flex;
+            gap: 12px;
+        }
+
+        .footer-social a {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--muted);
+            transition: border-color 0.2s, color 0.2s;
+            padding: 0;
+        }
+
+        .footer-social a:hover {
+            border-color: var(--crimson);
+            color: var(--crimson);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid var(--border);
+            padding-top: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .footer-bottom p {
+            font-size: 0.8rem;
+            color: var(--muted);
+        }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 1024px) {
+            .videos-grid { grid-template-columns: repeat(2, 1fr); }
+            .testimonials-grid { grid-template-columns: repeat(2, 1fr); }
+            .about-grid { gap: 40px; }
+        }
+
+        @media (max-width: 768px) {
+            .container { padding: 0 20px; }
+
+            .hero { min-height: 70vh; }
+            .hero .container { padding: 60px 20px; }
+            .hero h1 { font-size: 2.6rem; }
+            .hero-motto { font-size: 1.1rem; letter-spacing: 2px; }
+            .hero-motto::before, .hero-motto::after { display: none; }
+            .section-title { font-size: 2rem; }
+
+            .videos-grid { grid-template-columns: 1fr; }
+            .testimonials-grid { grid-template-columns: 1fr; }
+            .about-grid { grid-template-columns: 1fr; }
+            .pillars-grid { grid-template-columns: 1fr; }
+            .book-section { grid-template-columns: 1fr; padding: 32px; }
+            .footer-grid { grid-template-columns: 1fr 1fr; }
+
+            nav .nav-links a:not(.nav-btn) { display: none; }
+        }
+
+        @media (max-width: 480px) {
+            .hero { min-height: 60vh; }
+            .hero h1 { font-size: 2rem; }
+            .hero-motto { font-size: 0.9rem; letter-spacing: 1px; }
+            .hero-emblem-large { width: 60px; height: 72px; }
+            .footer-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAV -->
+    <div class="container">
+        <nav>
+            <a href="#" class="nav-logo">
+                <div class="shield">
+                    <svg viewBox="0 0 36 44" fill="none">
+                        <path d="M18 2 L34 9 L34 24 C34 33 18 42 18 42 C18 42 2 33 2 24 L2 9 Z" fill="#7a1a2e"/>
+                        <path d="M18 7 L30 12 L30 24 C30 31 18 37 18 37 C18 37 6 31 6 24 L6 12 Z" fill="none" stroke="#c8a24e" stroke-width="1.5"/>
+                        <text x="18" y="26" text-anchor="middle" fill="#c8a24e" font-size="11" font-weight="bold" font-family="serif">W</text>
+                    </svg>
+                </div>
+                <span class="nav-logo-text">WhatIfWe<span>Believed</span></span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="#videos">Videos</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#articles">Articles</a></li>
+                <li><a href="#book">Book</a></li>
+                <li><a href="#agent">Agent</a></li>
+                <li><a href="https://www.youtube.com/@paulos1844?sub_confirmation=1" target="_blank" class="nav-btn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                    Subscribe
+                </a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <!-- HERO -->
+    <section class="hero">
+        <div class="hero-video-bg">
+            <div class="hero-video-inner">
+                <div id="hero-video-player"></div>
+                <iframe 
+                    id="hero-video-iframe"
+                    src="https://www.youtube.com/embed/881ddNnGCfs?autoplay=1&mute=1&loop=1&playlist=881ddNnGCfs&controls=0&showinfo=0&rel=0&modestbranding=1&iv_load_policy=3&enablejsapi=1" 
+                    allow="autoplay; encrypted-media; fullscreen" 
+                    allowfullscreen
+                    frameborder="0"
+                    title="Hero Background Video">
+                </iframe>
+            </div>
+        </div>
+        <div class="hero-overlay"></div>
+        <div class="container">
+            <div class="hero-emblem-large">
+                <svg viewBox="0 0 72 88" fill="none">
+                    <path d="M36 4 L68 14 L68 30 C68 46 36 60 36 60 C36 60 4 46 4 30 L4 14 Z" stroke="#c8a24e" stroke-width="1.5"/>
+                    <path d="M36 12 L58 19 L58 30 C58 42 36 52 36 52 C36 52 14 42 14 30 L14 19 Z" stroke="#e0c078" stroke-width="1.5"/>
+                    <text x="36" y="38" text-anchor="middle" fill="#c8a24e" font-size="16" font-weight="bold" font-family="serif">W</text>
+                </svg>
+            </div>
+            <div class="hero-motto">We Affirm Faith &middot; We Celebrate Critical Thinking</div>
+            <h1>What If We <span class="highlight">Believed</span>?<br><span class="gold-highlight">Exploring Faith Together</span></h1>
+            <div class="hero-ticker">
+                <div class="hero-ticker-track">
+                    <span>Theology</span><span>Scripture</span><span>Discipleship</span><span>Faith</span><span>Truth</span>
+                    <span>Theology</span><span>Scripture</span><span>Discipleship</span><span>Faith</span><span>Truth</span>
+                </div>
+            </div>
+            <p class="hero-subtitle">A channel devoted to the exploration of faith, theology, and the transformative power of belief. Join us as we wrestle with life's biggest questions and discover truth together.</p>
+            <div class="hero-actions">
+                <a href="https://www.youtube.com/@paulos1844?sub_confirmation=1" target="_blank" class="btn-primary">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                    Subscribe on YouTube
+                </a>
+                <a href="#videos" class="btn-secondary">Browse Teachings</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- FEATURED VIDEOS -->
+    <section id="videos" class="section">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-label">Featured Teachings</div>
+                <h2 class="section-title">Recent Conversations</h2>
+                <p class="section-subtitle">Thought-provoking teachings exploring faith, scripture, and the life of belief.</p>
+            </div>
+            <div class="videos-grid">
+                <a href="https://www.youtube.com/watch?v=ea0dtxkE-bw" target="_blank" class="video-card">
+                    <div class="video-thumb">
+                        <img src="https://i.ytimg.com/vi/ea0dtxkE-bw/hqdefault.jpg" alt="Reprogramming an Empire" loading="lazy">
+                        <span class="video-category">Teaching</span>
+                        <div class="play-overlay">
+                            <div class="play-btn-circle">
+                                <svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="video-info">
+                        <h3>Reprogramming an Empire: From Erased Asset to Indispensable Anchor</h3>
+                        <div class="video-meta">WhatIfWeBelieved</div>
+                    </div>
+                </a>
+                <a href="https://www.youtube.com/watch?v=l9V_MDWfUkg" target="_blank" class="video-card">
+                    <div class="video-thumb">
+                        <img src="https://i.ytimg.com/vi/l9V_MDWfUkg/hqdefault.jpg" alt="Unstoppable" loading="lazy">
+                        <span class="video-category">Teaching</span>
+                        <div class="play-overlay">
+                            <div class="play-btn-circle">
+                                <svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="video-info">
+                        <h3>Unstoppable: The Rebooted Asset</h3>
+                        <div class="video-meta">WhatIfWeBelieved</div>
+                    </div>
+                </a>
+                <a href="https://www.youtube.com/watch?v=881ddNnGCfs" target="_blank" class="video-card">
+                    <div class="video-thumb">
+                        <img src="https://i.ytimg.com/vi/881ddNnGCfs/hqdefault.jpg" alt="How a Good Man Loses His Shape" loading="lazy">
+                        <span class="video-category">Parable</span>
+                        <div class="play-overlay">
+                            <div class="play-btn-circle">
+                                <svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="video-info">
+                        <h3>How a Good Man Loses His Shape</h3>
+                        <div class="video-meta">WhatIfWeBelieved</div>
+                    </div>
+                </a>
+                <a href="https://www.youtube.com/watch?v=vfUmeceFEhw" target="_blank" class="video-card">
+                    <div class="video-thumb">
+                        <img src="https://i.ytimg.com/vi/vfUmeceFEhw/hqdefault.jpg" alt="No Guardrails" loading="lazy">
+                        <span class="video-category">Faith</span>
+                        <div class="play-overlay">
+                            <div class="play-btn-circle">
+                                <svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="video-info">
+                        <h3>No Guardrails: Faith Without a Safety Net</h3>
+                        <div class="video-meta">WhatIfWeBelieved</div>
+                    </div>
+                </a>
+                <a href="https://www.youtube.com/watch?v=AJq8H3v6z-s" target="_blank" class="video-card">
+                    <div class="video-thumb">
+                        <img src="https://i.ytimg.com/vi/AJq8H3v6z-s/hqdefault.jpg" alt="Not a Word" loading="lazy">
+                        <span class="video-category">Scripture</span>
+                        <div class="play-overlay">
+                            <div class="play-btn-circle">
+                                <svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="video-info">
+                        <h3>Not a Word</h3>
+                        <div class="video-meta">WhatIfWeBelieved</div>
+                    </div>
+                </a>
+                <a href="https://www.youtube.com/watch?v=D2FfteQ7sXI" target="_blank" class="video-card">
+                    <div class="video-thumb">
+                        <img src="https://i.ytimg.com/vi/D2FfteQ7sXI/hqdefault.jpg" alt="Stop Fighting for the Tent" loading="lazy">
+                        <span class="video-category">Teaching</span>
+                        <div class="play-overlay">
+                            <div class="play-btn-circle">
+                                <svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="video-info">
+                        <h3>Stop Fighting for the Tent</h3>
+                        <div class="video-meta">WhatIfWeBelieved</div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- DIVIDER -->
+    <div class="container">
+        <div class="section-divider">
+            <span class="divider-diamond"></span>
+        </div>
+    </div>
+
+    <!-- ABOUT -->
+    <section id="about" class="section section-dark">
+        <div class="container">
+            <div class="about-grid">
+                <div class="about-text">
+                    <div class="section-label" style="text-align:left;">Our Mission</div>
+                    <h2 class="section-title" style="font-size:2.2rem;">Faith Seeking<br>Understanding</h2>
+                    <p class="lead">WhatIfWeBelieved is a YouTube channel dedicated to exploring the depths of Christian faith through thoughtful teaching, biblical reflection, and honest conversation.</p>
+                    <p>In a world that often reduces faith to sentiment or dismisses it as irrational, we believe that asking "what if we believed?" opens the door to a more vibrant, intellectually honest, and transformative encounter with God.</p>
+                    <p>Whether you are a seasoned believer, a curious skeptic, or somewhere in between, you are welcome here.</p>
+                    <a href="https://www.youtube.com/@paulos1844" target="_blank" class="btn-primary" style="margin-top:8px;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                        Visit the Channel
+                    </a>
+                    <p style="margin-top:16px;font-size:0.9rem;color:var(--ink-light);">Questions? Contact us at <a href="mailto:wentlandwordsworth@gmail.com" style="color:var(--crimson);text-decoration:none;font-weight:600;">wentlandwordsworth@gmail.com</a></p>
+                </div>
+                <div class="about-image" style="background-image:url('https://i.ytimg.com/vi/ea0dtxkE-bw/hqdefault.jpg');background-size:cover;background-position:center;">
+                    <a href="https://www.youtube.com/@paulos1844/videos" target="_blank" style="display:block;width:100%;height:100%;position:relative;">
+                        <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;background:rgba(122,26,46,0.75);opacity:0;transition:opacity 0.3s;"
+                             onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0'">
+                            <svg width="56" height="40" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg>
+                            <span style="color:#fff;font-size:1.1rem;font-weight:600;font-family:'Inter',sans-serif;">Browse All Videos →</span>
+                        </div>
+                    </a>
+                    <div class="image-caption">
+                        <svg width="18" height="22" viewBox="0 0 36 44" fill="none" style="flex-shrink:0;">
+                            <path d="M18 2 L34 9 L34 24 C34 33 18 42 18 42 C18 42 2 33 2 24 L2 9 Z" fill="#7a1a2e"/>
+                            <path d="M18 7 L30 12 L30 24 C30 31 18 37 18 37 C18 37 6 31 6 24 L6 12 Z" fill="none" stroke="#c8a24e" stroke-width="1.5"/>
+                            <text x="18" y="26" text-anchor="middle" fill="#c8a24e" font-size="11" font-weight="bold" font-family="serif">W</text>
+                        </svg>
+                        <span>WhatIfWeBelieved &middot; @paulos1844</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CONTENT PILLARS -->
+    <section class="section section-dark" style="padding-top:0;position:relative;overflow:hidden;">
+        <div style="position:absolute;inset:0;z-index:0;background:url('wallpaper-theology.svg') center/cover no-repeat;opacity:0.4;"></div>
+        <div class="container" style="position:relative;z-index:1;">
+            <div class="section-header">
+                <div class="section-label">Three Pillars</div>
+                <h2 class="section-title">Our Content Focus</h2>
+                <p class="section-subtitle">Every teaching is rooted in one of three areas that define our approach to faith.</p>
+            </div>
+            <div class="pillars-grid">
+                <div class="pillar-card">
+                    <div class="pillar-number">01</div>
+                    <h3>Theology</h3>
+                    <div class="pillar-tagline">Deep Dive &middot; Foundational Truths</div>
+                    <p>Exploring the doctrines of the Christian faith — the nature of God, the work of Christ, the role of Scripture, and the grand narrative of redemption.</p>
+                    <ul>
+                        <li>Systematic theology</li>
+                        <li>Biblical theology</li>
+                        <li>Historical creeds</li>
+                    </ul>
+                </div>
+                <div class="pillar-card">
+                    <div class="pillar-number">02</div>
+                    <h3>Scripture</h3>
+                    <div class="pillar-tagline">Exposition &middot; Parables &middot; Narrative</div>
+                    <p>Walking through the biblical text with care and attention — uncovering the meaning of passages, parables, and stories that shape the life of faith.</p>
+                    <ul>
+                        <li>Verse-by-verse teaching</li>
+                        <li>Parables explained</li>
+                        <li>Old &amp; New Testament</li>
+                    </ul>
+                </div>
+                <div class="pillar-card">
+                    <div class="pillar-number">03</div>
+                    <h3>Discipleship</h3>
+                    <div class="pillar-tagline">Practice &middot; Formation &middot; Life</div>
+                    <p>What does it look like to follow Jesus in the modern world? Practical teaching on prayer, community, suffering, and the habits of the Christian life.</p>
+                    <ul>
+                        <li>Spiritual disciplines</li>
+                        <li>Faith &amp; culture</li>
+                        <li>Christian living</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- THEOLOGY ARTICLES -->
+    <section class="section" id="articles">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-label">Theology</div>
+                <h2 class="section-title">Articles &amp; Reviews</h2>
+                <p class="section-subtitle">In-depth theological writing and sermon reviews for the serious student of Scripture.</p>
+            </div>
+            <div class="pillar-card" style="max-width:800px;margin:0 auto;">
+                <div class="pillar-number">01</div>
+                <h3 style="font-size:1.5rem;">"God's Mixed Feelings About Jewelry"</h3>
+                <div class="pillar-tagline">Sermon Review &middot; Dr. Alexander Biscette &middot; Reviewed by Pastor Wentland Paul</div>
+                <p style="margin-top:16px;">Dr. Alexander Biscette's sermon takes up a question that most preachers avoid: whether the wearing of jewelry carries any moral weight in scripture. This review examines the sermon's central argument — that God does not condemn jewelry as an object but is provoked when jewelry displaces him in the heart — and evaluates its exegetical strengths and weaknesses across the biblical canon.</p>
+                <p style="margin-top:12px;">The review finds the sermon's pastoral instinct sound but identifies two structural problems: a single interpretive move (the golden calf reading) that does the work for the entire sermon, and a conflation of gold as currency with gold as ornament that weakens several key proof texts.</p>
+                <div style="margin-top:24px;display:flex;gap:12px;flex-wrap:wrap;">
+                    <a href="paul_review_of_biscette_sermon.docx" download class="btn-primary" style="text-decoration:none;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                        Download .docx
+                    </a>
+                    <a href="#" onclick="document.getElementById('article-full').style.display=document.getElementById('article-full').style.display==='none'?'block':'none';return false;" class="btn-primary" style="text-decoration:none;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                        Read Full Review
+                    </a>
+                </div>
+                <div id="article-full" style="display:none;margin-top:32px;padding-top:24px;border-top:1px solid var(--border);">
+                    <h4 style="font-size:1.2rem;margin-bottom:16px;">Full Text</h4>
+                    <p><strong>Summary</strong></p>
+                    <p>Dr. Alexander Biscette's sermon takes up a question that most preachers avoid: whether the wearing of jewelry carries any moral weight in scripture, and if so, what kind. The sermon's method is to walk the canon in something close to order, from Rebekah's bracelets in Genesis to the counsel of Peter and Paul, gathering every passage that touches gold, silver, or ornament along the way. Its stated conclusion is that God does not condemn jewelry as an object, but is provoked when jewelry, or anything else, displaces him in the heart of the worshipper. That conclusion is pastorally generous and, on its own terms, defensible. The path the sermon takes to reach it, however, does not hold up as well as its length and its evident care suggest. What follows examines where the argument is strong, where a single interpretive move is asked to carry more weight than it can bear, and where the sermon's reading of specific texts mistakes one kind of object for another.</p>
+                    <p style="margin-top:16px;"><strong>The argument's actual center of gravity</strong></p>
+                    <p>The sermon reads, on first pass, like a broad survey: many texts, each contributing its own witness. It is not quite that. Nearly every passage in the sermon is interpreted through a single lens supplied by one episode, the golden calf. Dr. Biscette argues that God's anger at Sinai fell on the idol cast from the people's gold, not on the gold itself, and generalizes this into an operating principle: the object is neutral, and idolatry, not adornment, is what draws divine anger. Once that principle is in place, it does the interpretive work for the rest of the sermon. Genesis, Ezekiel, Isaiah, and the epistles are all read as instances confirming it. This is worth naming plainly because a sermon that presents itself as many independent witnesses converging on a conclusion is making a stronger implicit claim than a sermon built on one interpretive key applied repeatedly. The sermon is the latter. That is not disqualifying on its own, most topical preaching works this way, but it means the entire structure stands or falls with that one hinge, however many texts are stacked around it.</p>
+                    <p style="margin-top:16px;"><strong>Where the sermon is at its strongest</strong></p>
+                    <p>The best material in the sermon is not the golden calf reading itself but a shorter passage built around it: the rhetorical questions about the wilderness journey. Was God not present in the pillar of cloud while the people still wore what they had carried out of Egypt. Was the covenant not ratified at Sinai while they had it on. This argument does not depend on a contestable reading of any single word, and it does not need the golden calf passage to succeed, it reasons instead from an uncontested fact, God's sustained presence with Israel through the wilderness, to a conclusion about what was and was not tolerated during that period. It is a genuine argument, not an assertion dressed as one, and it gives the sermon a second, independent line of support running alongside the golden calf reading. A sermon resting on one passage alone would be more fragile than this one.</p>
+                    <p style="margin-top:16px;"><strong>The structural weakness: forbearance read as permission</strong></p>
+                    <p>The wilderness argument, for all its force, rests on an inference that does not actually follow: that God's continued presence during a practice proves the practice was never prohibited. Presence and permission are not the same claim. A God who tolerates a violation while judging the moment for a fuller reckoning would look, from the outside, exactly like a God who never objected to the practice at all. Scripture supplies its own vocabulary for this elsewhere. Paul tells the Athenians that God "overlooked" the times of ignorance. Overlooking a violation is not the same act as sanctioning it.</p>
+                    <p style="margin-top:16px;">This is not a hypothetical gap. Applying the sermon's own method to a case scripture treats with more explicit legal language exposes it directly. Deuteronomy instructs a king not to multiply wives, and states the reason in advance, that his heart not be turned away. That command predates David and Solomon. When David dances before the ark already married to several wives, or when Solomon presides at the temple dedication with his own household already expanding, their silence in those scenes is not evidence the practice was uncensured. A standing command already existed and was already being set aside. The presence of God in the room proves patience. It does not prove the absence of a rule, because in this instance the rule is on record. Once a single case demonstrates this gap between toleration and approval so plainly, the same inference cannot be trusted where it is doing quieter work, in the sermon's reading of the wilderness period and the golden calf. Both readings could be equally consistent with a God who tolerated a lesser fault while it lasted and named it only once it produced the worse one.</p>
+                    <p style="margin-top:16px;">One further asymmetry deserves mention. The sermon itself reaches for a creation-order argument against jewelry, noting that human bodies were not designed with pierced ears. That same style of argument is available, and more directly stated, against the practice raised above. The gospel record has Christ ground his own teaching not in a record of consequences but in Genesis itself, in the pattern of two becoming one. A sermon willing to reach for creation order in one case and not extend the same reasoning where scripture states it more plainly leaves an inconsistency exposed rather than resolved.</p>
+                    <p style="margin-top:16px;"><strong>The exegetical weakness: currency read as ornament</strong></p>
+                    <p>A second problem, independent of the first, runs beneath several of the sermon's central texts. The sermon treats every mention of gold and silver as an instance of personal adornment, worn to be seen, when a number of its key passages are describing something else, gold and silver functioning as currency. This distinction is not a modern imposition; it reflects how value moved in the ancient Near East before coinage existed, when metal circulated as weighed and often cut fragments rather than as finished, wearable pieces.</p>
+                    <p style="margin-top:16px;">Under that distinction, several of the sermon's anchor texts read differently than the sermon presents them. The gifts given to Rebekah's family in Genesis include, beyond a personal token, a formal transfer of silver and gold that functions as bridewealth, an economic transaction sealing a marriage contract, not an expression of aesthetic taste. The gold and silver the Israelites carry out of Egypt reads more plausibly as portable wealth, recovered wages after centuries of unpaid labor, than as a fashion instruction, and the fact that this same metal becomes both the tabernacle's furnishings and the golden calf only makes sense if it was being handled throughout as convertible bullion. The golden calf episode itself sharpens under this reading rather than softening: Aaron requests the people's gold because it is their most available store of transferable wealth, and what follows is the conversion of stored currency into an idol, closer to a misuse of communal wealth than to a lapse in personal adornment. Isaiah's catalogue of ornaments to be stripped from the daughters of Zion, on the sermon's own partial admission, targets the upper class and the injustice their visible wealth was funding, not decoration as such. And the New Testament counsel in Peter, paralleled in Paul's letter to Timothy, addressing braided hair, gold, and costly clothing, sits inside a well-attested first-century context of status display, the same concern James names outright with the gold ring and fine clothing of the favored visitor in a congregation meant to hold rich and poor together.</p>
+                    <p style="margin-top:16px;">None of this renders the sermon's reading impossible. It means the sermon collapses two categories the biblical material keeps at least partly separate, ornament worn for its own sake and metal functioning as currency, dowry, or social signal, and it does so because collapsing them is what allows one motive-based principle to explain every occurrence. Once the categories are separated, several of the sermon's strongest proof texts turn out to be making an argument about wealth, transfer, and status rather than the argument about personal vanity the sermon asks them to make.</p>
+                    <p style="margin-top:16px;"><strong>Recommendation</strong></p>
+                    <p>Dr. Biscette's sermon deserves credit for a genuine attempt at exegetical honesty on a subject most congregations only ever hear addressed by tradition rather than by text, and its pastoral instinct, that character matters more than appearance and that judgment of others on that basis is unwarranted, is sound regardless of how the exegesis fares. But the argument as constructed rests on a single interpretive move, that divine presence during a practice settles its moral status, that does not survive contact with a case scripture states more explicitly, and it draws on several proof texts whose plainest sense concerns wealth rather than ornament. A revised version of this sermon would do well to separate the question of God's patience from the question of God's permission, and to treat the economic texts on their own terms rather than folding them into a single argument about vanity. The pastoral conclusion can likely survive that revision. The exegetical path to it, as it stands, cannot fully bear the weight placed on it.</p>
+                    <a href="#" onclick="document.getElementById('article-full').style.display='none';return false;" style="display:inline-block;margin-top:16px;color:var(--crimson);text-decoration:none;font-weight:600;">Collapse ▲</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- DIVIDER -->
+    <div class="container">
+        <div class="section-divider light">
+            <span class="divider-diamond"></span>
+        </div>
+    </div>
+
+    <!-- TESTIMONIALS -->
+    <section class="section">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-label">Voices</div>
+                <h2 class="section-title">What People Are Saying</h2>
+                <p class="section-subtitle">The What If We Believed Forum has inspired a global conversation about faith and reason. Here are voices from the wider community.</p>
+            </div>
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <div class="quote-mark">&ldquo;</div>
+                    <blockquote>What we desperately need is more forums like this, where everything is on the table, where we can actually ask the big questions.</blockquote>
+                    <div class="attribution">
+                        <div class="avatar">M</div>
+                        <div>
+                            <div class="name">Michael Puett</div>
+                            <div class="role">Professor, Harvard University</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="quote-mark">&ldquo;</div>
+                    <blockquote>Dialogues about faith are important and meaningful parts of shaping university students. I was an enthusiastic participant.</blockquote>
+                    <div class="attribution">
+                        <div class="avatar">M</div>
+                        <div>
+                            <div class="name">Morton Schapiro</div>
+                            <div class="role">President, Northwestern University</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="quote-mark">&ldquo;</div>
+                    <blockquote>I love the content that What If We Believed produces. I have listened to many of their videos, finding them stretching my thinking in wonderful new dimensions.</blockquote>
+                    <div class="attribution">
+                        <div class="avatar">R</div>
+                        <div>
+                            <div class="name">Rosalind Picard</div>
+                            <div class="role">Professor, MIT</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- BOOK / RESOURCE -->
+    <section id="book" class="section" style="padding-top:0;">
+        <div class="container">
+            <div class="book-section">
+                <div class="book-visual">
+                    <div class="book-icon-svg">
+                        <svg viewBox="0 0 56 56" fill="none">
+                            <rect x="8" y="6" width="40" height="44" rx="2" stroke="white" stroke-width="1.5" fill="none"/>
+                            <rect x="12" y="10" width="32" height="36" rx="1" stroke="white" stroke-width="1" fill="none" opacity="0.5"/>
+                            <line x1="16" y1="20" x2="40" y2="20" stroke="white" stroke-width="1" opacity="0.6"/>
+                            <line x1="16" y1="26" x2="36" y2="26" stroke="white" stroke-width="1" opacity="0.4"/>
+                            <line x1="16" y1="32" x2="32" y2="32" stroke="white" stroke-width="1" opacity="0.4"/>
+                            <line x1="16" y1="38" x2="28" y2="38" stroke="white" stroke-width="1" opacity="0.3"/>
+                        </svg>
+                    </div>
+                    <h3>Affirming Faith<br>Through Thought</h3>
+                    <div class="book-sub">A Limited Release</div>
+                </div>
+                <div class="book-info">
+                    <div class="section-label" style="text-align:left;">Free Download</div>
+                    <h2>Affirming Faith <span>Through Thought</span></h2>
+                    <p>A limited-release book exploring the intersection of reason and belief. This volume invites readers to consider how thoughtful engagement with Scripture, theology, and the life of the mind can deepen and enrich Christian faith.</p>
+                    <p>Available for a short time as a free download.</p>
+                    <div style="display:flex;gap:12px;flex-wrap:wrap;">
+                        <a href="Affirming_Faith_Through_Thought_Refined.pdf" target="_blank" class="btn-download" download>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                            Download Book
+                        </a>
+                        <a href="Affirming_Faith_Through_Thought_Workbook.pdf" target="_blank" class="btn-download" download>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                            Download Workbook
+                        </a>
+                    </div>
+                    <div class="release-note">Limited release &middot; Free for a short time</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- THEOLOGY AGENT -->
+    <section id="agent" class="section section-dark" style="padding-top:0;">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-label">AI Research Tool</div>
+                <h2 class="section-title">Adventist Theology &amp; Christian Philosophy Agent</h2>
+                <p class="section-subtitle">Ask questions about Adventist doctrines, Ellen G. White, Christian philosophers, and philosophy of religion. Powered by Gemini Flash.</p>
+            </div>
+            <div style="max-width:800px;margin:0 auto;">
+                <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(200,162,78,0.2);border-radius:12px;padding:24px;margin-bottom:20px;">
+                    <p style="color:var(--ink-light);margin-bottom:16px;">This agent specializes in Adventist theology and Christian philosophy. It stays within its domain and can synthesize arguments, draw inferences, and explore implications — while clearly marking what's inference versus established doctrine.</p>
+                    <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;">
+                        <a href="http://localhost:8002" target="_blank" class="btn-primary" style="text-decoration:none;">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                            Open Agent Interface
+                        </a>
+                        <a href="https://aistudio.google.com/apikey" target="_blank" style="text-decoration:none;color:var(--gold);font-weight:600;font-size:0.9rem;display:inline-flex;align-items:center;gap:6px;">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                            Get Free API Key
+                        </a>
+                    </div>
+                </div>
+                <div style="padding:16px;background:rgba(122,26,46,0.1);border-radius:8px;border-left:3px solid var(--crimson);">
+                    <p style="font-size:0.9rem;color:var(--ink-light);"><strong style="color:var(--crimson);">In Scope:</strong> Adventist theology &amp; doctrines, Ellen G. White's prophetic ministry, Christian philosophy &amp; philosophers, Philosophy of religion, Christian ethics &amp; apologetics.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="section section-dark">
+        <div class="container">
+            <div class="cta-section">
+                <div class="section-label">Join Us</div>
+                <h2 class="section-title">Explore the Ideas<br>That Shape Our Lives</h2>
+                <p>Subscribe to WhatIfWeBelieved on YouTube and join a community of people seeking truth, understanding, and a deeper faith.</p>
+                <a href="https://www.youtube.com/@paulos1844?sub_confirmation=1" target="_blank" class="btn-primary">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                    Subscribe Now
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section class="section" style="padding-bottom:0;">
+        <div class="container">
+            <div class="newsletter-section">
+                <h3>Questions &amp; Queries</h3>
+                <p>Have a question, suggestion, or want to connect? Send us a message and we'll get back to you.</p>
+                <form class="newsletter-form" onsubmit="event.preventDefault(); sendContactEmail();">
+                    <input type="text" id="contact-name" placeholder="Your name" required>
+                    <input type="email" id="contact-email" placeholder="Your email" required>
+                    <button type="submit">Send Message</button>
+                </form>
+                <textarea id="contact-message" placeholder="Your message..." rows="4" style="width:100%;max-width:500px;margin-top:12px;padding:14px;border:1px solid var(--border);border-radius:6px;font-family:'Inter',sans-serif;font-size:0.9rem;resize:vertical;outline:none;"></textarea>
+                <div class="newsletter-note" style="margin-top:12px;">Or email us directly at <a href="mailto:wentlandwordsworth@gmail.com" style="color:var(--crimson);text-decoration:none;font-weight:600;">wentlandwordsworth@gmail.com</a></div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        function sendContactEmail() {
+            var name = document.getElementById('contact-name').value;
+            var email = document.getElementById('contact-email').value;
+            var message = document.getElementById('contact-message').value;
+            var subject = encodeURIComponent('Question from ' + name);
+            var body = encodeURIComponent('Name: ' + name + '\nEmail: ' + email + '\n\nMessage:\n' + message);
+            window.location.href = 'mailto:wentlandwordsworth@gmail.com?subject=' + subject + '&body=' + body;
+        }
+    </script>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="#" class="nav-logo">
+                        <div class="shield">
+                            <svg viewBox="0 0 36 44" fill="none">
+                                <path d="M18 2 L34 9 L34 24 C34 33 18 42 18 42 C18 42 2 33 2 24 L2 9 Z" fill="#7a1a2e"/>
+                                <path d="M18 7 L30 12 L30 24 C30 31 18 37 18 37 C18 37 6 31 6 24 L6 12 Z" fill="none" stroke="#c8a24e" stroke-width="1.5"/>
+                                <text x="18" y="26" text-anchor="middle" fill="#c8a24e" font-size="11" font-weight="bold" font-family="serif">W</text>
+                            </svg>
+                        </div>
+                        <span class="nav-logo-text">WhatIfWe<span>Believed</span></span>
+                    </a>
+                    <p>Exploring faith, theology, and the transformative power of belief. A YouTube channel devoted to seeking truth together.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Content</h4>
+                    <a href="#videos">Videos</a>
+                    <a href="#articles">Articles</a>
+                    <a href="#book">Free Book</a>
+                    <a href="#agent">Theology Agent</a>
+                    <a href="https://www.youtube.com/@paulos1844/videos" target="_blank">All Videos</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Connect</h4>
+                    <a href="https://www.youtube.com/@paulos1844" target="_blank">YouTube</a>
+                    <a href="https://www.youtube.com/@paulos1844?sub_confirmation=1" target="_blank">Subscribe</a>
+                    <a href="mailto:wentlandwordsworth@gmail.com">Contact Us</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Follow</h4>
+                    <div class="footer-social">
+                        <a href="https://www.youtube.com/@paulos1844" target="_blank" aria-label="YouTube">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 WhatIfWeBelieved &middot; <a href="https://www.youtube.com/@paulos1844" target="_blank" style="color:var(--muted);text-decoration:none;">@paulos1844</a></p>
+                <p style="font-size:0.75rem;color:var(--muted);">Seeking truth together.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // YouTube IFrame API for reliable autoplay
+        var tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
+        var firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+        var player;
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('hero-video-player', {
+                height: '100%',
+                width: '100%',
+                videoId: '881ddNnGCfs',
+                playerVars: {
+                    'autoplay': 1,
+                    'mute': 1,
+                    'loop': 1,
+                    'playlist': '881ddNnGCfs',
+                    'controls': 0,
+                    'showinfo': 0,
+                    'rel': 0,
+                    'modestbranding': 1,
+                    'iv_load_policy': 3,
+                    'playsinline': 1
+                },
+                events: {
+                    'onReady': function(event) {
+                        event.target.playVideo();
+                    }
+                }
+            });
+        }
+
+        // Fallback: try to play iframe video on user interaction
+        document.addEventListener('click', function() {
+            var iframe = document.querySelector('.hero-video-inner iframe');
+            if (iframe) {
+                iframe.src = iframe.src; // Reload iframe to trigger playback
+            }
+        }, { once: true });
+    </script>
+
+</body>
+</html>
