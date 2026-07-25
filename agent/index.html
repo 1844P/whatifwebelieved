@@ -599,95 +599,116 @@
             <label for="modelProvider">Model:</label>
             <select id="modelProvider" onchange="handleModelChange(this.value)" style="padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:0.85rem;background:white;color:var(--text);cursor:pointer;min-width:120px;">
                 <option value="gemini">Gemini Flash</option>
-                <option value="grok">Grok</option>
+                <option value="ollama">Ollama (Local)</option>
             </select>
-            <label for="apiKey">API Key:</label>
-            <input type="password" id="apiKey" placeholder="Paste your API key here...">
-            <a href="https://aistudio.google.com/apikey" target="_blank" class="btn btn-gemini" id="getKeyBtn">
-                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-                Get Free API Key
-            </a>
+            <div id="geminiControls">
+                <label for="apiKey">API Key:</label>
+                <input type="password" id="apiKey" placeholder="Paste your Gemini API key here...">
+                <a href="https://aistudio.google.com/apikey" target="_blank" class="btn btn-gemini" id="getKeyBtn">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                    Get Free API Key
+                </a>
+            </div>
+            <div id="ollamaControls" style="display:none;">
+                <label for="ollamaModel">Model Name:</label>
+                <input type="text" id="ollamaModel" placeholder="e.g. llama3, mistral, gemma2" value="llama3" style="min-width:180px;">
+                <span id="ollamaStatus" style="font-size:0.78rem;padding:4px 10px;border-radius:12px;font-weight:600;"></span>
+            </div>
             <button onclick="document.getElementById('apiHelpModal').style.display='flex'" style="background:none;border:1px solid var(--border);border-radius:6px;padding:8px 12px;cursor:pointer;font-size:0.82rem;color:var(--text-secondary);display:inline-flex;align-items:center;gap:4px;transition:all 0.2s;">
                 <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-                How to Get a Free API Key
+                How to Set Up
             </button>
-            <small>No credit card required. Free tier available for personal use.</small>
+            <small id="apiHint">No credit card required. Free tier available for personal use.</small>
         </div>
     </div>
 
     <!-- API KEY HELP MODAL -->
     <div id="apiHelpModal" style="display:none;position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,0.5);padding:20px;overflow-y:auto;">
-        <div style="max-width:600px;margin:40px auto;background:white;border-radius:16px;padding:32px;box-shadow:0 20px 60px rgba(0,0,0,0.2);">
+        <div style="max-width:650px;margin:40px auto;background:white;border-radius:16px;padding:32px;box-shadow:0 20px 60px rgba(0,0,0,0.2);">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;">
-                <h3 style="font-family:'Playfair Display',serif;color:var(--crimson);font-size:1.4rem;">How to Get Your Free API Key</h3>
+                <h3 style="font-family:'Playfair Display',serif;color:var(--crimson);font-size:1.4rem;">How to Set Up Your AI</h3>
                 <button onclick="document.getElementById('apiHelpModal').style.display='none'" style="background:none;border:none;cursor:pointer;padding:8px;color:var(--text-muted);">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
                 </button>
             </div>
-            
-            <div style="background:var(--gold-bg);border:1px solid var(--gold-light);border-radius:12px;padding:16px;margin-bottom:24px;">
-                <p style="font-size:0.9rem;color:var(--text);margin:0;"><strong>What is an API Key?</strong> An API key is like a password that lets this agent talk to Google's Gemini AI. You need one to use the agent, but it's completely free.</p>
-            </div>
 
-            <h4 style="color:var(--crimson);margin-bottom:12px;font-size:1rem;">Step-by-Step Instructions:</h4>
-            
-            <div style="margin-bottom:20px;">
-                <div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:16px;">
-                    <div style="min-width:28px;height:28px;background:var(--crimson);color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.8rem;font-weight:700;">1</div>
-                    <div>
-                        <p style="font-weight:600;color:var(--text);margin-bottom:4px;">Click the "Get Free API Key" button above</p>
-                        <p style="font-size:0.85rem;color:var(--text-secondary);margin:0;">This opens Google AI Studio in a new tab. You'll need a Google account (Gmail).</p>
-                    </div>
+            <!-- Gemini Section -->
+            <div style="margin-bottom:28px;">
+                <h4 style="color:var(--crimson);margin-bottom:12px;font-size:1rem;display:flex;align-items:center;gap:8px;">
+                    <span style="background:linear-gradient(135deg,#4285f4,#34a853);color:white;padding:2px 8px;border-radius:4px;font-size:0.75rem;font-weight:700;">GEMINI</span>
+                    Option 1: Google Gemini (Cloud)
+                </h4>
+                <div style="background:var(--gold-bg);border:1px solid var(--gold-light);border-radius:12px;padding:14px;margin-bottom:14px;">
+                    <p style="font-size:0.88rem;color:var(--text);margin:0;"><strong>Free API key</strong> from Google. Works from anywhere — GitHub Pages, local, etc.</p>
                 </div>
-                
-                <div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:16px;">
-                    <div style="min-width:28px;height:28px;background:var(--crimson);color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.8rem;font-weight:700;">2</div>
-                    <div>
-                        <p style="font-weight:600;color:var(--text);margin-bottom:4px;">Sign in with your Google account</p>
-                        <p style="font-size:0.85rem;color:var(--text-secondary);margin:0;">Use any Gmail address. If you don't have one, you can create a free account at accounts.google.com.</p>
+                <div style="margin-bottom:14px;">
+                    <div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:12px;">
+                        <div style="min-width:24px;height:24px;background:var(--crimson);color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;">1</div>
+                        <div>
+                            <p style="font-weight:600;color:var(--text);margin:0 0 2px;">Go to <a href="https://aistudio.google.com/apikey" target="_blank" style="color:var(--gold);">Google AI Studio</a> and sign in with your Google account.</p>
+                        </div>
                     </div>
-                </div>
-                
-                <div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:16px;">
-                    <div style="min-width:28px;height:28px;background:var(--crimson);color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.8rem;font-weight:700;">3</div>
-                    <div>
-                        <p style="font-weight:600;color:var(--text);margin-bottom:4px;">Click "Create API Key"</p>
-                        <p style="font-size:0.85rem;color:var(--text-secondary);margin:0;">You'll see a button that says "Create API Key" — click it. You may need to agree to the terms of service first.</p>
+                    <div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:12px;">
+                        <div style="min-width:24px;height:24px;background:var(--crimson);color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;">2</div>
+                        <div>
+                            <p style="font-weight:600;color:var(--text);margin:0 0 2px;">Click <strong>"Create API Key"</strong> and copy the key (starts with <code style="background:var(--cream);padding:1px 5px;border-radius:3px;font-size:0.8rem;">AIza...</code>).</p>
+                        </div>
                     </div>
-                </div>
-                
-                <div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:16px;">
-                    <div style="min-width:28px;height:28px;background:var(--crimson);color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.8rem;font-weight:700;">4</div>
-                    <div>
-                        <p style="font-weight:600;color:var(--text);margin-bottom:4px;">Copy your API key</p>
-                        <p style="font-size:0.85rem;color:var(--text-secondary);margin:0;">Google will show you a long string of letters and numbers (like <code style="background:var(--cream);padding:2px 6px;border-radius:4px;font-size:0.8rem;">AIza...</code>). Click the copy icon to copy it.</p>
-                    </div>
-                </div>
-                
-                <div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:16px;">
-                    <div style="min-width:28px;height:28px;background:var(--crimson);color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.8rem;font-weight:700;">5</div>
-                    <div>
-                        <p style="font-weight:600;color:var(--text);margin-bottom:4px;">Paste it in the API Key field above</p>
-                        <p style="font-size:0.85rem;color:var(--text-secondary);margin:0;">Come back to this page and paste the key into the input field. That's it — you're ready to chat!</p>
+                    <div style="display:flex;gap:12px;align-items:flex-start;">
+                        <div style="min-width:24px;height:24px;background:var(--crimson);color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;">3</div>
+                        <div>
+                            <p style="font-weight:600;color:var(--text);margin:0 0 2px;">Select <strong>Gemini Flash</strong> above and paste the key.</p>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div style="background:var(--cream);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:20px;">
-                <h4 style="color:var(--text);font-size:0.9rem;margin-bottom:8px;">Important Notes:</h4>
-                <ul style="font-size:0.85rem;color:var(--text-secondary);margin:0;padding-left:20px;">
-                    <li style="margin-bottom:6px;"><strong>Free:</strong> Google's free tier gives you plenty of requests for personal use — no credit card required.</li>
-                    <li style="margin-bottom:6px;"><strong>Private:</strong> Your API key stays in your browser. It's never stored on any server.</li>
-                    <li style="margin-bottom:6px;"><strong>Reusable:</strong> You can use the same key every time you visit this page.</li>
-                    <li><strong>Secure:</strong> Don't share your API key publicly. If compromised, you can delete it and create a new one.</li>
-                </ul>
+            <hr style="border:none;border-top:1px solid var(--border);margin:0 0 28px;">
+
+            <!-- Ollama Section -->
+            <div>
+                <h4 style="color:var(--crimson);margin-bottom:12px;font-size:1rem;display:flex;align-items:center;gap:8px;">
+                    <span style="background:linear-gradient(135deg,#1a1a2e,#4a4a6a);color:white;padding:2px 8px;border-radius:4px;font-size:0.75rem;font-weight:700;">OLLAMA</span>
+                    Option 2: Ollama (Local, Free, Private)
+                </h4>
+                <div style="background:var(--gold-bg);border:1px solid var(--gold-light);border-radius:12px;padding:14px;margin-bottom:14px;">
+                    <p style="font-size:0.88rem;color:var(--text);margin:0;"><strong>Runs on your computer.</strong> No API key needed. Completely private. Requires ~8GB+ RAM for a good model.</p>
+                </div>
+                <div style="margin-bottom:14px;">
+                    <div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:12px;">
+                        <div style="min-width:24px;height:24px;background:var(--crimson);color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;">1</div>
+                        <div>
+                            <p style="font-weight:600;color:var(--text);margin:0 0 2px;">Install Ollama from <a href="https://ollama.com/download" target="_blank" style="color:var(--gold);">ollama.com/download</a></p>
+                        </div>
+                    </div>
+                    <div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:12px;">
+                        <div style="min-width:24px;height:24px;background:var(--crimson);color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;">2</div>
+                        <div>
+                            <p style="font-weight:600;color:var(--text);margin:0 0 2px;">Open a terminal and pull a model:<br><code style="background:var(--cream);padding:4px 8px;border-radius:4px;font-size:0.82rem;display:inline-block;margin-top:4px;">ollama pull llama3</code></p>
+                        </div>
+                    </div>
+                    <div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:12px;">
+                        <div style="min-width:24px;height:24px;background:var(--crimson);color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;">3</div>
+                        <div>
+                            <p style="font-weight:600;color:var(--text);margin:0 0 2px;">Allow browser access (run once):<br><code style="background:var(--cream);padding:4px 8px;border-radius:4px;font-size:0.82rem;display:inline-block;margin-top:4px;">OLLAMA_ORIGINS="*" ollama serve</code></p>
+                        </div>
+                    </div>
+                    <div style="display:flex;gap:12px;align-items:flex-start;">
+                        <div style="min-width:24px;height:24px;background:var(--crimson);color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;">4</div>
+                        <div>
+                            <p style="font-weight:600;color:var(--text);margin:0 0 2px;">Select <strong>Ollama (Local)</strong> above, enter your model name (e.g. <code style="background:var(--cream);padding:1px 5px;border-radius:3px;">llama3</code>), and start chatting.</p>
+                        </div>
+                    </div>
+                </div>
+                <div style="background:var(--cream);border:1px solid var(--border);border-radius:8px;padding:12px;font-size:0.82rem;color:var(--text-secondary);">
+                    <strong>Recommended models:</strong> <code>llama3</code>, <code>mistral</code>, <code>gemma2</code>, <code>qwen2.5</code>. Larger models (70B) give better answers but need more RAM.
+                </div>
             </div>
 
-            <div style="text-align:center;">
-                <button onclick="window.open('https://aistudio.google.com/apikey','_blank')" style="padding:12px 24px;background:linear-gradient(135deg,#4285f4 0%,#34a853 100%);color:white;border:none;border-radius:8px;font-size:0.95rem;font-weight:600;cursor:pointer;">
-                    Open Google AI Studio →
+            <div style="text-align:center;margin-top:24px;">
+                <button onclick="document.getElementById('apiHelpModal').style.display='none'" style="padding:10px 24px;background:var(--crimson);color:white;border:none;border-radius:8px;font-size:0.9rem;font-weight:600;cursor:pointer;">
+                    Got it
                 </button>
-                <p style="font-size:0.8rem;color:var(--text-muted);margin-top:12px;">Opens in a new tab</p>
             </div>
         </div>
     </div>
@@ -795,7 +816,7 @@
     </div>
 
     <div class="footer">
-        <p>Built by <a href="https://www.youtube.com/@paulos1844" target="_blank">WhatIfWeBelieved</a> · Powered by Gemini Flash &amp; Grok</p>
+        <p>Built by <a href="https://www.youtube.com/@paulos1844" target="_blank">WhatIfWeBelieved</a> · Powered by Gemini Flash &amp; Ollama</p>
     </div>
 
     <script type="module">
@@ -822,6 +843,8 @@ Reasoning rules:
 - Cite thinkers, texts, and traditions by name where relevant.
 - When discussing Adventist theology, engage with official Seventh-day Adventist doctrines (e.g. 28 Fundamental Beliefs) as well as historical and contemporary Adventist scholarship.`;
 
+        const OLLAMA_BASE = 'http://localhost:11434';
+
         let genAI = null;
         let chat = null;
         let conversationHistory = [];
@@ -838,23 +861,43 @@ Reasoning rules:
         const fileInput = document.getElementById('fileInput');
         const fileUploadArea = document.getElementById('fileUploadArea');
         const filePreview = document.getElementById('filePreview');
+        const geminiControls = document.getElementById('geminiControls');
+        const ollamaControls = document.getElementById('ollamaControls');
+        const ollamaStatus = document.getElementById('ollamaStatus');
+        const apiHint = document.getElementById('apiHint');
 
-        // Handle model provider change
+        async function checkOllama() {
+            try {
+                const res = await fetch(OLLAMA_BASE + '/api/tags', { method: 'GET' });
+                if (res.ok) {
+                    const data = await res.json();
+                    const models = data.models || [];
+                    ollamaStatus.textContent = 'Connected (' + models.length + ' models)';
+                    ollamaStatus.style.background = '#d1fae5';
+                    ollamaStatus.style.color = '#065f46';
+                    return true;
+                }
+            } catch (e) {}
+            ollamaStatus.textContent = 'Not running';
+            ollamaStatus.style.background = '#fee2e2';
+            ollamaStatus.style.color = '#991b1b';
+            return false;
+        }
+
         window.handleModelChange = function(provider) {
             currentProvider = provider;
-            chat = null; // Reset chat when switching providers
-            
-            const getKeyBtn = document.getElementById('getKeyBtn');
-            const apiKeyInput = document.getElementById('apiKey');
-            
+            chat = null;
+            conversationHistory = [];
+
             if (provider === 'gemini') {
-                apiKeyInput.placeholder = 'Paste your Gemini API key here...';
-                getKeyBtn.href = 'https://aistudio.google.com/apikey';
-                getKeyBtn.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg> Get Free API Key';
-            } else if (provider === 'grok') {
-                apiKeyInput.placeholder = 'Paste your xAI API key here...';
-                getKeyBtn.href = 'https://console.x.ai/';
-                getKeyBtn.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg> Get xAI API Key';
+                geminiControls.style.display = '';
+                ollamaControls.style.display = 'none';
+                apiHint.textContent = 'No credit card required. Free tier available for personal use.';
+            } else if (provider === 'ollama') {
+                geminiControls.style.display = 'none';
+                ollamaControls.style.display = '';
+                apiHint.textContent = 'Runs locally on your machine. No API key needed. Ollama must be running.';
+                checkOllama();
             }
         };
 
@@ -898,13 +941,10 @@ Reasoning rules:
             fileUploadArea.style.display = 'none';
             filePreview.style.display = 'flex';
 
-            // Read file content
             const reader = new FileReader();
             reader.onload = function(e) {
                 fileContent = e.target.result;
             };
-
-            // Read all files as Data URL (base64) for proper handling
             reader.readAsDataURL(file);
         }
 
@@ -936,7 +976,8 @@ Reasoning rules:
             conversationHistory = [];
         }
 
-        async function callGrokAPI(apiKey, message, history) {
+        async function callOllama(message, history) {
+            const modelName = document.getElementById('ollamaModel').value.trim() || 'llama3';
             const messages = [
                 { role: 'system', content: SYSTEM_PROMPT },
                 ...history.map(h => [
@@ -946,48 +987,25 @@ Reasoning rules:
                 { role: 'user', content: message }
             ];
 
-            const API_URL = 'https://api.x.ai/v1/chat/completions';
-            const body = JSON.stringify({
-                model: 'grok-3',
-                messages: messages,
-                temperature: 0.7
+            const response = await fetch(OLLAMA_BASE + '/v1/chat/completions', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    model: modelName,
+                    messages: messages,
+                    stream: false
+                })
             });
 
-            const headers = {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${apiKey}`
-            };
-
-            let response;
-            try {
-                response = await fetch(API_URL, {
-                    method: 'POST',
-                    headers: headers,
-                    body: body
-                });
-            } catch (directErr) {
-                // Direct call failed — likely CORS. Try via proxy.
-                try {
-                    const proxyUrl = 'https://corsproxy.io/?url=' + encodeURIComponent(API_URL);
-                    response = await fetch(proxyUrl, {
-                        method: 'POST',
-                        headers: headers,
-                        body: body
-                    });
-                } catch (proxyErr) {
-                    throw new Error('Network error: Could not reach xAI API. Both direct and proxy connections failed. Please use Gemini instead, or check your internet connection.');
-                }
-            }
-
             if (!response.ok) {
-                let errorMsg = 'Failed to call Grok API (HTTP ' + response.status + ')';
+                let errorMsg = 'Ollama error (HTTP ' + response.status + ')';
                 try {
-                    const errorText = await response.text();
+                    const errText = await response.text();
                     try {
-                        const error = JSON.parse(errorText);
-                        errorMsg = error.error?.message || error.detail || errorText;
+                        const err = JSON.parse(errText);
+                        errorMsg = err.error?.message || err.error || errText || errorMsg;
                     } catch (e) {
-                        errorMsg = errorText || errorMsg;
+                        errorMsg = errText || errorMsg;
                     }
                 } catch (e) {}
                 throw new Error(errorMsg);
@@ -1020,36 +1038,31 @@ Reasoning rules:
             const apiKey = document.getElementById('apiKey').value.trim();
 
             if ((!message && !selectedFile) || isLoading) return;
-            if (!apiKey) {
-                userInput.placeholder = currentProvider === 'gemini' 
-                    ? 'Please enter your Gemini API key above first...' 
-                    : 'Please enter your xAI API key above first...';
+
+            if (currentProvider === 'gemini' && !apiKey) {
+                userInput.placeholder = 'Please enter your Gemini API key above first...';
                 userInput.focus();
                 return;
             }
 
-            // Initialize Gemini if not already done
             if (currentProvider === 'gemini' && !chat) {
                 try {
                     initGemini(apiKey);
                 } catch (error) {
-                    addMessage('Error initializing AI: ' + error.message, 'error');
+                    addMessage('Error initializing Gemini: ' + error.message, 'error');
                     return;
                 }
             }
 
             if (welcome) welcome.style.display = 'none';
 
-            // Prepare message with file content
             let fullMessage = message;
             const isBinaryFile = selectedFile && (selectedFile.type.startsWith('image/') || selectedFile.type === 'application/pdf');
             
             if (selectedFile && fileContent) {
                 if (!isBinaryFile) {
-                    // For text files, include content in message
                     fullMessage = message ? `${message}\n\n--- File Content (${selectedFile.name}) ---\n${fileContent}` : `Please analyze the following file (${selectedFile.name}):\n\n${fileContent}`;
                 } else {
-                    // For binary files (images, PDFs), just reference the file
                     fullMessage = message || `Please analyze this ${selectedFile.type.startsWith('image/') ? 'image' : 'PDF document'}.`;
                 }
             }
@@ -1069,7 +1082,6 @@ Reasoning rules:
                 if (currentProvider === 'gemini') {
                     let result;
                     if (selectedFile && fileContent && isBinaryFile) {
-                        // For binary files (images, PDFs), use generateContent directly
                         const model = genAI.getGenerativeModel({ 
                             model: 'gemini-2.5-flash',
                             systemInstruction: SYSTEM_PROMPT
@@ -1086,8 +1098,8 @@ Reasoning rules:
                     }
                     const response = result.response;
                     responseText = response.text();
-                } else if (currentProvider === 'grok') {
-                    responseText = await callGrokAPI(apiKey, fullMessage, conversationHistory);
+                } else if (currentProvider === 'ollama') {
+                    responseText = await callOllama(fullMessage, conversationHistory);
                 }
 
                 addMessage(responseText, 'assistant');
@@ -1097,8 +1109,8 @@ Reasoning rules:
                 if (currentProvider === 'gemini' && (msg.includes('API key') || msg.includes('Unauthorized'))) {
                     addMessage('Invalid API key. Please check your Gemini key and try again.', 'error');
                     chat = null;
-                } else if (currentProvider === 'grok' && msg.includes('401')) {
-                    addMessage('Invalid API key. Please check your xAI key and try again.', 'error');
+                } else if (currentProvider === 'ollama' && (msg.includes('Failed to fetch') || msg.includes('NetworkError') || msg.includes('ECONNREFUSED'))) {
+                    addMessage('Cannot connect to Ollama. Make sure Ollama is running on your computer (open a terminal and run: ollama serve). If running from GitHub Pages, also set OLLAMA_ORIGINS="*" when starting Ollama.', 'error');
                 } else {
                     addMessage('Error: ' + msg, 'error');
                 }
@@ -1132,7 +1144,6 @@ Reasoning rules:
             div.appendChild(label);
             div.appendChild(contentDiv);
 
-            // Add copy and download buttons for assistant messages
             if (type === 'assistant') {
                 const btnContainer = document.createElement('div');
                 btnContainer.className = 'btn-container';
@@ -1193,7 +1204,6 @@ Reasoning rules:
             }
         }
 
-        // Make functions available globally
         window.askQuestion = askQuestion;
         window.sendMessage = sendMessage;
         window.clearChat = clearChat;
