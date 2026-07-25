@@ -599,7 +599,7 @@
             <label for="modelProvider">Model:</label>
             <select id="modelProvider" onchange="handleModelChange(this.value)" style="padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:0.85rem;background:white;color:var(--text);cursor:pointer;min-width:120px;">
                 <option value="gemini">Gemini Flash</option>
-                <option value="grok">Grok Fast</option>
+                <option value="grok">Grok</option>
             </select>
             <label for="apiKey">API Key:</label>
             <input type="password" id="apiKey" placeholder="Paste your API key here...">
@@ -795,7 +795,7 @@
     </div>
 
     <div class="footer">
-        <p>Built by <a href="https://www.youtube.com/@paulos1844" target="_blank">WhatIfWeBelieved</a> · Powered by Gemini Flash</p>
+        <p>Built by <a href="https://www.youtube.com/@paulos1844" target="_blank">WhatIfWeBelieved</a> · Powered by Gemini Flash &amp; Grok</p>
     </div>
 
     <script type="module">
@@ -950,8 +950,7 @@ Reasoning rules:
             const body = JSON.stringify({
                 model: 'grok-3',
                 messages: messages,
-                temperature: 0.7,
-                max_tokens: 4096
+                temperature: 0.7
             });
 
             const headers = {
@@ -982,8 +981,13 @@ Reasoning rules:
             if (!response.ok) {
                 let errorMsg = 'Failed to call Grok API (HTTP ' + response.status + ')';
                 try {
-                    const error = await response.json();
-                    errorMsg = error.error?.message || errorMsg;
+                    const errorText = await response.text();
+                    try {
+                        const error = JSON.parse(errorText);
+                        errorMsg = error.error?.message || error.detail || errorText;
+                    } catch (e) {
+                        errorMsg = errorText || errorMsg;
+                    }
                 } catch (e) {}
                 throw new Error(errorMsg);
             }
