@@ -802,6 +802,13 @@ Scope rules:
 - Adventist theology includes: the investigative judgment, the sanctuary doctrine, the great controversy theme, Sabbath theology, the state of the dead, conditional immortality, the gifts of the Spirit, Ellen G. White's prophetic ministry, Seventh-day Adventist doctrines and beliefs.
 - Christian philosophy includes: Christian philosophers from the early church to modern era (e.g. Augustine, Aquinas, Kierkegaard, C.S. Lewis, Alvin Plantinga, William Lane Craig, Nicholas Wolterstorff), philosophy of religion, Christian epistemology, ethics and moral philosophy grounded in Christian tradition.
 
+File handling rules:
+- When users upload files (text, images, PDFs), analyze them within the context of Adventist theology and Christian philosophy.
+- For text files: Read and analyze the content, providing theological insights or philosophical commentary as appropriate.
+- For images: Describe what you see and relate it to theological or philosophical themes if possible.
+- For PDFs: Analyze the document content and provide relevant theological or philosophical analysis.
+- Always stay within your domain scope when analyzing uploaded files.
+
 Reasoning rules:
 - You are explicitly allowed to infer: synthesize positions across thinkers or traditions, extend an argument to a case its author didn't address, point out a tension a text implies but doesn't state, or offer your own reasoned judgment about which argument is stronger.
 - Clearly distinguish inference from established fact. Use plain signaling like "Ellen White argues X" or "Augustine writes Y" (textual claim) versus "it follows from this that Z" or "one could infer" or "my read is" (your inference).
@@ -871,11 +878,8 @@ Reasoning rules:
                 fileContent = e.target.result;
             };
 
-            if (file.type.startsWith('image/')) {
-                reader.readAsDataURL(file);
-            } else {
-                reader.readAsText(file);
-            }
+            // Read all files as Data URL (base64) for proper handling
+            reader.readAsDataURL(file);
         }
 
         function formatFileSize(bytes) {
@@ -949,11 +953,15 @@ Reasoning rules:
 
             // Prepare message with file content
             let fullMessage = message;
+            const isBinaryFile = selectedFile && (selectedFile.type.startsWith('image/') || selectedFile.type === 'application/pdf');
+            
             if (selectedFile && fileContent) {
-                if (selectedFile.type.startsWith('image/')) {
-                    fullMessage = message || 'Please analyze this image.';
-                } else {
+                if (!isBinaryFile) {
+                    // For text files, include content in message
                     fullMessage = message ? `${message}\n\n--- File Content (${selectedFile.name}) ---\n${fileContent}` : `Please analyze the following file (${selectedFile.name}):\n\n${fileContent}`;
+                } else {
+                    // For binary files (images, PDFs), just reference the file
+                    fullMessage = message || `Please analyze this ${selectedFile.type.startsWith('image/') ? 'image' : 'PDF document'}.`;
                 }
             }
 
@@ -968,15 +976,15 @@ Reasoning rules:
 
             try {
                 let result;
-                if (selectedFile && selectedFile.type.startsWith('image/') && fileContent) {
-                    // Handle image file
-                    const imageParts = [{
+                if (selectedFile && fileContent && isBinaryFile) {
+                    // Handle binary files (images, PDFs) as inline data
+                    const fileParts = [{
                         inlineData: {
                             mimeType: selectedFile.type,
                             data: fileContent.split(',')[1]
                         }
                     }];
-                    result = await chat.sendMessage([...imageParts, message || 'Please analyze this image.']);
+                    result = await chat.sendMessage([...fileParts, fullMessage]);
                 } else {
                     result = await chat.sendMessage(fullMessage);
                 }
