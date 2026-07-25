@@ -596,8 +596,12 @@
 
     <div class="api-section">
         <div class="api-inner">
-            <label for="apiKey">API Key:</label>
-            <input type="password" id="apiKey" placeholder="Paste your Gemini API key here...">
+            <label for="apiKeySource">API Key:</label>
+            <select id="apiKeySource" onchange="handleApiKeySource(this.value)" style="padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:0.85rem;background:white;color:var(--text);cursor:pointer;min-width:180px;">
+                <option value="own">Use My Own Key</option>
+                <option value="shared">Use Shared Key (Limited)</option>
+            </select>
+            <input type="password" id="apiKey" placeholder="Paste your Gemini API key here..." style="flex:1;min-width:200px;">
             <a href="https://aistudio.google.com/apikey" target="_blank" class="btn btn-gemini">
                 <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
                 Get Free API Key
@@ -823,6 +827,28 @@ Reasoning rules:
         let isLoading = false;
         let selectedFile = null;
         let fileContent = null;
+
+        // Shared API keys for first-time users
+        const sharedApiKeys = [
+            'AIzaSyDY990797pKqpxL34q-eub5eOJBKid_OwA',
+            'AIzaSyA4eIqCsqQ_SSzMlG3xZ_1c588VOQXuRgg',
+            'AIzaSyCwNLunO8UGvuLv-KJIapALU1Wfukwq32I'
+        ];
+
+        function handleApiKeySource(source) {
+            const apiKeyInput = document.getElementById('apiKey');
+            if (source === 'shared') {
+                // Randomly select a shared key
+                const randomKey = sharedApiKeys[Math.floor(Math.random() * sharedApiKeys.length)];
+                apiKeyInput.value = randomKey;
+                apiKeyInput.type = 'password';
+                apiKeyInput.placeholder = 'Shared API key selected (limited usage)...';
+            } else {
+                apiKeyInput.value = '';
+                apiKeyInput.type = 'password';
+                apiKeyInput.placeholder = 'Paste your Gemini API key here...';
+            }
+        }
 
         const messagesDiv = document.getElementById('messages');
         const userInput = document.getElementById('userInput');
