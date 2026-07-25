@@ -611,6 +611,7 @@
                 How to Get a Free API Key
             </button>
             <small>No credit card required. Free tier available for personal use.</small>
+            <div id="usageCounter" style="display:none;font-size:0.8rem;color:var(--text-muted);margin-left:8px;padding:4px 8px;background:var(--cream);border-radius:4px;">15 requests remaining</div>
         </div>
     </div>
 
@@ -834,19 +835,65 @@ Reasoning rules:
             'AIzaSyA4eIqCsqQ_SSzMlG3xZ_1c588VOQXuRgg',
             'AIzaSyCwNLunO8UGvuLv-KJIapALU1Wfukwq32I'
         ];
+        let currentKeyIndex = 0;
+        let requestCount = 0;
+        const maxRequestsPerKey = 10; // Warn at 10 requests
+        const rotateAtLimit = 15; // Rotate at 15 requests
 
         function handleApiKeySource(source) {
             const apiKeyInput = document.getElementById('apiKey');
+            const usageCounter = document.getElementById('usageCounter');
             if (source === 'shared') {
-                // Randomly select a shared key
-                const randomKey = sharedApiKeys[Math.floor(Math.random() * sharedApiKeys.length)];
-                apiKeyInput.value = randomKey;
+                // Start with first key
+                currentKeyIndex = 0;
+                requestCount = 0;
+                apiKeyInput.value = sharedApiKeys[currentKeyIndex];
                 apiKeyInput.type = 'password';
                 apiKeyInput.placeholder = 'Shared API key selected (limited usage)...';
+                usageCounter.style.display = 'block';
+                updateUsageCounter();
             } else {
                 apiKeyInput.value = '';
                 apiKeyInput.type = 'password';
                 apiKeyInput.placeholder = 'Paste your Gemini API key here...';
+                usageCounter.style.display = 'none';
+                requestCount = 0;
+            }
+        }
+
+        function updateUsageCounter() {
+            const counter = document.getElementById('usageCounter');
+            const remaining = rotateAtLimit - requestCount;
+            counter.textContent = `${remaining} requests remaining`;
+            
+            if (remaining <= 3) {
+                counter.style.color = '#b91c1c';
+                counter.style.fontWeight = '700';
+            } else if (remaining <= 5) {
+                counter.style.color = '#d97706';
+                counter.style.fontWeight = '600';
+            } else {
+                counter.style.color = 'var(--text-muted)';
+                counter.style.fontWeight = '400';
+            }
+        }
+
+        function rotateKey() {
+            currentKeyIndex = (currentKeyIndex + 1) % sharedApiKeys.length;
+            requestCount = 0;
+            const apiKeyInput = document.getElementById('apiKey');
+            apiKeyInput.value = sharedApiKeys[currentKeyIndex];
+            updateUsageCounter();
+            addMessage('API key automatically rotated due to rate limits. Continuing with a fresh key.', 'assistant');
+        }
+
+        function incrementRequestCount() {
+            requestCount++;
+            if (document.getElementById('apiKeySource').value === 'shared') {
+                updateUsageCounter();
+                if (requestCount >= rotateAtLimit) {
+                    rotateKey();
+                }
             }
         }
         window.handleApiKeySource = handleApiKeySource;
@@ -1023,6 +1070,7 @@ Reasoning rules:
                 const response = result.response;
                 const text = response.text();
                 addMessage(text, 'assistant');
+                incrementRequestCount();
             } catch (error) {
                 if (error.message.includes('API key')) {
                     addMessage('Invalid API key. Please check your key and try again.', 'error');
