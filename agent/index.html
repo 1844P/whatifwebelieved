@@ -295,6 +295,97 @@
             gap: 8px;
             white-space: nowrap;
         }
+
+        /* FILE UPLOAD */
+        .file-upload-area {
+            border: 2px dashed var(--border);
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+            background: var(--cream);
+            transition: all 0.3s;
+            cursor: pointer;
+            margin-bottom: 12px;
+        }
+        .file-upload-area:hover,
+        .file-upload-area.dragover {
+            border-color: var(--gold);
+            background: var(--gold-bg);
+        }
+        .file-upload-area svg {
+            width: 24px;
+            height: 24px;
+            color: var(--gold);
+            margin-bottom: 8px;
+        }
+        .file-upload-area p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin: 0;
+        }
+        .file-upload-area .browse-text {
+            color: var(--gold);
+            font-weight: 600;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+        .file-preview {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 14px;
+            background: var(--gold-bg);
+            border: 1px solid var(--gold);
+            border-radius: 8px;
+            margin-bottom: 12px;
+        }
+        .file-preview .file-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--crimson);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .file-preview .file-icon svg {
+            width: 16px;
+            height: 16px;
+            color: white;
+        }
+        .file-preview .file-info {
+            flex: 1;
+            overflow: hidden;
+        }
+        .file-preview .file-name {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .file-preview .file-size {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+        .file-preview .remove-file {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 4px;
+            transition: background 0.2s;
+        }
+        .file-preview .remove-file:hover {
+            background: rgba(185, 28, 28, 0.1);
+        }
+        .file-preview .remove-file svg {
+            width: 16px;
+            height: 16px;
+            color: #b91c1c;
+        }
         .btn-primary {
             background: linear-gradient(135deg, var(--crimson) 0%, #5a1020 100%);
             color: white;
@@ -653,6 +744,34 @@
         </div>
 
         <div class="input-section">
+            <div class="file-upload-area" id="fileUploadArea">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="17 8 12 3 7 8"/>
+                    <line x1="12" y1="3" x2="12" y2="15"/>
+                </svg>
+                <p>Drag & drop a file here or <span class="browse-text" onclick="document.getElementById('fileInput').click()">browse</span></p>
+                <p style="font-size:0.75rem;margin-top:4px;">Supports: .txt, .md, .doc, .docx, .pdf, .jpg, .png, .gif</p>
+            </div>
+            <input type="file" id="fileInput" style="display:none" accept=".txt,.md,.doc,.docx,.pdf,.jpg,.jpeg,.png,.gif">
+            <div id="filePreview" class="file-preview" style="display:none;">
+                <div class="file-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                        <polyline points="14 2 14 8 20 8"/>
+                    </svg>
+                </div>
+                <div class="file-info">
+                    <div class="file-name" id="fileName">filename.txt</div>
+                    <div class="file-size" id="fileSize">0 KB</div>
+                </div>
+                <button class="remove-file" onclick="removeFile()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"/>
+                        <line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                </button>
+            </div>
             <div class="input-wrapper">
                 <textarea id="userInput" placeholder="Ask about Adventist theology or Christian philosophy..." rows="2"></textarea>
                 <button class="btn btn-primary" id="sendBtn" onclick="sendMessage()">
@@ -694,12 +813,84 @@ Reasoning rules:
         let chat = null;
         let conversationHistory = [];
         let isLoading = false;
+        let selectedFile = null;
+        let fileContent = null;
 
         const messagesDiv = document.getElementById('messages');
         const userInput = document.getElementById('userInput');
         const sendBtn = document.getElementById('sendBtn');
         const loading = document.getElementById('loading');
         const welcome = document.getElementById('welcome');
+        const fileInput = document.getElementById('fileInput');
+        const fileUploadArea = document.getElementById('fileUploadArea');
+        const filePreview = document.getElementById('filePreview');
+
+        // File upload handling
+        fileUploadArea.addEventListener('click', function() {
+            fileInput.click();
+        });
+
+        fileUploadArea.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            this.classList.add('dragover');
+        });
+
+        fileUploadArea.addEventListener('dragleave', function(e) {
+            e.preventDefault();
+            this.classList.remove('dragover');
+        });
+
+        fileUploadArea.addEventListener('drop', function(e) {
+            e.preventDefault();
+            this.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                handleFile(files[0]);
+            }
+        });
+
+        fileInput.addEventListener('change', function() {
+            if (this.files.length > 0) {
+                handleFile(this.files[0]);
+            }
+        });
+
+        function handleFile(file) {
+            selectedFile = file;
+            const fileName = document.getElementById('fileName');
+            const fileSize = document.getElementById('fileSize');
+            
+            fileName.textContent = file.name;
+            fileSize.textContent = formatFileSize(file.size);
+            fileUploadArea.style.display = 'none';
+            filePreview.style.display = 'flex';
+
+            // Read file content
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                fileContent = e.target.result;
+            };
+
+            if (file.type.startsWith('image/')) {
+                reader.readAsDataURL(file);
+            } else {
+                reader.readAsText(file);
+            }
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes < 1024) return bytes + ' B';
+            if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+            return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+        }
+
+        function removeFile() {
+            selectedFile = null;
+            fileContent = null;
+            fileInput.value = '';
+            fileUploadArea.style.display = 'block';
+            filePreview.style.display = 'none';
+        }
 
         function initGemini(apiKey) {
             genAI = new GoogleGenerativeAI(apiKey);
@@ -737,7 +928,7 @@ Reasoning rules:
             const message = userInput.value.trim();
             const apiKey = document.getElementById('apiKey').value.trim();
 
-            if (!message || isLoading) return;
+            if ((!message && !selectedFile) || isLoading) return;
             if (!apiKey) {
                 userInput.placeholder = 'Please enter your Gemini API key above first...';
                 userInput.focus();
@@ -756,7 +947,18 @@ Reasoning rules:
 
             if (welcome) welcome.style.display = 'none';
 
-            addMessage(message, 'user');
+            // Prepare message with file content
+            let fullMessage = message;
+            if (selectedFile && fileContent) {
+                if (selectedFile.type.startsWith('image/')) {
+                    fullMessage = message || 'Please analyze this image.';
+                } else {
+                    fullMessage = message ? `${message}\n\n--- File Content (${selectedFile.name}) ---\n${fileContent}` : `Please analyze the following file (${selectedFile.name}):\n\n${fileContent}`;
+                }
+            }
+
+            const displayMessage = message || (selectedFile ? `[File: ${selectedFile.name}]` : '');
+            addMessage(displayMessage, 'user');
             userInput.value = '';
             userInput.style.height = 'auto';
 
@@ -765,7 +967,19 @@ Reasoning rules:
             loading.classList.add('active');
 
             try {
-                const result = await chat.sendMessage(message);
+                let result;
+                if (selectedFile && selectedFile.type.startsWith('image/') && fileContent) {
+                    // Handle image file
+                    const imageParts = [{
+                        inlineData: {
+                            mimeType: selectedFile.type,
+                            data: fileContent.split(',')[1]
+                        }
+                    }];
+                    result = await chat.sendMessage([...imageParts, message || 'Please analyze this image.']);
+                } else {
+                    result = await chat.sendMessage(fullMessage);
+                }
                 const response = result.response;
                 const text = response.text();
                 addMessage(text, 'assistant');
@@ -832,6 +1046,7 @@ Reasoning rules:
             chat = null;
             conversationHistory = [];
             messagesDiv.innerHTML = '';
+            removeFile();
             if (welcome) {
                 messagesDiv.appendChild(welcome);
                 welcome.style.display = 'block';
