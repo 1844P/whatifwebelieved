@@ -596,9 +596,14 @@
 
     <div class="api-section">
         <div class="api-inner">
+            <label for="modelProvider">Model:</label>
+            <select id="modelProvider" onchange="handleModelChange(this.value)" style="padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:0.85rem;background:white;color:var(--text);cursor:pointer;min-width:120px;">
+                <option value="gemini">Gemini Flash</option>
+                <option value="grok">Grok Fast</option>
+            </select>
             <label for="apiKey">API Key:</label>
-            <input type="password" id="apiKey" placeholder="Paste your Gemini API key here...">
-            <a href="https://aistudio.google.com/apikey" target="_blank" class="btn btn-gemini">
+            <input type="password" id="apiKey" placeholder="Paste your API key here...">
+            <a href="https://aistudio.google.com/apikey" target="_blank" class="btn btn-gemini" id="getKeyBtn">
                 <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
                 Get Free API Key
             </a>
@@ -823,6 +828,7 @@ Reasoning rules:
         let isLoading = false;
         let selectedFile = null;
         let fileContent = null;
+        let currentProvider = 'gemini';
 
         const messagesDiv = document.getElementById('messages');
         const userInput = document.getElementById('userInput');
@@ -832,6 +838,25 @@ Reasoning rules:
         const fileInput = document.getElementById('fileInput');
         const fileUploadArea = document.getElementById('fileUploadArea');
         const filePreview = document.getElementById('filePreview');
+
+        // Handle model provider change
+        window.handleModelChange = function(provider) {
+            currentProvider = provider;
+            chat = null; // Reset chat when switching providers
+            
+            const getKeyBtn = document.getElementById('getKeyBtn');
+            const apiKeyInput = document.getElementById('apiKey');
+            
+            if (provider === 'gemini') {
+                apiKeyInput.placeholder = 'Paste your Gemini API key here...';
+                getKeyBtn.href = 'https://aistudio.google.com/apikey';
+                getKeyBtn.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg> Get Free API Key';
+            } else if (provider === 'grok') {
+                apiKeyInput.placeholder = 'Paste your xAI API key here...';
+                getKeyBtn.href = 'https://console.x.ai/';
+                getKeyBtn.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg> Get xAI API Key';
+            }
+        };
 
         // File upload handling
         fileUploadArea.addEventListener('click', function() {
@@ -911,6 +936,39 @@ Reasoning rules:
             conversationHistory = [];
         }
 
+        async function callGrokAPI(apiKey, message, history) {
+            const messages = [
+                { role: 'system', content: SYSTEM_PROMPT },
+                ...history.map(h => [
+                    { role: 'user', content: h.user },
+                    { role: 'assistant', content: h.assistant }
+                ]).flat(),
+                { role: 'user', content: message }
+            ];
+
+            const response = await fetch('https://api.x.ai/v1/chat/completions', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${apiKey}`
+                },
+                body: JSON.stringify({
+                    model: 'grok-4-1-fast',
+                    messages: messages,
+                    temperature: 0.7,
+                    max_tokens: 4096
+                })
+            });
+
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.error?.message || 'Failed to call Grok API');
+            }
+
+            const data = await response.json();
+            return data.choices[0].message.content;
+        }
+
         userInput.addEventListener('keydown', function(e) {
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
@@ -935,13 +993,15 @@ Reasoning rules:
 
             if ((!message && !selectedFile) || isLoading) return;
             if (!apiKey) {
-                userInput.placeholder = 'Please enter your Gemini API key above first...';
+                userInput.placeholder = currentProvider === 'gemini' 
+                    ? 'Please enter your Gemini API key above first...' 
+                    : 'Please enter your xAI API key above first...';
                 userInput.focus();
                 return;
             }
 
             // Initialize Gemini if not already done
-            if (!chat) {
+            if (currentProvider === 'gemini' && !chat) {
                 try {
                     initGemini(apiKey);
                 } catch (error) {
@@ -976,30 +1036,38 @@ Reasoning rules:
             loading.classList.add('active');
 
             try {
-                let result;
-                if (selectedFile && fileContent && isBinaryFile) {
-                    // For binary files (images, PDFs), use generateContent directly
-                    const model = genAI.getGenerativeModel({ 
-                        model: 'gemini-2.5-flash',
-                        systemInstruction: SYSTEM_PROMPT
-                    });
-                    const fileParts = [{
-                        inlineData: {
-                            mimeType: selectedFile.type,
-                            data: fileContent.split(',')[1]
-                        }
-                    }];
-                    result = await model.generateContent([...fileParts, fullMessage]);
-                } else {
-                    result = await chat.sendMessage(fullMessage);
+                let responseText;
+                
+                if (currentProvider === 'gemini') {
+                    let result;
+                    if (selectedFile && fileContent && isBinaryFile) {
+                        // For binary files (images, PDFs), use generateContent directly
+                        const model = genAI.getGenerativeModel({ 
+                            model: 'gemini-2.5-flash',
+                            systemInstruction: SYSTEM_PROMPT
+                        });
+                        const fileParts = [{
+                            inlineData: {
+                                mimeType: selectedFile.type,
+                                data: fileContent.split(',')[1]
+                            }
+                        }];
+                        result = await model.generateContent([...fileParts, fullMessage]);
+                    } else {
+                        result = await chat.sendMessage(fullMessage);
+                    }
+                    const response = result.response;
+                    responseText = response.text();
+                } else if (currentProvider === 'grok') {
+                    responseText = await callGrokAPI(apiKey, fullMessage, conversationHistory);
                 }
-                const response = result.response;
-                const text = response.text();
-                addMessage(text, 'assistant');
+
+                addMessage(responseText, 'assistant');
+                conversationHistory.push({ user: fullMessage, assistant: responseText });
             } catch (error) {
-                if (error.message.includes('API key')) {
+                if (error.message.includes('API key') || error.message.includes('invalid') || error.message.includes('Unauthorized')) {
                     addMessage('Invalid API key. Please check your key and try again.', 'error');
-                    chat = null;
+                    if (currentProvider === 'gemini') chat = null;
                 } else {
                     addMessage('Error: ' + error.message, 'error');
                 }
