@@ -239,6 +239,7 @@
             opacity: 0;
         }
         .message.assistant:hover .copy-btn { opacity: 1; }
+        .message.assistant .btn-container .copy-btn { opacity: 1; }
         .copy-btn:hover {
             background: var(--gold-bg);
             border-color: var(--gold);
@@ -1035,6 +1036,7 @@ Reasoning rules:
             // Add copy and download buttons for assistant messages
             if (type === 'assistant') {
                 const btnContainer = document.createElement('div');
+                btnContainer.className = 'btn-container';
                 btnContainer.style.cssText = 'display:flex;gap:8px;margin-top:8px;';
 
                 const copyBtn = document.createElement('button');
