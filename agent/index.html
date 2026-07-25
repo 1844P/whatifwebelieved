@@ -968,7 +968,8 @@ Reasoning rules:
             } catch (directErr) {
                 // Direct call failed — likely CORS. Try via proxy.
                 try {
-                    response = await fetch('https://corsproxy.io/?' + encodeURIComponent(API_URL), {
+                    const proxyUrl = 'https://corsproxy.io/?url=' + encodeURIComponent(API_URL);
+                    response = await fetch(proxyUrl, {
                         method: 'POST',
                         headers: headers,
                         body: body
@@ -1093,11 +1094,11 @@ Reasoning rules:
                 conversationHistory.push({ user: fullMessage, assistant: responseText });
             } catch (error) {
                 const msg = error.message || '';
-                if (msg.includes('API key') || msg.includes('invalid') || msg.includes('Unauthorized')) {
-                    addMessage('Invalid API key. Please check your key and try again.', 'error');
-                    if (currentProvider === 'gemini') chat = null;
-                } else if (msg.includes('CORS') || msg.includes('Failed to fetch') || msg.includes('NetworkError') || msg.includes('blocked')) {
-                    addMessage('Network error: The request to xAI was blocked by your browser. This is a known limitation — Grok API does not support direct browser calls from static sites. Please use Gemini instead, or try opening the agent from a local server.', 'error');
+                if (currentProvider === 'gemini' && (msg.includes('API key') || msg.includes('Unauthorized'))) {
+                    addMessage('Invalid API key. Please check your Gemini key and try again.', 'error');
+                    chat = null;
+                } else if (currentProvider === 'grok' && msg.includes('401')) {
+                    addMessage('Invalid API key. Please check your xAI key and try again.', 'error');
                 } else {
                     addMessage('Error: ' + msg, 'error');
                 }
