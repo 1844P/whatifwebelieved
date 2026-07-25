@@ -1,34 +1,47 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600">
+<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 120 120">
   <defs>
-    <radialGradient id="g1" cx="20%" cy="30%" r="40%">
-      <stop offset="0%" stop-color="#c8a24e"/>
-      <stop offset="100%" stop-color="transparent"/>
-    </radialGradient>
-    <radialGradient id="g2" cx="80%" cy="70%" r="35%">
-      <stop offset="0%" stop-color="#7a1a2e"/>
-      <stop offset="100%" stop-color="transparent"/>
-    </radialGradient>
+    <pattern id="junkanoo" x="0" y="0" width="120" height="120" patternUnits="userSpaceOnUse">
+      <!-- Background -->
+      <rect width="120" height="120" fill="#faf8f5"/>
+      
+      <!-- Coral reef zigzag rows - top -->
+      <path d="M0 10 L15 25 L30 10 L45 25 L60 10 L75 25 L90 10 L105 25 L120 10 L120 0 L0 0 Z" fill="#e8a08a" opacity="0.15"/>
+      
+      <!-- Teal triangles - Caribbean water -->
+      <polygon points="15,30 30,50 0,50" fill="#4a9a8a" opacity="0.12"/>
+      <polygon points="75,30 90,50 60,50" fill="#4a9a8a" opacity="0.12"/>
+      
+      <!-- Gold diamond - Junkanoo motif -->
+      <polygon points="45,35 60,50 45,65 30,50" fill="#c8a24e" opacity="0.1"/>
+      
+      <!-- Coral hexagon clusters - reef inspired -->
+      <polygon points="90,35 105,50 90,65 75,50" fill="#d4705a" opacity="0.1"/>
+      
+      <!-- Small triangles - geometric accent -->
+      <polygon points="10,60 20,75 0,75" fill="#7a1a2e" opacity="0.08"/>
+      <polygon points="50,60 60,75 40,75" fill="#7a1a2e" opacity="0.08"/>
+      <polygon points="100,60 110,75 90,75" fill="#7a1a2e" opacity="0.08"/>
+      
+      <!-- Wave pattern - ocean reference -->
+      <path d="M0 80 Q15 70 30 80 Q45 90 60 80 Q75 70 90 80 Q105 90 120 80 L120 95 Q105 85 90 95 Q75 105 60 95 Q45 85 30 95 Q15 105 0 95 Z" fill="#5aa0b0" opacity="0.1"/>
+      
+      <!-- Bottom chevron - Junkanoo signature -->
+      <path d="M0 100 L15 110 L30 100 L45 110 L60 100 L75 110 L90 100 L105 110 L120 100 L120 120 L0 120 Z" fill="#c8a24e" opacity="0.12"/>
+      
+      <!-- Dot accents - coral polyps -->
+      <circle cx="15" cy="15" r="2" fill="#d4705a" opacity="0.2"/>
+      <circle cx="45" cy="45" r="1.5" fill="#4a9a8a" opacity="0.2"/>
+      <circle cx="75" cy="15" r="2" fill="#c8a24e" opacity="0.2"/>
+      <circle cx="105" cy="45" r="1.5" fill="#7a1a2e" opacity="0.15"/>
+      <circle cx="30" cy="75" r="2" fill="#5aa0b0" opacity="0.2"/>
+      <circle cx="60" cy="105" r="1.5" fill="#d4705a" opacity="0.2"/>
+      <circle cx="90" cy="75" r="2" fill="#4a9a8a" opacity="0.2"/>
+      
+      <!-- Small diamonds - Junkanoo sparkle -->
+      <polygon points="25,90 30,95 25,100 20,95" fill="#c8a24e" opacity="0.15"/>
+      <polygon points="65,20 70,25 65,30 60,25" fill="#7a1a2e" opacity="0.12"/>
+      <polygon points="105,85 110,90 105,95 100,90" fill="#4a9a8a" opacity="0.15"/>
+    </pattern>
   </defs>
-  <rect width="1200" height="600" fill="none"/>
-  <circle cx="200" cy="180" r="80" fill="url(#g1)"/>
-  <circle cx="600" cy="100" r="120" fill="url(#g1)"/>
-  <circle cx="1000" cy="400" r="100" fill="url(#g2)"/>
-  <circle cx="400" cy="450" r="60" fill="url(#g2)"/>
-  <g opacity="0.4" stroke="#c8a24e" stroke-width="1" fill="none">
-    <line x1="100" y1="50" x2="100" y2="150"/>
-    <line x1="75" y1="100" x2="125" y2="100"/>
-    <path d="M 300 50 Q 400 120 500 50"/>
-    <path d="M 700 500 Q 800 430 900 500"/>
-    <circle cx="1100" cy="150" r="30"/>
-    <path d="M 1090 150 L 1100 120 L 1110 150"/>
-    <path d="M 1070 150 L 1100 130 L 1130 150"/>
-  </g>
-  <g opacity="0.3" fill="#c8a24e">
-    <path d="M 150 500 L 155 480 L 160 500 L 180 505 L 160 510 L 155 530 L 150 510 L 130 505 Z"/>
-    <path d="M 950 80 L 955 60 L 960 80 L 980 85 L 960 90 L 955 110 L 950 90 L 930 85 Z"/>
-    <circle cx="500" cy="520" r="8"/>
-    <circle cx="750" cy="60" r="6"/>
-    <circle cx="350" cy="150" r="5"/>
-  </g>
-  <text x="600" y="570" text-anchor="middle" fill="#7a1a2e" font-family="serif" font-size="18" letter-spacing="4" opacity="0.15" text-transform="uppercase">WE AFFIRM FAITH · WE CELEBRATE CRITICAL THINKING</text>
+  <rect width="100%" height="100%" fill="url(#junkanoo)"/>
 </svg>
