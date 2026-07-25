@@ -977,14 +977,18 @@ Reasoning rules:
             try {
                 let result;
                 if (selectedFile && fileContent && isBinaryFile) {
-                    // Handle binary files (images, PDFs) as inline data
+                    // For binary files (images, PDFs), use generateContent directly
+                    const model = genAI.getGenerativeModel({ 
+                        model: 'gemini-2.5-flash',
+                        systemInstruction: SYSTEM_PROMPT
+                    });
                     const fileParts = [{
                         inlineData: {
                             mimeType: selectedFile.type,
                             data: fileContent.split(',')[1]
                         }
                     }];
-                    result = await chat.sendMessage([...fileParts, fullMessage]);
+                    result = await model.generateContent([...fileParts, fullMessage]);
                 } else {
                     result = await chat.sendMessage(fullMessage);
                 }
