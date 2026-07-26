@@ -610,8 +610,10 @@
                 </a>
             </div>
             <div id="ollamaControls" style="display:none;">
-                <label for="ollamaModel">Model Name:</label>
-                <input type="text" id="ollamaModel" placeholder="e.g. llama3, mistral, gemma2" value="llama3" style="min-width:180px;">
+                <label for="ollamaUrl">URL:</label>
+                <input type="text" id="ollamaUrl" placeholder="https://localhost:8443" value="https://localhost:8443" style="min-width:220px;" oninput="checkOllama()">
+                <label for="ollamaModel">Model:</label>
+                <input type="text" id="ollamaModel" placeholder="e.g. llama3, gemma4, qwen3.6" value="llama3" style="min-width:160px;">
                 <span id="ollamaStatus" style="font-size:0.78rem;padding:4px 10px;border-radius:12px;font-weight:600;"></span>
             </div>
             <button onclick="document.getElementById('apiHelpModal').style.display='flex'" style="background:none;border:1px solid var(--border);border-radius:6px;padding:8px 12px;cursor:pointer;font-size:0.82rem;color:var(--text-secondary);display:inline-flex;align-items:center;gap:4px;transition:all 0.2s;">
@@ -684,19 +686,25 @@
                     <div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:12px;">
                         <div style="min-width:24px;height:24px;background:var(--crimson);color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;">2</div>
                         <div>
-                            <p style="font-weight:600;color:var(--text);margin:0 0 2px;">Open a terminal and pull a model:<br><code style="background:var(--cream);padding:4px 8px;border-radius:4px;font-size:0.82rem;display:inline-block;margin-top:4px;">ollama pull llama3</code></p>
+                            <p style="font-weight:600;color:var(--text);margin:0 0 2px;">Pull a model in terminal:<br><code style="background:var(--cream);padding:4px 8px;border-radius:4px;font-size:0.82rem;display:inline-block;margin-top:4px;">ollama pull llama3</code></p>
                         </div>
                     </div>
                     <div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:12px;">
                         <div style="min-width:24px;height:24px;background:var(--crimson);color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;">3</div>
                         <div>
-                            <p style="font-weight:600;color:var(--text);margin:0 0 2px;">Allow browser access (run once):<br><code style="background:var(--cream);padding:4px 8px;border-radius:4px;font-size:0.82rem;display:inline-block;margin-top:4px;">OLLAMA_ORIGINS="*" ollama serve</code></p>
+                            <p style="font-weight:600;color:var(--text);margin:0 0 2px;">Allow browser access — run in terminal:<br><code style="background:var(--cream);padding:4px 8px;border-radius:4px;font-size:0.82rem;display:inline-block;margin-top:4px;">OLLAMA_ORIGINS="*" ollama serve</code></p>
+                        </div>
+                    </div>
+                    <div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:12px;">
+                        <div style="min-width:24px;height:24px;background:var(--crimson);color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;">4</div>
+                        <div>
+                            <p style="font-weight:600;color:var(--text);margin:0 0 2px;">Open <a href="https://localhost:8443/api/tags" target="_blank" style="color:var(--gold);">https://localhost:8443/api/tags</a> in your browser and accept the security warning (self-signed cert).</p>
                         </div>
                     </div>
                     <div style="display:flex;gap:12px;align-items:flex-start;">
-                        <div style="min-width:24px;height:24px;background:var(--crimson);color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;">4</div>
+                        <div style="min-width:24px;height:24px;background:var(--crimson);color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;">5</div>
                         <div>
-                            <p style="font-weight:600;color:var(--text);margin:0 0 2px;">Select <strong>Ollama (Local)</strong> above, enter your model name (e.g. <code style="background:var(--cream);padding:1px 5px;border-radius:3px;">llama3</code>), and start chatting.</p>
+                            <p style="font-weight:600;color:var(--text);margin:0 0 2px;">Select <strong>Ollama (Local)</strong> above, enter the URL <code style="background:var(--cream);padding:1px 5px;border-radius:3px;">https://localhost:8443</code>, type your model name, and chat!</p>
                         </div>
                     </div>
                 </div>
@@ -843,8 +851,6 @@ Reasoning rules:
 - Cite thinkers, texts, and traditions by name where relevant.
 - When discussing Adventist theology, engage with official Seventh-day Adventist doctrines (e.g. 28 Fundamental Beliefs) as well as historical and contemporary Adventist scholarship.`;
 
-        const OLLAMA_BASE = 'http://localhost:11434';
-
         let genAI = null;
         let chat = null;
         let conversationHistory = [];
@@ -867,8 +873,9 @@ Reasoning rules:
         const apiHint = document.getElementById('apiHint');
 
         async function checkOllama() {
+            const baseUrl = document.getElementById('ollamaUrl').value.trim() || 'https://localhost:8443';
             try {
-                const res = await fetch(OLLAMA_BASE + '/api/tags', { method: 'GET' });
+                const res = await fetch(baseUrl + '/api/tags', { method: 'GET' });
                 if (res.ok) {
                     const data = await res.json();
                     const models = data.models || [];
@@ -896,7 +903,7 @@ Reasoning rules:
             } else if (provider === 'ollama') {
                 geminiControls.style.display = 'none';
                 ollamaControls.style.display = '';
-                apiHint.textContent = 'Runs locally on your machine. No API key needed. Ollama must be running.';
+                apiHint.textContent = 'Runs via HTTPS proxy. Visit https://localhost:8443 once to accept the cert, then enter the URL above.';
                 checkOllama();
             }
         };
@@ -977,6 +984,7 @@ Reasoning rules:
         }
 
         async function callOllama(message, history) {
+            const baseUrl = document.getElementById('ollamaUrl').value.trim() || 'https://localhost:8443';
             const modelName = document.getElementById('ollamaModel').value.trim() || 'llama3';
             const messages = [
                 { role: 'system', content: SYSTEM_PROMPT },
@@ -987,7 +995,7 @@ Reasoning rules:
                 { role: 'user', content: message }
             ];
 
-            const response = await fetch(OLLAMA_BASE + '/v1/chat/completions', {
+            const response = await fetch(baseUrl + '/v1/chat/completions', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -1109,8 +1117,8 @@ Reasoning rules:
                 if (currentProvider === 'gemini' && (msg.includes('API key') || msg.includes('Unauthorized'))) {
                     addMessage('Invalid API key. Please check your Gemini key and try again.', 'error');
                     chat = null;
-                } else if (currentProvider === 'ollama' && (msg.includes('Failed to fetch') || msg.includes('NetworkError') || msg.includes('ECONNREFUSED'))) {
-                    addMessage('Cannot connect to Ollama. Make sure Ollama is running on your computer (open a terminal and run: ollama serve). If running from GitHub Pages, also set OLLAMA_ORIGINS="*" when starting Ollama.', 'error');
+                } else if (currentProvider === 'ollama' && (msg.includes('Failed to fetch') || msg.includes('NetworkError') || msg.includes('ECONNREFUSED') || msg.includes('self-signed'))) {
+                    addMessage('Cannot connect to Ollama. Make sure: (1) Ollama is running (open terminal, run: ollama serve), (2) CORS is enabled (OLLAMA_ORIGINS="*" ollama serve), (3) You accepted the HTTPS cert warning at https://localhost:8443/api/tags', 'error');
                 } else {
                     addMessage('Error: ' + msg, 'error');
                 }
@@ -1207,6 +1215,7 @@ Reasoning rules:
         window.askQuestion = askQuestion;
         window.sendMessage = sendMessage;
         window.clearChat = clearChat;
+        window.checkOllama = checkOllama;
 
         // Modal handling
         const apiHelpModal = document.getElementById('apiHelpModal');
