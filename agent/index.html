@@ -613,7 +613,7 @@
                 <label for="ollamaUrl">URL:</label>
                 <input type="text" id="ollamaUrl" placeholder="https://localhost:8443" value="https://localhost:8443" style="min-width:220px;" oninput="checkOllama()">
                 <label for="ollamaModel">Model:</label>
-                <input type="text" id="ollamaModel" placeholder="e.g. gemma4, llama3, qwen3.6" value="gemma4:latest" style="min-width:160px;">
+                <input type="text" id="ollamaModel" placeholder="e.g. gemma3:4b, gemma4, llama3" value="gemma3:4b" style="min-width:160px;">
                 <span id="ollamaStatus" style="font-size:0.78rem;padding:4px 10px;border-radius:12px;font-weight:600;"></span>
             </div>
             <button onclick="document.getElementById('apiHelpModal').style.display='flex'" style="background:none;border:1px solid var(--border);border-radius:6px;padding:8px 12px;cursor:pointer;font-size:0.82rem;color:var(--text-secondary);display:inline-flex;align-items:center;gap:4px;transition:all 0.2s;">
@@ -985,7 +985,7 @@ Reasoning rules:
 
         async function callOllama(message, history) {
             const baseUrl = document.getElementById('ollamaUrl').value.trim() || 'https://localhost:8443';
-            const modelName = document.getElementById('ollamaModel').value.trim() || 'gemma4:latest';
+            const modelName = document.getElementById('ollamaModel').value.trim() || 'gemma3:4b';
             const messages = [
                 { role: 'system', content: SYSTEM_PROMPT },
                 ...history.map(h => [
