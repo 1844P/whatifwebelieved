@@ -599,6 +599,44 @@
         </div>
     </div>
 
+    <div id="personalKeyToggle" style="background:white;border-bottom:1px solid var(--border);padding:0 32px;">
+        <div style="max-width:900px;margin:0 auto;">
+            <button onclick="togglePersonalKey()" id="personalKeyBtn" style="width:100%;text-align:left;padding:12px 0;background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:8px;font-size:0.82rem;color:var(--text-muted);transition:color 0.2s;">
+                <svg id="personalKeyArrow" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" style="transition:transform 0.2s;flex-shrink:0;"><polyline points="9 18 15 12 9 6"/></svg>
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                <span id="personalKeyLabel">Use your own API key</span>
+                <span id="personalKeyBadge" style="display:none;font-size:0.7rem;padding:2px 8px;border-radius:8px;font-weight:600;background:#d1fae5;color:#065f46;">Active</span>
+            </button>
+        </div>
+    </div>
+    <div id="personalKeyPanel" style="display:none;background:var(--gold-bg);border-bottom:1px solid var(--gold-light);padding:20px 32px;">
+        <div style="max-width:900px;margin:0 auto;">
+            <p style="font-size:0.88rem;color:var(--text-secondary);margin-bottom:14px;line-height:1.6;">
+                If the shared API is slow or unavailable, you can use your own free Gemini API key. Your key stays in your browser and is never stored on any server.
+            </p>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;">
+                <span style="font-size:0.82rem;color:var(--text-secondary);background:white;padding:6px 12px;border-radius:8px;border:1px solid var(--border);display:inline-flex;align-items:center;gap:6px;">
+                    <span style="background:var(--gold);color:white;border-radius:50%;width:20px;height:20px;display:inline-flex;align-items:center;justify-content:center;font-size:0.72rem;font-weight:700;flex-shrink:0;">1</span>
+                    Go to <a href="https://aistudio.google.com/apikey" target="_blank" style="color:var(--gold);font-weight:600;text-decoration:none;">Google AI Studio</a>
+                </span>
+                <span style="font-size:0.82rem;color:var(--text-secondary);background:white;padding:6px 12px;border-radius:8px;border:1px solid var(--border);display:inline-flex;align-items:center;gap:6px;">
+                    <span style="background:var(--gold);color:white;border-radius:50%;width:20px;height:20px;display:inline-flex;align-items:center;justify-content:center;font-size:0.72rem;font-weight:700;flex-shrink:0;">2</span>
+                    Create a free API key
+                </span>
+                <span style="font-size:0.82rem;color:var(--text-secondary);background:white;padding:6px 12px;border-radius:8px;border:1px solid var(--border);display:inline-flex;align-items:center;gap:6px;">
+                    <span style="background:var(--gold);color:white;border-radius:50%;width:20px;height:20px;display:inline-flex;align-items:center;justify-content:center;font-size:0.72rem;font-weight:700;flex-shrink:0;">3</span>
+                    Paste it below
+                </span>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center;">
+                <input type="password" id="personalApiKey" placeholder="Paste your Gemini API key (AIzaSy... or AQ...)" style="flex:1;padding:10px 14px;border:1.5px solid var(--border);border-radius:8px;background:white;color:var(--text);font-size:0.85rem;font-family:monospace;transition:border-color 0.2s,box-shadow 0.2s;" onfocus="this.style.borderColor='var(--gold)';this.style.boxShadow='0 0 0 3px rgba(200,162,78,0.15)'" onblur="this.style.borderColor='var(--border)';this.style.boxShadow='none'">
+                <button onclick="savePersonalKey()" style="padding:10px 18px;background:linear-gradient(135deg,var(--gold) 0%,#7a5c10 100%);color:white;border:none;border-radius:8px;font-size:0.82rem;font-weight:600;cursor:pointer;white-space:nowrap;box-shadow:0 2px 6px rgba(154,117,32,0.3);transition:all 0.2s;" onmouseover="this.style.transform='translateY(-1px)'" onmouseout="this.style.transform=''">Save</button>
+                <button onclick="clearPersonalKey()" style="padding:10px 14px;background:white;border:1.5px solid var(--border);border-radius:8px;font-size:0.82rem;color:var(--text-muted);cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='#b91c1c';this.style.color='#b91c1c'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-muted)'">Clear</button>
+            </div>
+            <p id="personalKeyMsg" style="font-size:0.78rem;margin-top:8px;display:none;"></p>
+        </div>
+    </div>
+
     <div class="chat-container">
         <div class="messages" id="messages">
             <div class="welcome" id="welcome">
@@ -735,6 +773,7 @@ Reasoning rules:
         let selectedFile = null;
         let fileContent = null;
         let currentProvider = 'gemini';
+        let personalKey = localStorage.getItem('wwb_personal_gemini_key') || '';
 
         const messagesDiv = document.getElementById('messages');
         const userInput = document.getElementById('userInput');
@@ -856,13 +895,16 @@ Reasoning rules:
         }
 
         async function callWorker(message, history) {
+            const body = {
+                message: message,
+                history: history
+            };
+            if (personalKey) body.userApiKey = personalKey;
+
             const res = await fetch(WORKER_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    message: message,
-                    history: history
-                })
+                body: JSON.stringify(body)
             });
             if (!res.ok) {
                 let errorMsg = 'Worker error (HTTP ' + res.status + ')';
@@ -979,7 +1021,10 @@ Reasoning rules:
                 conversationHistory.push({ user: fullMessage, assistant: responseText });
             } catch (error) {
                 const msg = error.message || '';
-                if (currentProvider === 'gemini') {
+                if (currentProvider === 'gemini' && (msg.includes('quota') || msg.includes('429') || msg.includes('RESOURCE_EXHAUSTED'))) {
+                    const personalHint = personalKey ? '' : ' You can add your own free key below the model selector.';
+                    addMessage('Shared API quota reached.' + personalHint + ' Error: ' + msg, 'error');
+                } else if (currentProvider === 'gemini') {
                     addMessage('Error communicating with AI: ' + msg, 'error');
                 } else if (currentProvider === 'ollama' && (msg.includes('Failed to fetch') || msg.includes('NetworkError') || msg.includes('ECONNREFUSED') || msg.includes('self-signed'))) {
                     addMessage('Cannot connect to Ollama. Make sure: (1) Ollama is running — ollama serve, (2) Proxy is running — start-proxy.bat, (3) The URL field matches your setup (https://localhost:8443 for local, or Cloudflare tunnel URL for remote).', 'error');
@@ -1080,6 +1125,72 @@ Reasoning rules:
         window.sendMessage = sendMessage;
         window.clearChat = clearChat;
         window.checkOllama = checkOllama;
+
+        // Personal API key management
+        function togglePersonalKey() {
+            const panel = document.getElementById('personalKeyPanel');
+            const arrow = document.getElementById('personalKeyArrow');
+            const input = document.getElementById('personalApiKey');
+            if (panel.style.display === 'none') {
+                panel.style.display = 'block';
+                arrow.style.transform = 'rotate(90deg)';
+                if (personalKey) input.value = personalKey;
+            } else {
+                panel.style.display = 'none';
+                arrow.style.transform = '';
+            }
+        }
+        window.togglePersonalKey = togglePersonalKey;
+
+        function savePersonalKey() {
+            const input = document.getElementById('personalApiKey');
+            const msg = document.getElementById('personalKeyMsg');
+            const val = input.value.trim();
+            if (!val) {
+                msg.textContent = 'Please paste a valid API key.';
+                msg.style.color = '#b91c1c';
+                msg.style.display = 'block';
+                return;
+            }
+            if (!val.startsWith('AIzaSy') && !val.startsWith('AQ.')) {
+                msg.textContent = 'Key should start with AIzaSy or AQ. Please check you copied the full key.';
+                msg.style.color = '#b91c1c';
+                msg.style.display = 'block';
+                return;
+            }
+            personalKey = val;
+            localStorage.setItem('wwb_personal_gemini_key', val);
+            msg.textContent = 'Key saved! It will be used if the shared API is unavailable.';
+            msg.style.color = '#065f46';
+            msg.style.display = 'block';
+            updatePersonalKeyBadge();
+        }
+        window.savePersonalKey = savePersonalKey;
+
+        function clearPersonalKey() {
+            personalKey = '';
+            localStorage.removeItem('wwb_personal_gemini_key');
+            document.getElementById('personalApiKey').value = '';
+            const msg = document.getElementById('personalKeyMsg');
+            msg.textContent = 'Key removed. Using shared API.';
+            msg.style.color = 'var(--text-muted)';
+            msg.style.display = 'block';
+            updatePersonalKeyBadge();
+        }
+        window.clearPersonalKey = clearPersonalKey;
+
+        function updatePersonalKeyBadge() {
+            const badge = document.getElementById('personalKeyBadge');
+            const label = document.getElementById('personalKeyLabel');
+            if (personalKey) {
+                badge.style.display = 'inline';
+                label.textContent = 'Your own API key';
+            } else {
+                badge.style.display = 'none';
+                label.textContent = 'Use your own API key';
+            }
+        }
+        updatePersonalKeyBadge();
 
     </script>
 </body>

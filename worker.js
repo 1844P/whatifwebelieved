@@ -29,7 +29,7 @@ export default {
     }
 
     try {
-      const { message, history = [], fileContent, fileName } = await request.json();
+      const { message, history = [], fileContent, fileName, userApiKey } = await request.json();
 
       if (!message && !fileContent) {
         return new Response(JSON.stringify({ error: 'No message provided' }), {
@@ -54,22 +54,32 @@ export default {
 
       contents.push({ role: 'user', parts: [{ text: userText }] });
 
-      const apiKey = env.GEMINI_API_KEY;
-      const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+      const geminiBody = {
+        systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
+        contents: contents,
+        generationConfig: { temperature: 0.7 },
+      };
 
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          system_instruction: { parts: [{ text: SYSTEM_PROMPT }] },
-          contents: contents,
-          generationConfig: { temperature: 0.7 },
-        }),
-      });
+      async function callGemini(apiKey) {
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(geminiBody),
+        });
+        return response;
+      }
+
+      let apiKey = env.GEMINI_API_KEY;
+      let response = await callGemini(apiKey);
+
+      if (!response.ok && userApiKey && userApiKey !== apiKey) {
+        response = await callGemini(userApiKey);
+      }
 
       if (!response.ok) {
         const err = await response.text();
-        return new Response(JSON.stringify({ error: `Gemini API error: ${response.status}` }), {
+        return new Response(JSON.stringify({ error: `Gemini API error: ${response.status} - ${err}` }), {
           status: 502,
           headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
         });

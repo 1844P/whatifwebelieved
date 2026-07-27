@@ -12,3 +12,8 @@ Desktop.ini
 # Temporary files
 *.tmp
 *.bak
+
+# Secrets
+wrangler.toml
+cert.pem
+key.pem
