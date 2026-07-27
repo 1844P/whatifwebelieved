@@ -196,6 +196,17 @@
                 linear-gradient(135deg, rgba(255,255,255,0.25) 0%, rgba(255,255,255,0.1) 100%);
         }
 
+        .hero-badge-cover {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 70px;
+            height: 70px;
+            background: rgba(26, 18, 21, 0.92);
+            z-index: 5;
+            pointer-events: none;
+        }
+
         .hero .container {
             position: relative;
             z-index: 2;
@@ -458,6 +469,7 @@
         /* --- SECTION HEADERS --- */
         .section {
             padding: 80px 0;
+            scroll-margin-top: 80px;
         }
 
         .section-dark {
@@ -1245,6 +1257,92 @@
             nav .nav-links a:not(.nav-btn) { display: none; }
         }
 
+        /* --- CATEGORY FILTER BAR --- */
+        .filter-bar {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .filter-chip {
+            padding: 9px 22px;
+            border-radius: 24px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            border: 1px solid var(--glass-border);
+            background: var(--glass);
+            color: var(--ink-light);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            user-select: none;
+            letter-spacing: 0.3px;
+        }
+
+        .filter-chip:hover {
+            border-color: var(--gold);
+            color: var(--ink);
+            background: rgba(255,255,255,0.85);
+            box-shadow: 0 4px 16px rgba(200,162,78,0.12);
+            transform: translateY(-1px);
+        }
+
+        .filter-chip.active {
+            background: linear-gradient(135deg, var(--crimson) 0%, var(--crimson-light) 100%);
+            color: #fff;
+            border-color: transparent;
+            box-shadow: 0 4px 18px var(--glow-crimson);
+            transform: translateY(-1px);
+        }
+
+        .filter-chip.active:hover {
+            background: linear-gradient(135deg, var(--crimson-dark) 0%, var(--crimson) 100%);
+            box-shadow: 0 6px 24px var(--glow-crimson);
+        }
+
+        /* Per-category badge colors */
+        .video-category.cat-theology {
+            background: linear-gradient(135deg, var(--crimson) 0%, var(--crimson-light) 100%);
+        }
+
+        .video-category.cat-scripture {
+            background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 100%);
+        }
+
+        .video-category.cat-discipleship {
+            background: linear-gradient(135deg, #6b3a5c 0%, #8a4a6c 100%);
+        }
+
+        /* Filter transitions */
+        .videos-grid .video-card {
+            transition: opacity 0.35s ease, transform 0.35s ease;
+        }
+
+        .videos-grid .video-card.filter-hidden {
+            display: none;
+        }
+
+        .videos-grid .video-card.filter-visible {
+            animation: cardFadeIn 0.35s ease forwards;
+        }
+
+        @keyframes cardFadeIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Pillar card clickable */
+        .pillar-card[data-filter] {
+            cursor: pointer;
+        }
+
+        .pillar-card[data-filter]:hover .pillar-number {
+            text-shadow: 0 0 20px rgba(200,162,78,0.5);
+        }
+
         @media (max-width: 480px) {
             .hero { min-height: 60vh; }
             .hero h1 { font-size: 2rem; }
@@ -1346,6 +1444,7 @@
             </div>
         </div>
         <div class="hero-overlay"></div>
+        <div class="hero-badge-cover"></div>
         <div class="container">
             <div class="hero-emblem-large">
                 <svg viewBox="0 0 72 88" fill="none">
@@ -1381,11 +1480,17 @@
                 <h2 class="section-title">Recent Conversations</h2>
                 <p class="section-subtitle">Thought-provoking teachings exploring faith, scripture, and the life of belief.</p>
             </div>
-            <div class="videos-grid">
-                <a href="https://www.youtube.com/watch?v=ea0dtxkE-bw" target="_blank" class="video-card">
+            <div class="filter-bar" id="videoFilter">
+                <button class="filter-chip active" data-filter="all" onclick="filterVideos('all', this)">All</button>
+                <button class="filter-chip" data-filter="theology" onclick="filterVideos('theology', this)">Theology</button>
+                <button class="filter-chip" data-filter="scripture" onclick="filterVideos('scripture', this)">Scripture</button>
+                <button class="filter-chip" data-filter="discipleship" onclick="filterVideos('discipleship', this)">Discipleship</button>
+            </div>
+            <div class="videos-grid" id="videosGrid">
+                <a href="https://www.youtube.com/watch?v=ea0dtxkE-bw" target="_blank" class="video-card" data-category="theology">
                     <div class="video-thumb">
                         <img src="https://i.ytimg.com/vi/ea0dtxkE-bw/hqdefault.jpg" alt="Reprogramming an Empire" loading="lazy">
-                        <span class="video-category">Teaching</span>
+                        <span class="video-category cat-theology">Theology</span>
                         <div class="play-overlay">
                             <div class="play-btn-circle">
                                 <svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>
@@ -1397,10 +1502,10 @@
                         <div class="video-meta">WhatIfWeBelieved</div>
                     </div>
                 </a>
-                <a href="https://www.youtube.com/watch?v=l9V_MDWfUkg" target="_blank" class="video-card">
+                <a href="https://www.youtube.com/watch?v=l9V_MDWfUkg" target="_blank" class="video-card" data-category="theology">
                     <div class="video-thumb">
                         <img src="https://i.ytimg.com/vi/l9V_MDWfUkg/hqdefault.jpg" alt="Unstoppable" loading="lazy">
-                        <span class="video-category">Teaching</span>
+                        <span class="video-category cat-theology">Theology</span>
                         <div class="play-overlay">
                             <div class="play-btn-circle">
                                 <svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>
@@ -1412,10 +1517,10 @@
                         <div class="video-meta">WhatIfWeBelieved</div>
                     </div>
                 </a>
-                <a href="https://www.youtube.com/watch?v=881ddNnGCfs" target="_blank" class="video-card">
+                <a href="https://www.youtube.com/watch?v=881ddNnGCfs" target="_blank" class="video-card" data-category="scripture">
                     <div class="video-thumb">
                         <img src="https://i.ytimg.com/vi/881ddNnGCfs/hqdefault.jpg" alt="How a Good Man Loses His Shape" loading="lazy">
-                        <span class="video-category">Parable</span>
+                        <span class="video-category cat-scripture">Scripture</span>
                         <div class="play-overlay">
                             <div class="play-btn-circle">
                                 <svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>
@@ -1427,10 +1532,10 @@
                         <div class="video-meta">WhatIfWeBelieved</div>
                     </div>
                 </a>
-                <a href="https://www.youtube.com/watch?v=vfUmeceFEhw" target="_blank" class="video-card">
+                <a href="https://www.youtube.com/watch?v=vfUmeceFEhw" target="_blank" class="video-card" data-category="discipleship">
                     <div class="video-thumb">
                         <img src="https://i.ytimg.com/vi/vfUmeceFEhw/hqdefault.jpg" alt="No Guardrails" loading="lazy">
-                        <span class="video-category">Faith</span>
+                        <span class="video-category cat-discipleship">Discipleship</span>
                         <div class="play-overlay">
                             <div class="play-btn-circle">
                                 <svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>
@@ -1442,10 +1547,10 @@
                         <div class="video-meta">WhatIfWeBelieved</div>
                     </div>
                 </a>
-                <a href="https://www.youtube.com/watch?v=AJq8H3v6z-s" target="_blank" class="video-card">
+                <a href="https://www.youtube.com/watch?v=AJq8H3v6z-s" target="_blank" class="video-card" data-category="scripture">
                     <div class="video-thumb">
                         <img src="https://i.ytimg.com/vi/AJq8H3v6z-s/hqdefault.jpg" alt="Not a Word" loading="lazy">
-                        <span class="video-category">Scripture</span>
+                        <span class="video-category cat-scripture">Scripture</span>
                         <div class="play-overlay">
                             <div class="play-btn-circle">
                                 <svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>
@@ -1457,10 +1562,10 @@
                         <div class="video-meta">WhatIfWeBelieved</div>
                     </div>
                 </a>
-                <a href="https://www.youtube.com/watch?v=D2FfteQ7sXI" target="_blank" class="video-card">
+                <a href="https://www.youtube.com/watch?v=D2FfteQ7sXI" target="_blank" class="video-card" data-category="theology">
                     <div class="video-thumb">
                         <img src="https://i.ytimg.com/vi/D2FfteQ7sXI/hqdefault.jpg" alt="Stop Fighting for the Tent" loading="lazy">
-                        <span class="video-category">Teaching</span>
+                        <span class="video-category cat-theology">Theology</span>
                         <div class="play-overlay">
                             <div class="play-btn-circle">
                                 <svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>
@@ -1526,7 +1631,7 @@
                 <p class="section-subtitle">Every teaching is rooted in one of three areas that define our approach to faith.</p>
             </div>
             <div class="pillars-grid">
-                <div class="pillar-card">
+                <div class="pillar-card" data-filter="theology" onclick="scrollAndFilter('theology')">
                     <div class="pillar-number">01</div>
                     <h3>Theology</h3>
                     <div class="pillar-tagline">Deep Dive &middot; Foundational Truths</div>
@@ -1537,7 +1642,7 @@
                         <li>Historical creeds</li>
                     </ul>
                 </div>
-                <div class="pillar-card">
+                <div class="pillar-card" data-filter="scripture" onclick="scrollAndFilter('scripture')">
                     <div class="pillar-number">02</div>
                     <h3>Scripture</h3>
                     <div class="pillar-tagline">Exposition &middot; Parables &middot; Narrative</div>
@@ -1548,7 +1653,7 @@
                         <li>Old &amp; New Testament</li>
                     </ul>
                 </div>
-                <div class="pillar-card">
+                <div class="pillar-card" data-filter="discipleship" onclick="scrollAndFilter('discipleship')">
                     <div class="pillar-number">03</div>
                     <h3>Discipleship</h3>
                     <div class="pillar-tagline">Practice &middot; Formation &middot; Life</div>
@@ -1773,26 +1878,56 @@
             <div class="newsletter-section">
                 <h3>Questions &amp; Queries</h3>
                 <p>Have a question, suggestion, or want to connect? Send us a message and we'll get back to you.</p>
-                <form class="newsletter-form" onsubmit="event.preventDefault(); sendContactEmail();">
-                    <input type="text" id="contact-name" placeholder="Your name" required>
-                    <input type="email" id="contact-email" placeholder="Your email" required>
+                <form id="contact-form" class="newsletter-form" action="https://formspree.io/f/xdaqyzqo" method="POST" style="flex-direction:column;align-items:center;gap:12px;">
+                    <input type="hidden" name="_subject" value="New message from WhatIfWeBelieved">
+                    <input type="hidden" name="_captcha" value="false">
+                    <div style="display:flex;gap:12px;width:100%;max-width:500px;">
+                        <input type="text" name="name" placeholder="Your name" required style="flex:1;">
+                        <input type="email" name="email" placeholder="Your email" required style="flex:1;">
+                    </div>
+                    <textarea name="message" placeholder="Your message..." rows="4" required style="width:100%;max-width:500px;padding:14px;border:1px solid var(--border);border-radius:6px;font-family:'Inter',sans-serif;font-size:0.9rem;resize:vertical;outline:none;"></textarea>
                     <button type="submit">Send Message</button>
+                    <div id="contact-success" style="display:none;color:var(--gold);font-weight:600;font-size:0.9rem;">Message sent! We'll get back to you.</div>
+                    <div id="contact-error" style="display:none;color:var(--crimson);font-weight:600;font-size:0.9rem;">Something went wrong. Try emailing us directly.</div>
                 </form>
-                <textarea id="contact-message" placeholder="Your message..." rows="4" style="width:100%;max-width:500px;margin-top:12px;padding:14px;border:1px solid var(--border);border-radius:6px;font-family:'Inter',sans-serif;font-size:0.9rem;resize:vertical;outline:none;"></textarea>
                 <div class="newsletter-note" style="margin-top:12px;">Or email us directly at <a href="mailto:wentlandwordsworth@gmail.com" style="color:var(--crimson);text-decoration:none;font-weight:600;">wentlandwordsworth@gmail.com</a></div>
             </div>
         </div>
     </section>
 
     <script>
-        function sendContactEmail() {
-            var name = document.getElementById('contact-name').value;
-            var email = document.getElementById('contact-email').value;
-            var message = document.getElementById('contact-message').value;
-            var subject = encodeURIComponent('Question from ' + name);
-            var body = encodeURIComponent('Name: ' + name + '\nEmail: ' + email + '\n\nMessage:\n' + message);
-            window.location.href = 'mailto:wentlandwordsworth@gmail.com?subject=' + subject + '&body=' + body;
-        }
+        document.getElementById('contact-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            var form = e.target;
+            var submitBtn = form.querySelector('button[type="submit"]');
+            var successMsg = document.getElementById('contact-success');
+            var errorMsg = document.getElementById('contact-error');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Sending...';
+            successMsg.style.display = 'none';
+            errorMsg.style.display = 'none';
+            var data = new FormData(form);
+            fetch(form.action, {
+                method: 'POST',
+                body: data,
+                headers: { 'Accept': 'application/json' }
+            }).then(function(response) {
+                if (response.ok) {
+                    form.reset();
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Send Message';
+                    successMsg.style.display = 'block';
+                    setTimeout(function() { successMsg.style.display = 'none'; }, 5000);
+                } else {
+                    throw new Error('Form submission failed');
+                }
+            }).catch(function() {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Send Message';
+                errorMsg.style.display = 'block';
+                setTimeout(function() { errorMsg.style.display = 'none'; }, 5000);
+            });
+        });
     </script>
 
     <!-- FOOTER -->
@@ -1882,6 +2017,41 @@
                 iframe.src = iframe.src; // Reload iframe to trigger playback
             }
         }, { once: true });
+
+        // --- Category Filtering ---
+        function filterVideos(category, chipEl) {
+            // Update active chip
+            var chips = document.querySelectorAll('#videoFilter .filter-chip');
+            chips.forEach(function(c) { c.classList.remove('active'); });
+            if (chipEl) chipEl.classList.add('active');
+
+            // Filter cards
+            var cards = document.querySelectorAll('#videosGrid .video-card');
+            cards.forEach(function(card) {
+                var match = category === 'all' || card.getAttribute('data-category') === category;
+                if (match) {
+                    card.classList.remove('filter-hidden');
+                    card.classList.add('filter-visible');
+                    card.style.display = '';
+                } else {
+                    card.classList.add('filter-hidden');
+                    card.classList.remove('filter-visible');
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        function scrollAndFilter(category) {
+            var videosSection = document.getElementById('videos');
+            if (videosSection) {
+                videosSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+            // Find and click the matching chip
+            setTimeout(function() {
+                var chip = document.querySelector('#videoFilter .filter-chip[data-filter="' + category + '"]');
+                if (chip) filterVideos(category, chip);
+            }, 400);
+        }
     </script>
 
 </body>
