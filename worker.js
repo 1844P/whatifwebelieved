@@ -12,6 +12,8 @@ Reasoning rules:
 - Cite thinkers, texts, and traditions by name where relevant.
 - When discussing Adventist theology, engage with official Seventh-day Adventist doctrines (e.g. 28 Fundamental Beliefs) as well as historical and contemporary Adventist scholarship.`;
 
+const ESSAY_SUFFIX = `\n\n[ESSAY MODE — Produce a comprehensive scholarly essay of at least 2000 words on this topic. Include: a title, an abstract, an introduction with thesis, multiple body sections with ## headings, a conclusion, and a full Bibliography in Chicago/Turabian style. Use numbered citations [1], [2] throughout. Format as markdown.]`;
+
 export default {
   async fetch(request, env) {
     if (request.method === 'OPTIONS') {
@@ -29,7 +31,7 @@ export default {
     }
 
     try {
-      const { message, history = [], fileContent, fileName, userApiKey } = await request.json();
+      const { message, history = [], fileContent, fileName, userApiKey, essayMode } = await request.json();
 
       if (!message && !fileContent) {
         return new Response(JSON.stringify({ error: 'No message provided' }), {
@@ -50,6 +52,10 @@ export default {
         userText = userText
           ? `${userText}\n\n--- File Content (${fileName}) ---\n${fileContent}`
           : `Please analyze the following file (${fileName}):\n\n${fileContent}`;
+      }
+
+      if (essayMode) {
+        userText += ESSAY_SUFFIX;
       }
 
       contents.push({ role: 'user', parts: [{ text: userText }] });
@@ -86,13 +92,19 @@ export default {
       }
 
       const data = await response.json();
-      const text = data.candidates?.[0]?.content?.parts?.[0]?.text || 'No response generated.';
+      const rawText = data.candidates?.[0]?.content?.parts?.[0]?.text || 'No response generated.';
 
-      return new Response(JSON.stringify({ text }), {
-        headers: {
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*',
-        },
+      if (essayMode) {
+        const lines = rawText.split('\n');
+        const summaryEnd = Math.min(lines.length, 15);
+        const summary = lines.slice(0, summaryEnd).join('\n').trim() + '\n\n---\n**The full essay with citations and bibliography is available for download below.**';
+        return new Response(JSON.stringify({ text: summary, essay: rawText }), {
+          headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
+        });
+      }
+
+      return new Response(JSON.stringify({ text: rawText }), {
+        headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
       });
     } catch (e) {
       return new Response(JSON.stringify({ error: e.message }), {
