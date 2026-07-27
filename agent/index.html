@@ -744,7 +744,7 @@
     </div>
 
     <div class="footer">
-        <p>Built by <a href="https://www.youtube.com/@paulos1844" target="_blank">WhatIfWeBelieved</a> · Powered by Gemini Flash &amp; Ollama</p>
+        <p>Built by <a href="https://www.youtube.com/@paulos1844" target="_blank">WhatIfWeBelieved</a> · Powered by Gemini &amp; Groq</p>
     </div>
 
     <script type="module">
@@ -1023,6 +1023,9 @@ Reasoning rules:
                     const data = await res.json();
                     responseText = data.text;
                     essayMarkdown = data.essay || null;
+                    if (data.provider && data.provider !== 'gemini') {
+                        responseText = '> *Powered by ' + data.provider.charAt(0).toUpperCase() + data.provider.slice(1) + '*\n\n' + responseText;
+                    }
                 } else if (currentProvider === 'ollama') {
                     responseText = await callOllama(fullMessage, conversationHistory);
                 }
@@ -1033,7 +1036,7 @@ Reasoning rules:
                 const msg = error.message || '';
                 if (currentProvider === 'gemini' && (msg.includes('quota') || msg.includes('429') || msg.includes('RESOURCE_EXHAUSTED'))) {
                     const personalHint = personalKey ? '' : ' You can add your own free key below the model selector.';
-                    addMessage('Shared API quota reached.' + personalHint + ' Error: ' + msg, 'error');
+                    addMessage('All providers hit rate limits.' + personalHint, 'error');
                 } else if (currentProvider === 'gemini') {
                     addMessage('Error communicating with AI: ' + msg, 'error');
                 } else if (currentProvider === 'ollama' && (msg.includes('Failed to fetch') || msg.includes('NetworkError') || msg.includes('ECONNREFUSED') || msg.includes('self-signed'))) {
