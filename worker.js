@@ -12,7 +12,7 @@ Reasoning rules:
 - Cite thinkers, texts, and traditions by name where relevant.
 - When discussing Adventist theology, engage with official Seventh-day Adventist doctrines (e.g. 28 Fundamental Beliefs) as well as historical and contemporary Adventist scholarship.`;
 
-const ESSAY_SUFFIX = `\n\n[ESSAY MODE — Produce a comprehensive scholarly essay of at least 2000 words on this topic. Include: a title, an abstract, an introduction with thesis, multiple body sections with ## headings, a conclusion, and a full Bibliography in Chicago/Turabian style. Use numbered citations [1], [2] throughout. Format as markdown.]`;
+const ESSAY_SUFFIX = `\n\n[ESSAY MODE — Produce a comprehensive scholarly essay of at least 2000 words on this topic. Include: a title, an abstract, an introduction with thesis, multiple body sections with ## headings, a conclusion, and a full Bibliography in Chicago/Turabian style. Use numbered citations [1], [2] throughout. Format as markdown. Begin the response with the essay title as a # heading.]`;
 
 export default {
   async fetch(request, env) {
@@ -97,7 +97,7 @@ export default {
       if (essayMode) {
         const lines = rawText.split('\n');
         const summaryEnd = Math.min(lines.length, 15);
-        const summary = lines.slice(0, summaryEnd).join('\n').trim() + '\n\n---\n**The full essay with citations and bibliography is available for download below.**';
+        const summary = lines.slice(0, summaryEnd).join('\n').trim() + '\n\n---\n**The full essay with citations and bibliography is ready. Click "Download Full Essay" above to save it as a markdown file.**';
         return new Response(JSON.stringify({ text: summary, essay: rawText }), {
           headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
         });
