@@ -1150,26 +1150,20 @@ Reasoning rules:
                     };
                     rightGroup.appendChild(essayDocBtn);
 
-                    const downloadBtn = document.createElement('button');
-                    downloadBtn.className = 'copy-btn';
-                    downloadBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Download .doc';
-                    downloadBtn.onclick = function() {
-                        const htmlContent = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="utf-8"><title>Response</title><!--[if gte mso 9]><xml><w:WordDocument><w:View>Print</w:View><w:Zoom>100</w:Zoom><w:DoNotOptimizeForBrowser/></w:WordDocument></xml><![endif]--><style>body{font-family:Calibri,sans-serif;font-size:11pt;line-height:1.6;color:#1a0f18;margin:40px;}h1{font-family:Georgia,serif;color:#7a1a2e;font-size:20pt;margin-bottom:8px;}h2{font-family:Georgia,serif;color:#7a1a2e;font-size:14pt;margin-top:20px;border-bottom:1px solid #ddd;padding-bottom:4px;}h3{font-family:Georgia,serif;color:#333;font-size:12pt;margin-top:16px;}p{margin:8px 0;}blockquote{border-left:3px solid #9a7520;padding-left:16px;margin:12px 0;color:#555;font-style:italic;}strong{color:#7a1a2e;}em{color:#5a4038;}hr{border:none;border-top:1px solid #ddd;margin:20px 0;}code{background:#f5f0eb;padding:2px 6px;border-radius:3px;font-family:Consolas,monospace;font-size:10pt;}ul,ol{margin:8px 0 8px 20px;}li{margin:4px 0;}</style></head><body>' + content.replace(/^### (.+)$/gm, '<h3>$1</h3>').replace(/^## (.+)$/gm, '<h2>$1</h2>').replace(/^# (.+)$/gm, '<h1>$1</h1>').replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>').replace(/\*(.+?)\*/g, '<em>$1</em>').replace(/^---$/gm, '<hr>').replace(/^> (.+)$/gm, '<blockquote>$1</blockquote>').replace(/`([^`]+)`/g, '<code>$1</code>').replace(/\n\n/g, '</p><p>').replace(/^/, '<p>').replace(/$/, '</p>') + '</body></html>';
-                        const blob = new Blob(['\ufeff', htmlContent], { type: 'application/msword' });
-                        const url = URL.createObjectURL(blob);
-                        const a = document.createElement('a');
-                        a.href = url;
-                        a.download = 'response-' + new Date().toISOString().slice(0,10) + '.doc';
-                        document.body.appendChild(a);
-                        a.click();
-                        document.body.removeChild(a);
-                        URL.revokeObjectURL(url);
-                        downloadBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Downloaded!';
-                        setTimeout(function() {
-                            downloadBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Download .doc';
-                        }, 2000);
+                    const copyBtn = document.createElement('button');
+                    copyBtn.className = 'copy-btn';
+                    copyBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy';
+                    copyBtn.onclick = function() {
+                        navigator.clipboard.writeText(content).then(function() {
+                            copyBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+                            copyBtn.classList.add('copied');
+                            setTimeout(function() {
+                                copyBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy';
+                                copyBtn.classList.remove('copied');
+                            }, 2000);
+                        });
                     };
-                    rightGroup.appendChild(downloadBtn);
+                    rightGroup.appendChild(copyBtn);
 
                 } else {
 
@@ -1187,27 +1181,6 @@ Reasoning rules:
                         });
                     };
                     rightGroup.appendChild(copyBtn);
-
-                    const downloadBtn = document.createElement('button');
-                    downloadBtn.className = 'copy-btn';
-                    downloadBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Download .doc';
-                    downloadBtn.onclick = function() {
-                        const htmlContent = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="utf-8"><title>Response</title><!--[if gte mso 9]><xml><w:WordDocument><w:View>Print</w:View><w:Zoom>100</w:Zoom><w:DoNotOptimizeForBrowser/></w:WordDocument></xml><![endif]--><style>body{font-family:Calibri,sans-serif;font-size:11pt;line-height:1.6;color:#1a0f18;margin:40px;}h1{font-family:Georgia,serif;color:#7a1a2e;font-size:20pt;margin-bottom:8px;}h2{font-family:Georgia,serif;color:#7a1a2e;font-size:14pt;margin-top:20px;border-bottom:1px solid #ddd;padding-bottom:4px;}h3{font-family:Georgia,serif;color:#333;font-size:12pt;margin-top:16px;}p{margin:8px 0;}blockquote{border-left:3px solid #9a7520;padding-left:16px;margin:12px 0;color:#555;font-style:italic;}strong{color:#7a1a2e;}em{color:#5a4038;}hr{border:none;border-top:1px solid #ddd;margin:20px 0;}code{background:#f5f0eb;padding:2px 6px;border-radius:3px;font-family:Consolas,monospace;font-size:10pt;}ul,ol{margin:8px 0 8px 20px;}li{margin:4px 0;}</style></head><body>' + content.replace(/^### (.+)$/gm, '<h3>$1</h3>').replace(/^## (.+)$/gm, '<h2>$1</h2>').replace(/^# (.+)$/gm, '<h1>$1</h1>').replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>').replace(/\*(.+?)\*/g, '<em>$1</em>').replace(/^---$/gm, '<hr>').replace(/^> (.+)$/gm, '<blockquote>$1</blockquote>').replace(/`([^`]+)`/g, '<code>$1</code>').replace(/\n\n/g, '</p><p>').replace(/^/, '<p>').replace(/$/, '</p>') + '</body></html>';
-                        const blob = new Blob(['\ufeff', htmlContent], { type: 'application/msword' });
-                        const url = URL.createObjectURL(blob);
-                        const a = document.createElement('a');
-                        a.href = url;
-                        a.download = 'response-' + new Date().toISOString().slice(0,10) + '.doc';
-                        document.body.appendChild(a);
-                        a.click();
-                        document.body.removeChild(a);
-                        URL.revokeObjectURL(url);
-                        downloadBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Downloaded!';
-                        setTimeout(function() {
-                            downloadBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Download .doc';
-                        }, 2000);
-                    };
-                    rightGroup.appendChild(downloadBtn);
                 }
 
                 btnContainer.appendChild(leftGroup);
