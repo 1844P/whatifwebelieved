@@ -735,6 +735,10 @@
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
                     Essay Mode
                 </button>
+                <button id="sermonToggle" class="btn btn-secondary" onclick="toggleSermonMode()" style="transition:all 0.2s;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    Sermon Mode
+                </button>
                 <button class="btn btn-secondary" onclick="clearChat()">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
                     Clear History
@@ -779,6 +783,7 @@ Reasoning rules:
         let currentProvider = 'gemini';
         let personalKey = localStorage.getItem('wwb_personal_gemini_key') || '';
         let essayMode = false;
+        let sermonMode = false;
 
         const messagesDiv = document.getElementById('messages');
         const userInput = document.getElementById('userInput');
@@ -906,6 +911,7 @@ Reasoning rules:
             };
             if (personalKey) body.userApiKey = personalKey;
             if (essayMode) body.essayMode = true;
+            if (sermonMode) body.sermonMode = true;
 
             const res = await fetch(WORKER_URL, {
                 method: 'POST',
@@ -1012,7 +1018,7 @@ Reasoning rules:
             isLoading = true;
             sendBtn.disabled = true;
             loading.classList.add('active');
-            document.getElementById('loadingText').textContent = essayMode ? 'Writing essay...' : 'Thinking...';
+            document.getElementById('loadingText').textContent = essayMode ? 'Writing essay...' : sermonMode ? 'Writing sermon...' : 'Thinking...';
 
             try {
                 let responseText;
@@ -1164,17 +1170,49 @@ Reasoning rules:
         window.clearChat = clearChat;
         window.checkOllama = checkOllama;
         window.toggleEssayMode = toggleEssayMode;
+        window.toggleSermonMode = toggleSermonMode;
 
         function toggleEssayMode() {
             essayMode = !essayMode;
+            if (essayMode) sermonMode = false;
             const btn = document.getElementById('essayToggle');
+            const sermonBtn = document.getElementById('sermonToggle');
             const textarea = document.getElementById('userInput');
             if (essayMode) {
                 btn.style.background = 'linear-gradient(135deg, var(--gold) 0%, #7a5c10 100%)';
                 btn.style.color = 'white';
                 btn.style.borderColor = 'var(--gold)';
                 btn.style.boxShadow = '0 2px 8px rgba(154,117,32,0.3)';
+                sermonBtn.style.background = '';
+                sermonBtn.style.color = '';
+                sermonBtn.style.borderColor = '';
+                sermonBtn.style.boxShadow = '';
                 textarea.placeholder = 'Describe your essay topic... (e.g. "Write an essay on the investigative judgment and its biblical basis")';
+            } else {
+                btn.style.background = '';
+                btn.style.color = '';
+                btn.style.borderColor = '';
+                btn.style.boxShadow = '';
+                textarea.placeholder = 'Ask about Adventist theology or Christian philosophy...';
+            }
+        }
+
+        function toggleSermonMode() {
+            sermonMode = !sermonMode;
+            if (sermonMode) essayMode = false;
+            const btn = document.getElementById('sermonToggle');
+            const essayBtn = document.getElementById('essayToggle');
+            const textarea = document.getElementById('userInput');
+            if (sermonMode) {
+                btn.style.background = 'linear-gradient(135deg, #7a1a2e 0%, #9a2a3e 100%)';
+                btn.style.color = 'white';
+                btn.style.borderColor = 'var(--crimson)';
+                btn.style.boxShadow = '0 2px 8px rgba(122,26,46,0.3)';
+                essayBtn.style.background = '';
+                essayBtn.style.color = '';
+                essayBtn.style.borderColor = '';
+                essayBtn.style.boxShadow = '';
+                textarea.placeholder = 'Describe your sermon topic... (e.g. "Write a sermon on the sanctuary and the hope of the believer")';
             } else {
                 btn.style.background = '';
                 btn.style.color = '';
