@@ -1128,6 +1128,9 @@ Reasoning rules:
                 } else if (essayMode && essayMarkdown) {
                     lastEssayContent = essayMarkdown;
                     showDownloadBar('Essay ready', false);
+                } else if (essayMode) {
+                    lastEssayContent = responseText;
+                    showDownloadBar('Essay ready', false);
                 }
 
                 addMessage(responseText, 'assistant', essayMarkdown);

@@ -244,7 +244,7 @@ export default {
         const label = sermonMode ? 'sermon' : 'essay';
         const lines = rawText.split('\n');
         const summaryEnd = Math.min(lines.length, 15);
-        const summary = lines.slice(0, summaryEnd).join('\n').trim() + `\n\n---\n**The full ${label} is ready. Click "Download Full ${label.charAt(0).toUpperCase() + label.slice(1)}" above to save it as a markdown file.**`;
+        const summary = lines.slice(0, summaryEnd).join('\n').trim() + `\n\n---\n**The full ${label} is ready. Use the download bar above to save it as a Word document.**`;
         return new Response(JSON.stringify({ text: summary, essay: rawText, provider }), {
           headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
         });
