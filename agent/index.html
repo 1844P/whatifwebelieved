@@ -464,14 +464,16 @@
             box-shadow: none;
         }
         .btn-secondary {
-            background: white;
+            background: #fdfdfd;
             border: 1.5px solid var(--border);
             color: var(--text-secondary);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
         }
         .btn-secondary:hover {
             border-color: var(--gold);
             color: var(--gold);
             background: var(--gold-bg);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
         .actions {
             margin-top: 12px;
@@ -624,6 +626,16 @@
         .messages::-webkit-scrollbar-track { background: transparent; }
         .messages::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
         .messages::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+        /* ENHANCE BIBLE STUDY BUTTON VISIBILITY */
+        #bibleStudyToggle {
+            box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+        }
+
+        #bibleStudyToggle:hover {
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+            transform: translateY(-1px);
+        }
 
         @media (max-width: 640px) {
             .header { padding: 16px 20px; }
@@ -819,6 +831,10 @@
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
                     Sermon Mode
                 </button>
+                <button id="bibleStudyToggle" class="btn btn-secondary" onclick="toggleBibleStudyMode()" style="transition:all 0.2s;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/><line x1="12" y1="3" x2="12" y2="15"/><line x1="8" y1="15" x2="16" y2="15"/></svg>
+                    Bible Study
+                </button>
                 <button class="btn btn-secondary" onclick="clearChat()">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
                     Clear History
@@ -864,8 +880,10 @@ Reasoning rules:
         let personalKey = localStorage.getItem('wwb_personal_gemini_key') || '';
         let essayMode = false;
         let sermonMode = false;
+        let bibleStudyMode = false;
         let lastSermonContent = null;
         let lastEssayContent = null;
+        let lastBibleStudyContent = null;
 
         const messagesDiv = document.getElementById('messages');
         const userInput = document.getElementById('userInput');
@@ -998,6 +1016,7 @@ Reasoning rules:
             if (personalKey) body.userApiKey = personalKey;
             if (essayMode) body.essayMode = true;
             if (sermonMode) body.sermonMode = true;
+            if (bibleStudyMode) body.bibleStudyMode = true;
 
             const res = await fetch(WORKER_URL, {
                 method: 'POST',
@@ -1104,7 +1123,7 @@ Reasoning rules:
             isLoading = true;
             sendBtn.disabled = true;
             loading.classList.add('active');
-            document.getElementById('loadingText').textContent = essayMode ? 'Writing essay...' : sermonMode ? 'Writing sermon...' : 'Thinking...';
+            document.getElementById('loadingText').textContent = essayMode ? 'Writing essay...' : sermonMode ? 'Writing sermon...' : bibleStudyMode ? 'Preparing Bible study...' : 'Thinking...';
 
             try {
                 let responseText;
@@ -1131,6 +1150,12 @@ Reasoning rules:
                 } else if (essayMode) {
                     lastEssayContent = responseText;
                     showDownloadBar('Essay ready', false);
+                } else if (bibleStudyMode && essayMarkdown) {
+                    lastBibleStudyContent = essayMarkdown;
+                    showDownloadBar('Bible study ready', false);
+                } else if (bibleStudyMode) {
+                    lastBibleStudyContent = responseText;
+                    showDownloadBar('Bible study ready', false);
                 }
 
                 addMessage(responseText, 'assistant', essayMarkdown);
@@ -1164,10 +1189,27 @@ Reasoning rules:
         }
 
         function downloadAsDoc() {
-            const content = sermonMode ? lastSermonContent : (essayMode ? lastEssayContent : null);
-            if (!content) return;
-
-            const defaultTitle = sermonMode ? 'Sermon' : 'Essay';
+            let content = null;
+            let defaultTitle = 'Document';
+            if (sermonMode && lastSermonContent) {
+                content = lastSermonContent;
+                defaultTitle = 'Sermon';
+            } else if (essayMode && lastEssayContent) {
+                content = lastEssayContent;
+                defaultTitle = 'Essay';
+            } else if (bibleStudyMode && lastBibleStudyContent) {
+                content = lastBibleStudyContent;
+                defaultTitle = 'Bible Study';
+            } else if (lastSermonContent) {
+                content = lastSermonContent;
+                defaultTitle = 'Sermon';
+            } else if (lastEssayContent) {
+                content = lastEssayContent;
+                defaultTitle = 'Essay';
+            } else if (lastBibleStudyContent) {
+                content = lastBibleStudyContent;
+                defaultTitle = 'Bible Study';
+            }
             const titleMatch = content.match(/^#\s+(.+)/m);
             const docTitle = titleMatch ? titleMatch[1] : defaultTitle;
             const filename = titleMatch ? titleMatch[1].replace(/[^a-zA-Z0-9\s-]/g, '').replace(/\s+/g, '-').toLowerCase() : (sermonMode ? 'sermon' : 'essay');
@@ -1325,6 +1367,7 @@ Reasoning rules:
         window.checkOllama = checkOllama;
         window.toggleEssayMode = toggleEssayMode;
         window.toggleSermonMode = toggleSermonMode;
+        window.toggleBibleStudyMode = toggleBibleStudyMode;
 
         function toggleEssayMode() {
             essayMode = !essayMode;
@@ -1360,8 +1403,10 @@ Reasoning rules:
         function toggleSermonMode() {
             sermonMode = !sermonMode;
             if (sermonMode) essayMode = false;
+            if (sermonMode) bibleStudyMode = false;
             const btn = document.getElementById('sermonToggle');
             const essayBtn = document.getElementById('essayToggle');
+            const bibleBtn = document.getElementById('bibleStudyToggle');
             const textarea = document.getElementById('userInput');
             if (sermonMode) {
                 btn.style.background = 'linear-gradient(135deg, #7a1a2e 0%, #9a2a3e 100%)';
@@ -1372,9 +1417,52 @@ Reasoning rules:
                 essayBtn.style.color = '';
                 essayBtn.style.borderColor = '';
                 essayBtn.style.boxShadow = '';
+                bibleBtn.style.background = '';
+                bibleBtn.style.color = '';
+                bibleBtn.style.borderColor = '';
+                bibleBtn.style.boxShadow = '';
                 textarea.placeholder = 'Describe your sermon topic... (e.g. "Write a sermon on the sanctuary and the hope of the believer")';
                 if (lastSermonContent) {
                     showDownloadBar('Sermon ready', true);
+                } else {
+                    document.getElementById('downloadBar').style.display = 'none';
+                }
+            } else {
+                btn.style.background = '';
+                btn.style.color = '';
+                btn.style.borderColor = '';
+                btn.style.boxShadow = '';
+                textarea.placeholder = 'Ask about Adventist theology or Christian philosophy...';
+                document.getElementById('downloadBar').style.display = 'none';
+            }
+        }
+
+        function toggleBibleStudyMode() {
+            bibleStudyMode = !bibleStudyMode;
+            if (bibleStudyMode) {
+                essayMode = false;
+                sermonMode = false;
+            }
+            const btn = document.getElementById('bibleStudyToggle');
+            const essayBtn = document.getElementById('essayToggle');
+            const sermonBtn = document.getElementById('sermonToggle');
+            const textarea = document.getElementById('userInput');
+            if (bibleStudyMode) {
+                btn.style.background = 'linear-gradient(135deg, #2d6a4f 0%, #1b4d32 100%)';
+                btn.style.color = 'white';
+                btn.style.borderColor = '#2d6a4f';
+                btn.style.boxShadow = '0 2px 8px rgba(45,106,79,0.3)';
+                essayBtn.style.background = '';
+                essayBtn.style.color = '';
+                essayBtn.style.borderColor = '';
+                essayBtn.style.boxShadow = '';
+                sermonBtn.style.background = '';
+                sermonBtn.style.color = '';
+                sermonBtn.style.borderColor = '';
+                sermonBtn.style.boxShadow = '';
+                textarea.placeholder = 'Describe your Bible study topic... (e.g. "Prepare a study on John 3:16 and God\\'s love")';
+                if (lastBibleStudyContent) {
+                    showDownloadBar('Bible study ready', false);
                 } else {
                     document.getElementById('downloadBar').style.display = 'none';
                 }
