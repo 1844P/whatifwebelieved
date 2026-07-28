@@ -1124,8 +1124,6 @@ Reasoning rules:
                     };
                     leftGroup.appendChild(copyBtn);
 
-                    rightGroup.style.cssText = 'display:flex;flex-direction:column;gap:8px;align-items:flex-end;';
-
                     const essayDocBtn = document.createElement('button');
                     essayDocBtn.className = 'copy-btn';
                     essayDocBtn.style.cssText = 'opacity:1;background:linear-gradient(135deg,var(--gold-bg) 0%,white 100%);border-color:var(--gold);color:var(--gold);font-weight:600;';
@@ -1149,6 +1147,10 @@ Reasoning rules:
                         }, 2000);
                     };
                     rightGroup.appendChild(essayDocBtn);
+
+                    const sep = document.createElement('div');
+                    sep.style.cssText = 'width:1px;height:28px;background:var(--border);margin:0 4px;flex-shrink:0;';
+                    rightGroup.appendChild(sep);
 
                     const downloadBtn = document.createElement('button');
                     downloadBtn.className = 'copy-btn';
