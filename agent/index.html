@@ -73,8 +73,8 @@
             margin-top: 4px;
         }
 
-        /* SERMON BAR */
-        .sermon-bar {
+        /* DOWNLOAD BAR */
+        .download-bar {
             display: flex;
             align-items: center;
             gap: 10px;
@@ -85,19 +85,29 @@
             margin-bottom: 14px;
             animation: fadeIn 0.3s ease;
         }
-        .sermon-bar svg {
+        .download-bar.crimson {
+            background: var(--crimson-bg);
+            border-color: var(--crimson-light);
+        }
+        .download-bar svg {
             width: 16px;
             height: 16px;
             color: var(--gold);
             flex-shrink: 0;
         }
-        .sermon-bar-label {
+        .download-bar.crimson svg {
+            color: var(--crimson);
+        }
+        .download-bar-label {
             font-size: 0.82rem;
             font-weight: 600;
             color: var(--gold);
             flex: 1;
         }
-        .sermon-bar-btn {
+        .download-bar.crimson .download-bar-label {
+            color: var(--crimson);
+        }
+        .download-bar-btn {
             width: 30px;
             height: 30px;
             padding: 0;
@@ -113,11 +123,18 @@
             transition: all 0.2s;
             box-shadow: 0 2px 6px rgba(154, 117, 32, 0.35);
         }
-        .sermon-bar-btn:hover {
+        .download-bar.crimson .download-bar-btn {
+            background: linear-gradient(135deg, var(--crimson) 0%, #5a1020 100%);
+            box-shadow: 0 2px 6px rgba(122, 26, 46, 0.35);
+        }
+        .download-bar-btn:hover {
             transform: translateY(-1px);
             box-shadow: 0 4px 12px rgba(154, 117, 32, 0.5);
         }
-        .sermon-bar-btn svg {
+        .download-bar.crimson .download-bar-btn:hover {
+            box-shadow: 0 4px 12px rgba(122, 26, 46, 0.5);
+        }
+        .download-bar-btn svg {
             width: 15px;
             height: 15px;
             color: white;
@@ -614,8 +631,8 @@
             .chat-container { padding: 16px 20px; }
             .message { max-width: 92%; padding: 14px 16px; }
             .welcome h2 { font-size: 1.3rem; }
-            .sermon-bar { padding: 6px 12px; }
-            .sermon-bar-btn { width: 26px; height: 26px; }
+            .download-bar { padding: 6px 12px; }
+            .download-bar-btn { width: 26px; height: 26px; }
         }
     </style>
 </head>
@@ -749,10 +766,10 @@
             </div>
         </div>
 
-        <div id="sermonBar" class="sermon-bar" style="display:none;">
+        <div id="downloadBar" class="download-bar" style="display:none;">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-            <span class="sermon-bar-label">Sermon ready</span>
-            <button id="sermonDownloadTab" class="sermon-bar-btn" onclick="downloadSermonAsDoc()" title="Download sermon as .doc">
+            <span id="downloadBarLabel" class="download-bar-label">Sermon ready</span>
+            <button id="downloadBtn" class="download-bar-btn" onclick="downloadAsDoc()" title="Download as .doc">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
             </button>
         </div>
@@ -848,6 +865,7 @@ Reasoning rules:
         let essayMode = false;
         let sermonMode = false;
         let lastSermonContent = null;
+        let lastEssayContent = null;
 
         const messagesDiv = document.getElementById('messages');
         const userInput = document.getElementById('userInput');
@@ -1102,7 +1120,10 @@ Reasoning rules:
 
                 if (sermonMode) {
                     lastSermonContent = responseText;
-                    document.getElementById('sermonBar').style.display = 'flex';
+                    showDownloadBar('Sermon ready', true);
+                } else if (essayMode && essayMarkdown) {
+                    lastEssayContent = essayMarkdown;
+                    showDownloadBar('Essay ready', false);
                 }
 
                 addMessage(responseText, 'assistant', essayMarkdown);
@@ -1127,13 +1148,24 @@ Reasoning rules:
             }
         }
 
-        function downloadSermonAsDoc() {
-            if (!lastSermonContent) return;
-            const titleMatch = lastSermonContent.match(/^#\s+(.+)/m);
-            const docTitle = titleMatch ? titleMatch[1] : 'Sermon';
-            const filename = titleMatch ? titleMatch[1].replace(/[^a-zA-Z0-9\s-]/g, '').replace(/\s+/g, '-').toLowerCase() : 'sermon';
+        function showDownloadBar(label, isSermon) {
+            const bar = document.getElementById('downloadBar');
+            const labelEl = document.getElementById('downloadBarLabel');
+            labelEl.textContent = label;
+            bar.className = 'download-bar' + (isSermon ? ' crimson' : '');
+            bar.style.display = 'flex';
+        }
 
-            const bodyHtml = lastSermonContent
+        function downloadAsDoc() {
+            const content = sermonMode ? lastSermonContent : (essayMode ? lastEssayContent : null);
+            if (!content) return;
+
+            const defaultTitle = sermonMode ? 'Sermon' : 'Essay';
+            const titleMatch = content.match(/^#\s+(.+)/m);
+            const docTitle = titleMatch ? titleMatch[1] : defaultTitle;
+            const filename = titleMatch ? titleMatch[1].replace(/[^a-zA-Z0-9\s-]/g, '').replace(/\s+/g, '-').toLowerCase() : (sermonMode ? 'sermon' : 'essay');
+
+            const bodyHtml = content
                 .replace(/^### (.+)$/gm, '<h3 style="font-family:Georgia,serif;color:#333;font-size:12pt;margin-top:16px;">$1</h3>')
                 .replace(/^## (.+)$/gm, '<h2 style="font-family:Georgia,serif;color:#7a1a2e;font-size:14pt;margin-top:20px;border-bottom:1px solid #ddd;padding-bottom:4px;">$1</h2>')
                 .replace(/^# (.+)$/gm, '<h1 style="font-family:Georgia,serif;color:#7a1a2e;font-size:20pt;margin-bottom:8px;">$1</h1>')
@@ -1154,7 +1186,6 @@ Reasoning rules:
                 'p{margin:8px 0;}' +
                 '</style></head><body>' + bodyHtml + '</body></html>';
 
-            const boundary = '----=_NextPart_000_001';
             const mhtml = 'MIME-Version: 1.0\r\n' +
                 'Content-Location: file:///' + filename + '.doc\r\n' +
                 'Content-Transfer-Encoding: quoted-printable\r\n\r\n' +
@@ -1170,12 +1201,12 @@ Reasoning rules:
             a.click();
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
-            const tab = document.getElementById('sermonDownloadTab');
-            const origHtml = tab.innerHTML;
-            tab.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>';
-            setTimeout(function() { tab.innerHTML = origHtml; }, 2000);
+            const btn = document.getElementById('downloadBtn');
+            const origHtml = btn.innerHTML;
+            btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>';
+            setTimeout(function() { btn.innerHTML = origHtml; }, 2000);
         }
-        window.downloadSermonAsDoc = downloadSermonAsDoc;
+        window.downloadAsDoc = downloadAsDoc;
 
         function addMessage(content, type, essayMarkdown) {
             const div = document.createElement('div');
@@ -1271,8 +1302,9 @@ Reasoning rules:
             chat = null;
             conversationHistory = [];
             lastSermonContent = null;
+            lastEssayContent = null;
             messagesDiv.innerHTML = '';
-            document.getElementById('sermonBar').style.display = 'none';
+            document.getElementById('downloadBar').style.display = 'none';
             removeFile();
             if (welcome) {
                 messagesDiv.appendChild(welcome);
@@ -1303,12 +1335,18 @@ Reasoning rules:
                 sermonBtn.style.borderColor = '';
                 sermonBtn.style.boxShadow = '';
                 textarea.placeholder = 'Describe your essay topic... (e.g. "Write an essay on the investigative judgment and its biblical basis")';
+                if (lastEssayContent) {
+                    showDownloadBar('Essay ready', false);
+                } else {
+                    document.getElementById('downloadBar').style.display = 'none';
+                }
             } else {
                 btn.style.background = '';
                 btn.style.color = '';
                 btn.style.borderColor = '';
                 btn.style.boxShadow = '';
                 textarea.placeholder = 'Ask about Adventist theology or Christian philosophy...';
+                document.getElementById('downloadBar').style.display = 'none';
             }
         }
 
@@ -1328,12 +1366,18 @@ Reasoning rules:
                 essayBtn.style.borderColor = '';
                 essayBtn.style.boxShadow = '';
                 textarea.placeholder = 'Describe your sermon topic... (e.g. "Write a sermon on the sanctuary and the hope of the believer")';
+                if (lastSermonContent) {
+                    showDownloadBar('Sermon ready', true);
+                } else {
+                    document.getElementById('downloadBar').style.display = 'none';
+                }
             } else {
                 btn.style.background = '';
                 btn.style.color = '';
                 btn.style.borderColor = '';
                 btn.style.boxShadow = '';
                 textarea.placeholder = 'Ask about Adventist theology or Christian philosophy...';
+                document.getElementById('downloadBar').style.display = 'none';
             }
         }
 
