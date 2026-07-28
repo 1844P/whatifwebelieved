@@ -1129,24 +1129,51 @@ Reasoning rules:
 
         function downloadSermonAsDoc() {
             if (!lastSermonContent) return;
-            const htmlContent = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="utf-8"><title>Sermon</title><!--[if gte mso 9]><xml><w:WordDocument><w:View>Print</w:View><w:Zoom>100</w:Zoom><w:DoNotOptimizeForBrowser/></w:WordDocument></xml><![endif]--><style>body{font-family:Calibri,sans-serif;font-size:11pt;line-height:1.6;color:#1a0f18;margin:40px;}h1{font-family:Georgia,serif;color:#7a1a2e;font-size:20pt;margin-bottom:8px;}h2{font-family:Georgia,serif;color:#7a1a2e;font-size:14pt;margin-top:20px;border-bottom:1px solid #ddd;padding-bottom:4px;}h3{font-family:Georgia,serif;color:#333;font-size:12pt;margin-top:16px;}p{margin:8px 0;}blockquote{border-left:3px solid #9a7520;padding-left:16px;margin:12px 0;color:#555;font-style:italic;}strong{color:#7a1a2e;}em{color:#5a4038;}hr{border:none;border-top:1px solid #ddd;margin:20px 0;}code{background:#f5f0eb;padding:2px 6px;border-radius:3px;font-family:Consolas,monospace;font-size:10pt;}ul,ol{margin:8px 0 8px 20px;}li{margin:4px 0;}</style></head><body>' + lastSermonContent.replace(/^### (.+)$/gm, '<h3>$1</h3>').replace(/^## (.+)$/gm, '<h2>$1</h2>').replace(/^# (.+)$/gm, '<h1>$1</h1>').replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>').replace(/\*(.+?)\*/g, '<em>$1</em>').replace(/^---$/gm, '<hr>').replace(/^> (.+)$/gm, '<blockquote>$1</blockquote>').replace(/`([^`]+)`/g, '<code>$1</code>').replace(/\n\n/g, '</p><p>').replace(/^/, '<p>').replace(/$/, '</p>') + '</body></html>';
-            const blob = new Blob(['\ufeff', htmlContent], { type: 'application/msword' });
+            const titleMatch = lastSermonContent.match(/^#\s+(.+)/m);
+            const docTitle = titleMatch ? titleMatch[1] : 'Sermon';
+            const filename = titleMatch ? titleMatch[1].replace(/[^a-zA-Z0-9\s-]/g, '').replace(/\s+/g, '-').toLowerCase() : 'sermon';
+
+            const bodyHtml = lastSermonContent
+                .replace(/^### (.+)$/gm, '<h3 style="font-family:Georgia,serif;color:#333;font-size:12pt;margin-top:16px;">$1</h3>')
+                .replace(/^## (.+)$/gm, '<h2 style="font-family:Georgia,serif;color:#7a1a2e;font-size:14pt;margin-top:20px;border-bottom:1px solid #ddd;padding-bottom:4px;">$1</h2>')
+                .replace(/^# (.+)$/gm, '<h1 style="font-family:Georgia,serif;color:#7a1a2e;font-size:20pt;margin-bottom:8px;">$1</h1>')
+                .replace(/\*\*(.+?)\*\*/g, '<strong style="color:#7a1a2e;">$1</strong>')
+                .replace(/\*(.+?)\*/g, '<em style="color:#5a4038;">$1</em>')
+                .replace(/^---$/gm, '<hr style="border:none;border-top:1px solid #ddd;margin:20px 0;">')
+                .replace(/^> (.+)$/gm, '<blockquote style="border-left:3px solid #9a7520;padding-left:16px;margin:12px 0;color:#555;font-style:italic;">$1</blockquote>')
+                .replace(/`([^`]+)`/g, '<code style="background:#f5f0eb;padding:2px 6px;border-radius:3px;font-family:Consolas,monospace;font-size:10pt;">$1</code>')
+                .replace(/\n\n/g, '</p><p style="margin:8px 0;">')
+                .replace(/^/, '<p style="margin:8px 0;">')
+                .replace(/$/, '</p>');
+
+            const htmlPart = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">' +
+                '<head><meta charset="utf-8"><meta name="ProgId" content="Word.Document"><meta name="Generator" content="Microsoft Word 11"><title>' + docTitle + '</title>' +
+                '<!--[if gte mso 9]><xml><w:WordDocument><w:View>Print</w:View><w:Zoom>100</w:Zoom><w:DoNotOptimizeForBrowser/></w:WordDocument></xml><![endif]-->' +
+                '<style>' +
+                'body{font-family:Calibri,sans-serif;font-size:11pt;line-height:1.6;color:#1a0f18;margin:40px;}' +
+                'p{margin:8px 0;}' +
+                '</style></head><body>' + bodyHtml + '</body></html>';
+
+            const boundary = '----=_NextPart_000_001';
+            const mhtml = 'MIME-Version: 1.0\r\n' +
+                'Content-Location: file:///' + filename + '.doc\r\n' +
+                'Content-Transfer-Encoding: quoted-printable\r\n\r\n' +
+                '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">\r\n' +
+                htmlPart;
+
+            const blob = new Blob([mhtml], { type: 'application/msword' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            const titleMatch = lastSermonContent.match(/^#\s+(.+)/m);
-            const filename = titleMatch ? titleMatch[1].replace(/[^a-zA-Z0-9\s-]/g, '').replace(/\s+/g, '-').toLowerCase() : 'sermon';
             a.download = filename + '-' + new Date().toISOString().slice(0,10) + '.doc';
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
             const tab = document.getElementById('sermonDownloadTab');
-            const origText = tab.innerHTML;
+            const origHtml = tab.innerHTML;
             tab.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>';
-            setTimeout(function() {
-                tab.innerHTML = origText;
-            }, 2000);
+            setTimeout(function() { tab.innerHTML = origHtml; }, 2000);
         }
         window.downloadSermonAsDoc = downloadSermonAsDoc;
 
