@@ -1086,7 +1086,7 @@ Reasoning rules:
             if (type === 'assistant') {
                 const btnContainer = document.createElement('div');
                 btnContainer.className = 'btn-container';
-                btnContainer.style.cssText = 'display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;';
+                btnContainer.style.cssText = 'display:flex;gap:12px;margin-top:12px;flex-wrap:wrap;align-items:center;';
 
                 if (essayMarkdown) {
                     const essayBtn = document.createElement('button');
@@ -1125,6 +1125,10 @@ Reasoning rules:
                         }, 2000);
                     };
                     btnContainer.appendChild(essayDocBtn);
+
+                    const separator = document.createElement('div');
+                    separator.style.cssText = 'width:1px;height:28px;background:var(--border);margin:0 4px;flex-shrink:0;';
+                    btnContainer.appendChild(separator);
                 }
 
                 const copyBtn = document.createElement('button');
