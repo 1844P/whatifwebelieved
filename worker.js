@@ -68,7 +68,7 @@ const SERMON_FORMATS = {
 };
 
 async function callGemini(apiKey, body) {
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key=${apiKey}`;
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
   const response = await fetch(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -149,10 +149,29 @@ export default {
       }
 
       let userText = message || '';
+      
+      // Detect if fileContent is an image data URL
+      let fileParts = [];
+      const isImageDataUrl = fileContent && typeof fileContent === 'string' && fileContent.startsWith('data:image/');
+      
       if (fileContent && fileName) {
-        userText = userText
-          ? `${userText}\n\n--- File Content (${fileName}) ---\n${fileContent}`
-          : `Please analyze the following file (${fileName}):\n\n${fileContent}`;
+        if (isImageDataUrl) {
+          // Parse data URL for inlineData
+          const matches = fileContent.match(/^data:(image\/\w+);base64,(.+)$/);
+          if (matches) {
+            const mimeType = matches[1];
+            const base64Data = matches[2];
+            fileParts.push({
+              inlineData: { mimeType, data: base64Data }
+            });
+            userText = userText || `Please describe this image (${fileName}) and relate it to Adventist theology or Christian philosophy.`;
+          }
+        } else {
+          // Text content — embed in message
+          userText = userText
+            ? `${userText}\n\n--- File Content (${fileName}) ---\n${fileContent}`
+            : `Please analyze the following file (${fileName}):\n\n${fileContent}`;
+        }
       }
 
       if (essayMode) {
@@ -167,7 +186,9 @@ export default {
         if (h.user) geminiContents.push({ role: 'user', parts: [{ text: h.user }] });
         if (h.assistant) geminiContents.push({ role: 'model', parts: [{ text: h.assistant }] });
       }
-      geminiContents.push({ role: 'user', parts: [{ text: userText }] });
+      // Combine text parts with any file parts (e.g. image inlineData)
+      const userParts = [{ text: userText }].concat(fileParts);
+      geminiContents.push({ role: 'user', parts: userParts });
 
       const geminiBody = {
         systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },

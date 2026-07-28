@@ -991,6 +991,10 @@ Reasoning rules:
                 message: message,
                 history: history
             };
+            if (selectedFile && fileContent) {
+                body.fileContent = fileContent;
+                body.fileName = selectedFile.name;
+            }
             if (personalKey) body.userApiKey = personalKey;
             if (essayMode) body.essayMode = true;
             if (sermonMode) body.sermonMode = true;
@@ -1119,7 +1123,7 @@ Reasoning rules:
                 }
 
                 if (sermonMode) {
-                    lastSermonContent = responseText;
+                    lastSermonContent = essayMarkdown || responseText;
                     showDownloadBar('Sermon ready', true);
                 } else if (essayMode && essayMarkdown) {
                     lastEssayContent = essayMarkdown;
