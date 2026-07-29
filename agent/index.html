@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+const WORKER_URL = 'https://weathered-bar-381f.wentlandwordsworth.workers.dev';
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -1368,6 +1368,8 @@ Reasoning rules:
         window.toggleEssayMode = toggleEssayMode;
         window.toggleSermonMode = toggleSermonMode;
         window.toggleBibleStudyMode = toggleBibleStudyMode;
+        window.removeFile = removeFile;
+
 
         function toggleEssayMode() {
             essayMode = !essayMode;
@@ -1538,6 +1540,23 @@ Reasoning rules:
             } else {
                 badge.style.display = 'none';
                 label.textContent = 'Use your own API key';
+            }
+        }
+        // Handle query parameter for pre-populating questions
+        const urlParams = new URLSearchParams(window.location.search);
+        const questionParam = urlParams.get('q');
+        if (questionParam) {
+            try {
+                // Decode the parameter (it might be URL-encoded)
+                const decodedQuestion = decodeURIComponent(questionParam);
+                userInput.value = decodedQuestion;
+                // Optionally focus the textarea
+                userInput.focus();
+                // Adjust textarea height based on content
+                userInput.style.height = 'auto';
+                userInput.style.height = Math.min(userInput.scrollHeight, 150) + 'px';
+            } catch (e) {
+                console.error('Error processing question parameter:', e);
             }
         }
         updatePersonalKeyBadge();

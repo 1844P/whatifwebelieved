@@ -17,3 +17,8 @@ Desktop.ini
 wrangler.toml
 cert.pem
 key.pem
+
+# Wrangler config (contains API keys)
+wrangler.toml
+wrangler.jsonc
+.wrangler/
