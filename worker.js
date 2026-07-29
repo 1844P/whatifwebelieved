@@ -149,10 +149,29 @@ export default {
       }
 
       let userText = message || '';
+      
+      // Detect if fileContent is an image data URL
+      let fileParts = [];
+      const isImageDataUrl = fileContent && typeof fileContent === 'string' && fileContent.startsWith('data:image/');
+      
       if (fileContent && fileName) {
-        userText = userText
-          ? `${userText}\n\n--- File Content (${fileName}) ---\n${fileContent}`
-          : `Please analyze the following file (${fileName}):\n\n${fileContent}`;
+        if (isImageDataUrl) {
+          // Parse data URL for inlineData
+          const matches = fileContent.match(/^data:(image\/\w+);base64,(.+)$/);
+          if (matches) {
+            const mimeType = matches[1];
+            const base64Data = matches[2];
+            fileParts.push({
+              inlineData: { mimeType, data: base64Data }
+            });
+            userText = userText || `Please describe this image (${fileName}) and relate it to Adventist theology or Christian philosophy.`;
+          }
+        } else {
+          // Text content — embed in message
+          userText = userText
+            ? `${userText}\n\n--- File Content (${fileName}) ---\n${fileContent}`
+            : `Please analyze the following file (${fileName}):\n\n${fileContent}`;
+        }
       }
 
       if (essayMode) {
@@ -167,7 +186,9 @@ export default {
         if (h.user) geminiContents.push({ role: 'user', parts: [{ text: h.user }] });
         if (h.assistant) geminiContents.push({ role: 'model', parts: [{ text: h.assistant }] });
       }
-      geminiContents.push({ role: 'user', parts: [{ text: userText }] });
+      // Combine text parts with any file parts (e.g. image inlineData)
+      const userParts = [{ text: userText }].concat(fileParts);
+      geminiContents.push({ role: 'user', parts: userParts });
 
       const geminiBody = {
         systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
@@ -223,7 +244,7 @@ export default {
         const label = sermonMode ? 'sermon' : 'essay';
         const lines = rawText.split('\n');
         const summaryEnd = Math.min(lines.length, 15);
-        const summary = lines.slice(0, summaryEnd).join('\n').trim() + `\n\n---\n**The full ${label} is ready. Click "Download Full ${label.charAt(0).toUpperCase() + label.slice(1)}" above to save it as a markdown file.**`;
+        const summary = lines.slice(0, summaryEnd).join('\n').trim() + `\n\n---\n**The full ${label} is ready. Use the download bar above to save it as a Word document.**`;
         return new Response(JSON.stringify({ text: summary, essay: rawText, provider }), {
           headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
         });
