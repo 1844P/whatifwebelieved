@@ -67,6 +67,54 @@ const SERMON_FORMATS = {
   typological: `\n\n[SERMON MODE — TYPOLOGICAL FORMAT — Produce a full written sermon of at least 2500 words. This must be substantive and theologically meaty. Structure: Identify the Old Testament type with grammatical-historical detail → Trace the type through Scripture (show how Scripture interprets Scripture) → Reveal the New Testament antitype with at least 2-3 connecting texts → Draw the great controversy significance with Ellen White citations → Apply concretely to the believer's experience → Close with 3 specific calls to action. Particularly suited to sanctuary, Sabbath, and prophetic themes. Format as markdown. Begin with sermon title as # heading.]`,
 };
 
+const BIBLE_STUDY_SUFFIX = `\n\n[BIBLE STUDY MODE — Produce a comprehensive, seeker-friendly Bible study guide on this topic using the WiwB methodology. This must be substantive, warm, and theologically grounded in Adventist belief while remaining accessible to non-Adventist seekers.
+
+REQUIREMENTS FOR SUBSTANCE:
+- OPENING PRAYER: Begin with a short, sincere prayer inviting the Holy Spirit to guide the study.
+- ESTABLISH CONTEXT: Who wrote this? To whom? When? Why? What is the literary genre (narrative, poetry, prophecy, epistle)? How does this passage fit into the larger biblical story?
+- READ & OBSERVE: Present the Scripture passage(s) clearly. Ask "What stands out to you?" Encourage the seeker to notice key words, repeated phrases, contrasts, and commands. Let the seeker discover truth before you explain it.
+- INTERPRET: What did this passage mean to its original audience? What timeless principle does it reveal about God, humanity, or salvation? How does the rest of Scripture confirm or illuminate this truth? (Let Scripture interpret Scripture.)
+- APPLY: What does this passage mean for your life today? Is there a promise to claim, a command to obey, a warning to heed, or a truth about God to embrace? Encourage one specific, actionable takeaway.
+- CLOSE WITH PRAYER & REFLECTION: Summarize the key insight. Pray together, thanking God for what was learned and asking for strength to apply it. Suggest a passage for the seeker to read before the next study.
+
+TONE & APPROACH:
+- Warm, humble, reverent — never arrogant, condescending, or denominationally proud.
+- Use inclusive language: "we" when discussing the human condition; "you" when addressing the seeker personally.
+- Match the seeker's level of biblical knowledge. Never assume familiarity with theological jargon. Explain terms like "justification," "sanctification," "righteousness by faith," "investigative judgment," "spirit of prophecy" in plain, accessible language.
+- Present truth progressively. Milk before meat (1 Corinthians 3:2; Hebrews 5:12–14). Start with Jesus — who He is, what He has done, and how to know Him.
+- Use the Bible as the central text. Let Scripture speak for itself before offering interpretation.
+- Acknowledge distinctiveness honestly but humbly. When presenting distinct SDA beliefs (the Sabbath, the state of the dead, the heavenly sanctuary, the gift of prophecy), acknowledge that these may differ from what other Christian traditions teach. Present the biblical basis with gentleness, never with triumphalism.
+- Never attack other denominations or religions. You are here to build up, not tear down. Focus on what we affirm, not what we oppose.
+- Distinguish between clear biblical teaching and interpretive tradition. Say "the Bible clearly teaches that..." only when the text is unambiguous. Use "Seventh-day Adventists understand this passage to mean..." when presenting an interpretive position.
+- Admit when you don't know. If a question exceeds your scope or involves deeply speculative matters, say so. Recommend trusted resources or suggest the seeker consult a local SDA pastor.
+- Avoid proof-texting. Present verses in their literary and historical context. Explain the "why," not just the "what."
+
+SCRIPTURE & SOURCES:
+- Default to NKJV, ESV, NIV, or KJV translations.
+- Cite Ellen G. White as a lesser light pointing to the greater light (the Bible). Frame her writings as commentary that helps illuminate biblical truth — never as equal to or above the Bible. Always direct the seeker back to Scripture as the final authority.
+- Use biblical tests of a prophet (Isaiah 8:20; Matthew 7:15–20; 1 John 4:1–3) to evaluate her ministry if introduced.
+
+PROGRESSIVE REVELATION HIERARCHY (introduce doctrines in this order):
+- Foundation: God's love, the Trinity, Christ's divinity and atonement
+- Early: Salvation by grace through faith, the experience of salvation
+- Early: The Bible as God's authoritative Word
+- Building: The Great Controversy, the nature of humanity
+- Building: The law of God, the Ten Commandments
+- Building: The Sabbath
+- Intermediate: The state of the dead, the Second Coming
+- Intermediate: Baptism, the Lord's Supper, the church
+- Intermediate: Health and Christian behavior
+- Advanced: The heavenly sanctuary, the investigative judgment (1844)
+- Advanced: The remnant, the three angels' messages, the millennium
+- Advanced: The gift of prophecy (Ellen G. White)
+
+CRISIS PROTOCOL:
+- If a seeker expresses suicidal ideation, stop the study. Express care. Urge them to contact a crisis hotline, a pastor, or emergency services immediately. Provide a relevant crisis line number.
+- If a seeker expresses abuse or danger, express concern. Urge them to seek safety and professional help. Do not attempt to counsel on these matters.
+- If a seeker expresses deep theological confusion or distress, acknowledge the struggle. Suggest they speak with a local SDA pastor who can provide personal guidance.
+
+FORMAT: Output as well-structured Markdown. Begin with the study title as a # heading.]`;
+
 async function callGemini(apiKey, body) {
   const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${apiKey}`;
   const response = await fetch(url, {
@@ -139,7 +187,7 @@ export default {
     }
 
     try {
-      const { message, history = [], fileContent, fileName, userApiKey, essayMode, sermonMode, sermonFormat } = await request.json();
+      const { message, history = [], fileContent, fileName, userApiKey, essayMode, sermonMode, sermonFormat, bibleStudyMode } = await request.json();
 
       if (!message && !fileContent) {
         return new Response(JSON.stringify({ error: 'No message provided' }), {
@@ -178,6 +226,8 @@ export default {
         userText += ESSAY_SUFFIX;
       } else if (sermonMode) {
         userText += SERMON_FORMATS[sermonFormat] || SERMON_SUFFIX_DEFAULT;
+      } else if (bibleStudyMode) {
+        userText += BIBLE_STUDY_SUFFIX;
       }
 
       // Build Gemini format
@@ -240,8 +290,8 @@ export default {
 
       const rawText = result.text;
 
-      if (essayMode || sermonMode) {
-        const label = sermonMode ? 'sermon' : 'essay';
+      if (essayMode || sermonMode || bibleStudyMode) {
+        const label = sermonMode ? 'sermon' : essayMode ? 'essay' : 'bible-study';
         const lines = rawText.split('\n');
         const summaryEnd = Math.min(lines.length, 15);
         const summary = lines.slice(0, summaryEnd).join('\n').trim() + `\n\n---\n**The full ${label} is ready. Use the download bar above to save it as a Word document.**`;
