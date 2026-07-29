@@ -170,18 +170,66 @@ async function callOpenRouter(apiKey, systemPrompt, messages) {
   return { ok: true, text: text || 'No response generated.' };
 }
 
+const GITHUB_PAGES_ORIGIN = 'https://1844p.github.io';
+const GITHUB_PAGES_BASE = `${GITHUB_PAGES_ORIGIN}/whatifwebelieved`;
+
+// Cache-busting proxy for static assets — serves GitHub Pages content with no-cache headers
+async function serveStatic(request) {
+  const url = new URL(request.url);
+  const path = url.pathname; // e.g. /agent/ or /agent/index.html or /agent/wallpaper-pitons.svg
+
+  // Fetch from GitHub Pages
+  const originUrl = `${GITHUB_PAGES_BASE}${path}`;
+  const originResponse = await fetch(originUrl, {
+    method: 'GET',
+    headers: { 'Cache-Control': 'no-cache' },
+  });
+
+  if (!originResponse.ok) {
+    return new Response(originResponse.body, {
+      status: originResponse.status,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0',
+      },
+    });
+  }
+
+  // Pass through the body with overridden cache headers
+  const responseHeaders = new Headers(originResponse.headers);
+  responseHeaders.set('Cache-Control', 'no-cache, no-store, must-revalidate');
+  responseHeaders.set('Pragma', 'no-cache');
+  responseHeaders.set('Expires', '0');
+  responseHeaders.set('Access-Control-Allow-Origin', '*');
+
+  return new Response(originResponse.body, {
+    status: originResponse.status,
+    statusText: originResponse.statusText,
+    headers: responseHeaders,
+  });
+}
+
 export default {
   async fetch(request, env) {
+    // Handle CORS preflight
     if (request.method === 'OPTIONS') {
       return new Response(null, {
         headers: {
           'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Methods': 'POST, OPTIONS',
+          'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
           'Access-Control-Allow-Headers': 'Content-Type',
         },
       });
     }
 
+    // GET requests — serve static files from GitHub Pages with no-cache headers
+    if (request.method === 'GET') {
+      return serveStatic(request);
+    }
+
+    // Only POST beyond this point
     if (request.method !== 'POST') {
       return new Response('Method not allowed', { status: 405 });
     }

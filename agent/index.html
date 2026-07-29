@@ -861,7 +861,10 @@ const WORKER_URL = 'https://weathered-bar-381f.wentlandwordsworth.workers.dev';
     </div>
 
     <script type="module">
-        const WORKER_URL = 'https://weathered-bar-381f.wentlandwordsworth.workers.dev';
+// Dynamic worker URL: same-origin when proxied through worker, absolute when served from GitHub Pages
+const WORKER_URL = window.location.origin === 'https://1844p.github.io'
+  ? 'https://weathered-bar-381f.wentlandwordsworth.workers.dev'
+  : window.location.origin;
 
         const SYSTEM_PROMPT = `You are a research agent specialized exclusively in Adventist theology and Christian philosophy (including philosophy of religion, Christian ethics, and the history of Christian thought).
 
