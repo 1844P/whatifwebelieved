@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -6,18 +7,6 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <meta name="version" content="2026-07-29-v3">
-    <script>
-        // Automatic cache buster — ensures users always see the latest version
-        (function() {
-            var v = document.querySelector('meta[name="version"]').getAttribute('content');
-            var stored = localStorage.getItem('wwb_agent_version');
-            if (stored && stored !== v) {
-                localStorage.clear();
-                window.location.reload(true);
-            }
-            localStorage.setItem('wwb_agent_version', v);
-        })();
-    </script>
     <title>Adventist Theology & Christian Philosophy Agent</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
@@ -678,12 +667,12 @@
         <div class="api-inner" style="gap:10px;">
             <label for="modelProvider" style="font-size:0.85rem;font-weight:600;color:var(--text-secondary);white-space:nowrap;">Model:</label>
             <select id="modelProvider" onchange="handleModelChange(this.value)" style="padding:6px 10px;border:1.5px solid var(--border);border-radius:8px;font-size:0.85rem;background:white;color:var(--text);cursor:pointer;min-width:155px;">
+                <option value="gemini-direct" selected>Gemini (Your Key) — Primary</option>
+                <option value="gemini">Gemini (Cloud Worker) — Fallback</option>
                 <option value="ollama">Ollama (Local)</option>
-                <option value="gemini-direct">Gemini (Your Key)</option>
-                <option value="gemini">Gemini (Cloud Worker)</option>
             </select>
             <span id="geminiStatus" style="font-size:0.78rem;padding:4px 10px;border-radius:12px;font-weight:600;background:#d1fae5;color:#065f46;">Ready</span>
-            <small id="apiHint" style="font-size:0.78rem;color:var(--text-muted);margin-left:4px;flex:1;">No setup required — just type and ask.</small>
+            <small id="apiHint" style="font-size:0.78rem;color:var(--text-muted);margin-left:4px;flex:1;">Primary API — Uses your own Gemini API key directly from the browser. Get a free key below.</small>
         </div>
         <div id="ollamaControls" style="display:none;max-width:900px;margin:6px auto 0;padding:0 32px 4px;">
             <span style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
@@ -702,7 +691,7 @@
         <div style="max-width:900px;margin:0 auto;">
             <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
                 <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="var(--text-muted)" stroke-width="2" style="flex-shrink:0;"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                <span id="personalKeyLabel" style="font-size:0.82rem;color:var(--text-muted);font-weight:500;">Use your own API key</span>
+                <span id="personalKeyLabel" style="font-size:0.82rem;color:var(--text-muted);font-weight:500;">Primary API Key (Gemini)</span>
                 <span id="personalKeyBadge" style="display:none;font-size:0.7rem;padding:2px 8px;border-radius:8px;font-weight:600;background:#d1fae5;color:#065f46;">Active</span>
                 <div style="flex:1;min-width:200px;display:flex;gap:6px;">
                     <input type="password" id="personalApiKey" placeholder="AIzaSy... or AQ..." style="flex:1;padding:7px 10px;border:1px solid var(--border);border-radius:6px;background:var(--cream);color:var(--text);font-size:0.82rem;font-family:monospace;transition:border-color 0.2s;" onfocus="this.style.borderColor='var(--gold)';this.style.boxShadow='0 0 0 3px rgba(200,162,78,0.15)'" onblur="this.style.borderColor='var(--border)';this.style.boxShadow='none'">
@@ -837,15 +826,12 @@
         </div>
     </div>
 
-    <div class="footer">
-        <p>Built by <a href="https://www.youtube.com/@paulos1844" target="_blank">WhatIfWeBelieved</a> · Powered by Gemini, Groq &amp; OpenRouter</p>
+<div class="footer">
+        <p>Built by <a href="https://www.youtube.com/@paulos1844" target="_blank">WhatIfWeBelieved</a> · Primary: Gemini API · Fallbacks: Groq & OpenRouter</p>
     </div>
 
     <script type="module">
-// Dynamic worker URL: same-origin when proxied through worker, absolute when served from GitHub Pages
-const WORKER_URL = window.location.origin === 'https://1844p.github.io'
-  ? 'https://weathered-bar-381f.wentlandwordsworth.workers.dev'
-  : window.location.origin;
+        const WORKER_URL = 'https://weathered-bar-381f.wentlandwordsworth.workers.dev';
 
         const SYSTEM_PROMPT = `You are a research agent specialized exclusively in Adventist theology and Christian philosophy (including philosophy of religion, Christian ethics, and the history of Christian thought).
 
@@ -942,14 +928,14 @@ Reasoning rules:
                     status.style.background = '#fef3c7';
                     status.style.color = '#92400e';
                 }
-                apiHint.textContent = 'Uses your own Gemini API key directly from the browser. No backend needed.';
+                apiHint.textContent = 'Primary API — Uses your own Gemini API key directly from the browser. No backend needed. Get a free key below.';
             } else if (provider === 'gemini') {
                 ollamaControls.style.display = 'none';
                 status.style.display = '';
                 status.textContent = 'Worker';
                 status.style.background = '#dbeafe';
                 status.style.color = '#1e40af';
-                apiHint.textContent = 'Uses the shared Cloudflare Worker with Gemini, Groq & OpenRouter fallbacks.';
+                apiHint.textContent = 'Fallback API — Uses shared Cloudflare Worker with Gemini, Groq & OpenRouter fallbacks.';
             } else if (provider === 'ollama') {
                 ollamaControls.style.display = '';
                 status.style.display = 'none';
@@ -1093,7 +1079,6 @@ Reasoning rules:
             const key = personalKey;
             if (!key) throw new Error('No personal API key set');
 
-            // Build contents array from history + current message
             const contents = [];
             for (const h of history) {
                 contents.push({ role: 'user', parts: [{ text: h.user }] });
@@ -1101,8 +1086,7 @@ Reasoning rules:
             }
             contents.push({ role: 'user', parts: [{ text: message }] });
 
-            // Use gemini-2.0-flash (free tier) — fall back to gemini-1.5-flash if needed
-            const models = ['gemini-2.0-flash', 'gemini-1.5-flash', 'gemini-1.5-pro'];
+            const models = ['gemini-2.0-flash', 'gemini-2.0-flash-lite', 'gemini-1.5-flash', 'gemini-1.5-flash-8b'];
             let lastError = null;
 
             for (const model of models) {
@@ -1146,7 +1130,6 @@ Reasoning rules:
                         errMsg = err.error?.message || errMsg;
                     } catch (e) { errMsg = errBody || errMsg; }
 
-                    // If model not found or unavailable, try next model
                     if (res.status === 404 || (errMsg && errMsg.includes('not found'))) {
                         lastError = new Error(errMsg);
                         continue;
@@ -1155,7 +1138,7 @@ Reasoning rules:
                 } catch (e) {
                     lastError = e;
                     if (e.message && (e.message.includes('Failed to fetch') || e.message.includes('NetworkError'))) {
-                        throw e; // Network errors are fatal, don't retry
+                        throw e;
                     }
                 }
             }
@@ -1470,6 +1453,10 @@ Reasoning rules:
             }
         }
 
+        window.askQuestion = askQuestion;
+        window.sendMessage = sendMessage;
+        window.clearChat = clearChat;
+        window.checkOllama = checkOllama;
         // Defensive reset for loading/spinner state — prevents stuck "sending" state when switching modes
         function resetMessageState() {
             isLoading = false;
@@ -1478,15 +1465,9 @@ Reasoning rules:
             document.getElementById('loadingText').textContent = 'Thinking...';
         }
 
-        window.askQuestion = askQuestion;
-        window.sendMessage = sendMessage;
-        window.clearChat = clearChat;
-        window.checkOllama = checkOllama;
         window.toggleEssayMode = toggleEssayMode;
         window.toggleSermonMode = toggleSermonMode;
         window.toggleBibleStudyMode = toggleBibleStudyMode;
-        window.removeFile = removeFile;
-
 
         function toggleEssayMode() {
             resetMessageState();
@@ -1642,7 +1623,7 @@ Reasoning rules:
             const status = document.getElementById('geminiStatus');
             if (personalKey) {
                 badge.style.display = 'inline';
-                label.textContent = 'Your own API key';
+                label.textContent = 'Primary API Key (Gemini) — Active';
                 if (currentProvider === 'gemini-direct') {
                     status.textContent = 'Direct (your key)';
                     status.style.background = '#d1fae5';
@@ -1650,7 +1631,7 @@ Reasoning rules:
                 }
             } else {
                 badge.style.display = 'none';
-                label.textContent = 'Use your own API key';
+                label.textContent = 'Primary API Key (Gemini)';
                 if (currentProvider === 'gemini-direct') {
                     status.textContent = 'Key required';
                     status.style.background = '#fef3c7';
@@ -1662,27 +1643,10 @@ Reasoning rules:
                 }
             }
         }
-        // Handle query parameter for pre-populating questions
-        const urlParams = new URLSearchParams(window.location.search);
-        const questionParam = urlParams.get('q');
-        if (questionParam) {
-            try {
-                // Decode the parameter (it might be URL-encoded)
-                const decodedQuestion = decodeURIComponent(questionParam);
-                userInput.value = decodedQuestion;
-                // Optionally focus the textarea
-                userInput.focus();
-                // Adjust textarea height based on content
-                userInput.style.height = 'auto';
-                userInput.style.height = Math.min(userInput.scrollHeight, 150) + 'px';
-            } catch (e) {
-                console.error('Error processing question parameter:', e);
-            }
-        }
-        // Set initial state for Gemini Cloud Worker (default)
-        currentProvider = 'gemini';
-        window.handleModelChange('gemini');
-        document.getElementById('modelProvider').value = 'gemini';
+        // Set initial state for Gemini Direct (Primary API)
+        currentProvider = 'gemini-direct';
+        window.handleModelChange('gemini-direct');
+        document.getElementById('modelProvider').value = 'gemini-direct';
 
     </script>
 </body>
