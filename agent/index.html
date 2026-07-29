@@ -677,8 +677,9 @@
     <div class="api-section">
         <div class="api-inner">
             <label for="modelProvider">Model:</label>
-            <select id="modelProvider" onchange="handleModelChange(this.value)" style="padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:0.85rem;background:white;color:var(--text);cursor:pointer;min-width:120px;">
-                <option value="gemini">Gemini Flash (Cloud)</option>
+            <select id="modelProvider" onchange="handleModelChange(this.value)" style="padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:0.85rem;background:white;color:var(--text);cursor:pointer;min-width:145px;">
+                <option value="gemini-direct">Gemini (Your Key)</option>
+                <option value="gemini">Gemini (Cloud Worker)</option>
                 <option value="ollama">Ollama (Local)</option>
             </select>
             <span id="geminiStatus" style="font-size:0.78rem;padding:4px 10px;border-radius:12px;font-weight:600;background:#d1fae5;color:#065f46;">Ready</span>
@@ -708,7 +709,7 @@
     <div id="personalKeyPanel" style="display:none;background:var(--gold-bg);border-bottom:1px solid var(--gold-light);padding:20px 32px;">
         <div style="max-width:900px;margin:0 auto;">
             <p style="font-size:0.88rem;color:var(--text-secondary);margin-bottom:14px;line-height:1.6;">
-                If the shared API is slow or unavailable, you can use your own free Gemini API key. Your key stays in your browser and is never stored on any server.
+                Use your own free Gemini API key to call Gemini <strong>directly from your browser</strong> — no backend worker needed. Your key stays in your browser and is never sent to any server (it goes straight to Google's API).
             </p>
             <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;">
                 <span style="font-size:0.82rem;color:var(--text-secondary);background:white;padding:6px 12px;border-radius:8px;border:1px solid var(--border);display:inline-flex;align-items:center;gap:6px;">
@@ -891,7 +892,7 @@ Reasoning rules:
         let isLoading = false;
         let selectedFile = null;
         let fileContent = null;
-        let currentProvider = 'gemini';
+        let currentProvider = 'gemini-direct';
         let personalKey = localStorage.getItem('wwb_personal_gemini_key') || '';
         let essayMode = false;
         let sermonMode = false;
@@ -945,16 +946,43 @@ Reasoning rules:
             currentProvider = provider;
             chat = null;
             conversationHistory = [];
+            const status = document.getElementById('geminiStatus');
+            const keyPanel = document.getElementById('personalKeyPanel');
+            const keyArrow = document.getElementById('personalKeyArrow');
 
-            if (provider === 'gemini') {
+            if (provider === 'gemini-direct') {
                 ollamaControls.style.display = 'none';
-                document.getElementById('geminiStatus').style.display = '';
-                apiHint.textContent = 'No setup required — just type and ask.';
+                status.style.display = '';
+                if (personalKey) {
+                    status.textContent = 'Direct (your key)';
+                    status.style.background = '#d1fae5';
+                    status.style.color = '#065f46';
+                } else {
+                    status.textContent = 'Key required';
+                    status.style.background = '#fef3c7';
+                    status.style.color = '#92400e';
+                }
+                apiHint.textContent = 'Uses your own Gemini API key directly from the browser. No backend needed.';
+                // Auto-expand personal key panel
+                keyPanel.style.display = 'block';
+                keyArrow.style.transform = 'rotate(90deg)';
+            } else if (provider === 'gemini') {
+                ollamaControls.style.display = 'none';
+                status.style.display = '';
+                status.textContent = 'Worker';
+                status.style.background = '#dbeafe';
+                status.style.color = '#1e40af';
+                apiHint.textContent = 'Uses the shared Cloudflare Worker with Gemini, Groq & OpenRouter fallbacks.';
+                // Collapse personal key panel (user can still toggle manually)
+                keyPanel.style.display = 'none';
+                keyArrow.style.transform = '';
             } else if (provider === 'ollama') {
                 ollamaControls.style.display = '';
-                document.getElementById('geminiStatus').style.display = 'none';
+                status.style.display = 'none';
                 apiHint.textContent = 'Connects via CORS proxy (start-proxy.bat). For remote access, use a Cloudflare tunnel URL.';
                 checkOllama();
+                keyPanel.style.display = 'none';
+                keyArrow.style.transform = '';
             }
         };
 
@@ -1089,6 +1117,79 @@ Reasoning rules:
             return data.choices[0].message.content;
         }
 
+        async function callGeminiDirect(message, history) {
+            const key = personalKey;
+            if (!key) throw new Error('No personal API key set');
+
+            // Build contents array from history + current message
+            const contents = [];
+            for (const h of history) {
+                contents.push({ role: 'user', parts: [{ text: h.user }] });
+                contents.push({ role: 'model', parts: [{ text: h.assistant }] });
+            }
+            contents.push({ role: 'user', parts: [{ text: message }] });
+
+            // Use gemini-2.0-flash (free tier) — fall back to gemini-1.5-flash if needed
+            const models = ['gemini-2.0-flash', 'gemini-1.5-flash', 'gemini-1.5-pro'];
+            let lastError = null;
+
+            for (const model of models) {
+                const url = 'https://generativelanguage.googleapis.com/v1beta/models/' + model + ':generateContent?key=' + encodeURIComponent(key);
+                try {
+                    const res = await fetch(url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            systemInstruction: {
+                                role: 'user',
+                                parts: [{ text: SYSTEM_PROMPT }]
+                            },
+                            contents: contents,
+                            generationConfig: {
+                                temperature: 0.7,
+                                maxOutputTokens: essayMode || sermonMode || bibleStudyMode ? 8192 : 4096,
+                                topK: 40,
+                                topP: 0.95
+                            },
+                            safetySettings: [
+                                { category: 'HARM_CATEGORY_HARASSMENT', threshold: 'BLOCK_NONE' },
+                                { category: 'HARM_CATEGORY_HATE_SPEECH', threshold: 'BLOCK_NONE' },
+                                { category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT', threshold: 'BLOCK_NONE' },
+                                { category: 'HARM_CATEGORY_DANGEROUS_CONTENT', threshold: 'BLOCK_NONE' }
+                            ]
+                        })
+                    });
+
+                    if (res.ok) {
+                        const data = await res.json();
+                        const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+                        if (!text) throw new Error('Empty response from Gemini');
+                        return { text: text, provider: 'gemini' };
+                    }
+
+                    const errBody = await res.text();
+                    let errMsg = 'Gemini API error (HTTP ' + res.status + ')';
+                    try {
+                        const err = JSON.parse(errBody);
+                        errMsg = err.error?.message || errMsg;
+                    } catch (e) { errMsg = errBody || errMsg; }
+
+                    // If model not found or unavailable, try next model
+                    if (res.status === 404 || (errMsg && errMsg.includes('not found'))) {
+                        lastError = new Error(errMsg);
+                        continue;
+                    }
+                    throw new Error(errMsg);
+                } catch (e) {
+                    lastError = e;
+                    if (e.message && (e.message.includes('Failed to fetch') || e.message.includes('NetworkError'))) {
+                        throw e; // Network errors are fatal, don't retry
+                    }
+                }
+            }
+            throw lastError || new Error('All Gemini models failed');
+        }
+
         userInput.addEventListener('keydown', function(e) {
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
@@ -1113,7 +1214,11 @@ Reasoning rules:
             if ((!message && !selectedFile) || isLoading) return;
 
             if (currentProvider === 'gemini' && WORKER_URL === 'https://YOUR-WORKER-NAME.workers.dev') {
-                addMessage('Please deploy the Cloudflare Worker and update the WORKER_URL in the script. See the deployment instructions in worker.js.', 'error');
+                addMessage('The Cloudflare Worker is not deployed. Switch to "Gemini (Your Key)" and add your own API key below, or deploy the worker and update WORKER_URL.', 'error');
+                return;
+            }
+            if (currentProvider === 'gemini-direct' && !personalKey) {
+                addMessage('Please add your Gemini API key in the "Use your own API key" section below the model selector. Get a free key at <a href="https://aistudio.google.com/apikey" target="_blank" style="color:var(--gold);font-weight:600;">Google AI Studio</a>.', 'error');
                 return;
             }
 
@@ -1144,7 +1249,10 @@ Reasoning rules:
                 let responseText;
                 let essayMarkdown = null;
                 
-                if (currentProvider === 'gemini') {
+                if (currentProvider === 'gemini-direct') {
+                    const directResult = await callGeminiDirect(fullMessage, conversationHistory);
+                    responseText = directResult.text;
+                } else if (currentProvider === 'gemini') {
                     const res = await callWorker(fullMessage, conversationHistory);
                     const data = await res.json();
                     responseText = data.text;
@@ -1177,13 +1285,26 @@ Reasoning rules:
                 conversationHistory.push({ user: fullMessage, assistant: responseText });
             } catch (error) {
                 const msg = error.message || '';
-                if (currentProvider === 'gemini' && (msg.includes('quota') || msg.includes('429') || msg.includes('RESOURCE_EXHAUSTED'))) {
-                    const personalHint = personalKey ? '' : ' You can add your own free key below the model selector.';
-                    addMessage('All providers hit rate limits.' + personalHint, 'error');
+                if (currentProvider === 'gemini-direct') {
+                    if (msg.includes('quota') || msg.includes('429') || msg.includes('RESOURCE_EXHAUSTED')) {
+                        addMessage('Your API key hit its rate limit. Switch to "Gemini (Cloud Worker)" for shared quota, or try again later.', 'error');
+                    } else if (msg.includes('API key not valid')) {
+                        addMessage('Your personal API key is invalid. Please check it in the "Use your own API key" section and make sure you copied it correctly from <a href="https://aistudio.google.com/apikey" target="_blank" style="color:var(--gold);font-weight:600;">Google AI Studio</a>.', 'error');
+                    } else if (msg.includes('API key expired')) {
+                        addMessage('Your personal API key has expired. Please create a new one at <a href="https://aistudio.google.com/apikey" target="_blank" style="color:var(--gold);font-weight:600;">Google AI Studio</a>.', 'error');
+                    } else {
+                        addMessage('Direct Gemini error: ' + msg, 'error');
+                    }
                 } else if (currentProvider === 'gemini') {
-                    addMessage('Error communicating with AI: ' + msg, 'error');
+                    if (msg.includes('quota') || msg.includes('429') || msg.includes('RESOURCE_EXHAUSTED')) {
+                        addMessage('Cloud Worker hit rate limits. Switch to "Gemini (Your Key)" to use your own API key and bypass shared limits.', 'error');
+                    } else {
+                        addMessage('Worker error: ' + msg, 'error');
+                    }
                 } else if (currentProvider === 'ollama' && (msg.includes('Failed to fetch') || msg.includes('NetworkError') || msg.includes('ECONNREFUSED') || msg.includes('self-signed'))) {
                     addMessage('Cannot connect to Ollama. Make sure: (1) Ollama is running — ollama serve, (2) Proxy is running — start-proxy.bat, (3) The URL field matches your setup (https://localhost:8443 for local, or Cloudflare tunnel URL for remote).', 'error');
+                } else if (currentProvider === 'ollama') {
+                    addMessage('Ollama error: ' + msg, 'error');
                 } else {
                     addMessage('Error: ' + msg, 'error');
                 }
@@ -1527,7 +1648,7 @@ Reasoning rules:
             }
             personalKey = val;
             localStorage.setItem('wwb_personal_gemini_key', val);
-            msg.textContent = 'Key saved! It will be used if the shared API is unavailable.';
+            msg.textContent = 'Key saved! Now calling Gemini directly from your browser — no worker needed.';
             msg.style.color = '#065f46';
             msg.style.display = 'block';
             updatePersonalKeyBadge();
@@ -1539,7 +1660,7 @@ Reasoning rules:
             localStorage.removeItem('wwb_personal_gemini_key');
             document.getElementById('personalApiKey').value = '';
             const msg = document.getElementById('personalKeyMsg');
-            msg.textContent = 'Key removed. Using shared API.';
+            msg.textContent = 'Key removed. Using shared API via Cloudflare Worker.';
             msg.style.color = 'var(--text-muted)';
             msg.style.display = 'block';
             updatePersonalKeyBadge();
@@ -1549,12 +1670,27 @@ Reasoning rules:
         function updatePersonalKeyBadge() {
             const badge = document.getElementById('personalKeyBadge');
             const label = document.getElementById('personalKeyLabel');
+            const status = document.getElementById('geminiStatus');
             if (personalKey) {
                 badge.style.display = 'inline';
                 label.textContent = 'Your own API key';
+                if (currentProvider === 'gemini-direct') {
+                    status.textContent = 'Direct (your key)';
+                    status.style.background = '#d1fae5';
+                    status.style.color = '#065f46';
+                }
             } else {
                 badge.style.display = 'none';
                 label.textContent = 'Use your own API key';
+                if (currentProvider === 'gemini-direct') {
+                    status.textContent = 'Key required';
+                    status.style.background = '#fef3c7';
+                    status.style.color = '#92400e';
+                } else if (currentProvider === 'gemini') {
+                    status.textContent = 'Worker';
+                    status.style.background = '#dbeafe';
+                    status.style.color = '#1e40af';
+                }
             }
         }
         // Handle query parameter for pre-populating questions
@@ -1574,7 +1710,9 @@ Reasoning rules:
                 console.error('Error processing question parameter:', e);
             }
         }
-        updatePersonalKeyBadge();
+        // Set initial state for gemini-direct (default)
+        window.handleModelChange('gemini-direct');
+        document.getElementById('modelProvider').value = 'gemini-direct';
 
     </script>
 </body>

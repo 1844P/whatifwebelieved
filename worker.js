@@ -178,11 +178,13 @@ async function serveStatic(request) {
   const url = new URL(request.url);
   const path = url.pathname; // e.g. /agent/ or /agent/index.html or /agent/wallpaper-pitons.svg
 
-  // Fetch from GitHub Pages
-  const originUrl = `${GITHUB_PAGES_BASE}${path}`;
+  // Fetch from GitHub Pages with cache buster to bypass Fastly CDN cache
+  const cacheBuster = `_cb=${Date.now()}`;
+  const separator = path.includes('?') ? '&' : '?';
+  const originUrl = `${GITHUB_PAGES_BASE}${path}${separator}${cacheBuster}`;
   const originResponse = await fetch(originUrl, {
     method: 'GET',
-    headers: { 'Cache-Control': 'no-cache' },
+    headers: { 'Cache-Control': 'no-cache', 'Pragma': 'no-cache' },
   });
 
   if (!originResponse.ok) {
