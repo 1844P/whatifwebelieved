@@ -1605,6 +1605,12 @@ Reasoning rules:
         let lastEssayContent = null;
         let lastBibleStudyContent = null;
 
+        // Helper to determine if a file should be treated as text
+        function isTextFile(file) {
+            return file.type.startsWith('text/') ||
+                   ['.txt', '.md'].some(ext => file.name.toLowerCase().endsWith(ext));
+        }
+
         const messagesDiv = document.getElementById('messages');
         const scrollBottomBtn = document.getElementById('scrollBottomBtn');
         const userInput = document.getElementById('userInput');
@@ -1733,10 +1739,14 @@ Reasoning rules:
             filePreview.style.display = 'flex';
 
             const reader = new FileReader();
+            if (isTextFile(file)) {
+                reader.readAsText(file);
+            } else {
+                reader.readAsDataURL(file);
+            }
             reader.onload = function(e) {
                 fileContent = e.target.result;
             };
-            reader.readAsDataURL(file);
         }
 
         function formatFileSize(bytes) {
@@ -1937,13 +1947,14 @@ Reasoning rules:
             if (welcome) welcome.style.display = 'none';
 
             let fullMessage = message;
-            const isBinaryFile = selectedFile && (selectedFile.type.startsWith('image/') || selectedFile.type === 'application/pdf');
+            const isBinaryFile = selectedFile && !isTextFile(selectedFile);
             
             if (selectedFile && fileContent) {
                 if (!isBinaryFile) {
                     fullMessage = message ? `${message}\n\n--- File Content (${selectedFile.name}) ---\n${fileContent}` : `Please analyze the following file (${selectedFile.name}):\n\n${fileContent}`;
                 } else {
-                    fullMessage = message || `Please analyze this ${selectedFile.type.startsWith('image/') ? 'image' : 'PDF document'}.`;
+                    const fileType = selectedFile.type.startsWith('image/') ? 'image' : selectedFile.type === 'application/pdf' ? 'PDF document' : 'document';
+                    fullMessage = message || `Please analyze this ${fileType}.`;
                 }
             }
 
@@ -2403,6 +2414,29 @@ Reasoning rules:
         window.handleModelChange('gemini');
         document.getElementById('modelProvider').value = 'gemini';
 
+        // Handle query parameter for pre-populating questions
+        const urlParams = new URLSearchParams(window.location.search);
+        const questionParam = urlParams.get('q');
+        if (questionParam) {
+            try {
+                // Decode the parameter (it might be URL-encoded)
+                const decodedQuestion = decodeURIComponent(questionParam);
+                if (userInput) {
+                    // Set the value
+                    userInput.value = decodedQuestion;
+                    // Adjust textarea height based on content
+                    userInput.style.height = 'auto';
+                    userInput.style.height = Math.min(userInput.scrollHeight, 150) + 'px';
+                    // Focus the textarea
+                    userInput.focus();
+                } else {
+                    console.error('userInput element not found');
+                }
+            } catch (e) {
+                console.error('Error processing question parameter:', e);
+            }
+        }
+
         // ============================================================
         // PARTICLE SYSTEM — "Truth Sparks" floating golden background
         // ============================================================
@@ -2550,7 +2584,6 @@ Reasoning rules:
             }
             return html;
         }
-
         function typewriterDisplay(element, text, callback) {
             if (!typewriterEnabled || text.length > 4000) {
                 element.textContent = text;
@@ -2716,8 +2749,6 @@ Reasoning rules:
             }
             messagesDiv.scrollTop = messagesDiv.scrollHeight;
         }
-        window.enhancedAddMessage = enhancedAddMessage;
-
-    </script>
+        window.enhancedAddMessage = enhancedAddMessage;    </script>
 </body>
 </html>
