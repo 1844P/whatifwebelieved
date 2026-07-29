@@ -873,7 +873,7 @@ Reasoning rules:
         let isLoading = false;
         let selectedFile = null;
         let fileContent = null;
-        let currentProvider = 'gemini-direct';
+        let currentProvider = 'gemini';
         let personalKey = localStorage.getItem('wwb_personal_gemini_key') || '';
         let essayMode = false;
         let sermonMode = false;
@@ -1667,10 +1667,10 @@ Reasoning rules:
                 console.error('Error processing question parameter:', e);
             }
         }
-        // Set initial state for Ollama (default)
-        currentProvider = 'ollama';
-        window.handleModelChange('ollama');
-        document.getElementById('modelProvider').value = 'ollama';
+        // Set initial state for Gemini Cloud Worker (default)
+        currentProvider = 'gemini';
+        window.handleModelChange('gemini');
+        document.getElementById('modelProvider').value = 'gemini';
 
     </script>
 </body>
