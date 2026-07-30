@@ -1095,6 +1095,30 @@
         }
         /* Active mode indicators via inline styles from JS */
 
+        /* Mode hint — elegant toggle instruction */
+        .mode-hint {
+            text-align: center;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            letter-spacing: 0.3px;
+            margin-top: 10px;
+            padding: 4px 0;
+            opacity: 0.6;
+            transition: opacity 0.4s ease, color 0.4s ease;
+            user-select: none;
+        }
+        .mode-hint.active {
+            opacity: 0.9;
+            color: var(--gold);
+            font-weight: 500;
+        }
+        .mode-hint.sermon-active {
+            color: var(--crimson);
+        }
+        .mode-hint.bible-active {
+            color: var(--green);
+        }
+
         /* Clear history button subtle refinement */
         .actions .btn-secondary:last-child:hover svg {
             animation: float 1.5s ease-in-out infinite;
@@ -1304,6 +1328,7 @@
                     Clear History
                 </button>
             </div>
+            <div class="mode-hint" id="modeHint">Click a mode to begin · Click again to clear</div>
         </div>
     </div>
 
@@ -1984,6 +2009,7 @@ Reasoning rules:
             const bibleBtn = document.getElementById('bibleStudyToggle');
             const textarea = document.getElementById('userInput');
             const downloadBar = document.getElementById('downloadBar');
+            const modeHint = document.getElementById('modeHint');
 
             // Store original button content on first call
             if (!essayBtn._origHtml) {
@@ -1995,38 +2021,44 @@ Reasoning rules:
             function resetBtn(btn) {
                 btn.removeAttribute('style');
                 btn.innerHTML = btn._origHtml;
+                btn.title = 'Click to activate';
             }
             resetBtn(essayBtn);
             resetBtn(sermonBtn);
             resetBtn(bibleBtn);
+            modeHint.className = 'mode-hint';
+            modeHint.textContent = 'Click a mode to begin \u00b7 Click again to clear';
 
-            function activateBtn(btn, bg, textColor, border, shadow) {
+            function activateBtn(btn, bg, textColor, border, shadow, hintClass, hintText) {
                 btn.style.background = bg;
                 btn.style.color = textColor;
                 btn.style.borderColor = border;
                 btn.style.boxShadow = shadow;
                 btn.style.position = 'relative';
                 btn.innerHTML = btn._origHtml + '<span class="mode-exit" aria-label="Exit mode">&times;</span>';
+                btn.title = 'Click to deactivate';
+                modeHint.className = 'mode-hint active' + (hintClass ? ' ' + hintClass : '');
+                modeHint.textContent = hintText;
             }
 
             switch (mode) {
                 case 'essay':
                     essayMode = true;
-                    activateBtn(essayBtn, 'linear-gradient(135deg, var(--gold) 0%, #7a5c10 100%)', 'white', 'var(--gold)', '0 2px 8px rgba(154,117,32,0.3)');
+                    activateBtn(essayBtn, 'linear-gradient(135deg, var(--gold) 0%, #7a5c10 100%)', 'white', 'var(--gold)', '0 2px 8px rgba(154,117,32,0.3)', '', 'Essay Mode active \u00b7 Click the button or \u00d7 to clear');
                     textarea.placeholder = 'Describe your essay topic... (e.g. "Write an essay on the investigative judgment and its biblical basis")';
                     if (lastEssayContent) showDownloadBar('Essay ready', false);
                     else downloadBar.style.display = 'none';
                     break;
                 case 'sermon':
                     sermonMode = true;
-                    activateBtn(sermonBtn, 'linear-gradient(135deg, #7a1a2e 0%, #9a2a3e 100%)', 'white', 'var(--crimson)', '0 2px 8px rgba(122,26,46,0.3)');
+                    activateBtn(sermonBtn, 'linear-gradient(135deg, #7a1a2e 0%, #9a2a3e 100%)', 'white', 'var(--crimson)', '0 2px 8px rgba(122,26,46,0.3)', 'sermon-active', 'Sermon Mode active \u00b7 Click the button or \u00d7 to clear');
                     textarea.placeholder = 'Describe your sermon topic... (e.g. "Write a sermon on the sanctuary and the hope of the believer")';
                     if (lastSermonContent) showDownloadBar('Sermon ready', true);
                     else downloadBar.style.display = 'none';
                     break;
                 case 'bible':
                     bibleStudyMode = true;
-                    activateBtn(bibleBtn, 'linear-gradient(135deg, #2d6a4f 0%, #1b4d32 100%)', 'white', '#2d6a4f', '0 2px 8px rgba(45,106,79,0.3)');
+                    activateBtn(bibleBtn, 'linear-gradient(135deg, #2d6a4f 0%, #1b4d32 100%)', 'white', '#2d6a4f', '0 2px 8px rgba(45,106,79,0.3)', 'bible-active', 'Bible Study active \u00b7 Click the button or \u00d7 to clear');
                     textarea.placeholder = "Describe your Bible study topic... (e.g. \"Prepare a study on John 3:16 and God's love\")";
                     if (lastBibleStudyContent) showDownloadBar('Bible study ready', false);
                     else downloadBar.style.display = 'none';
