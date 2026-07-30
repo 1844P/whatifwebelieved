@@ -9,7 +9,7 @@
     <meta name="version" content="2026-07-29-v3">
     <title>Adventist Theology & Christian Philosophy Agent</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&family=Merriweather:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --cream: #faf8f4;
@@ -467,13 +467,52 @@
         .message.user .message-content { color: white; }
         .message.assistant .message-content { color: var(--text); }
         .message.assistant .message-content p, .message.assistant .message-content li {
-            font-family: 'Playfair Display', Georgia, 'Times New Roman', serif;
-            font-size: 1.05rem;
-            line-height: 1.75;
+            font-family: 'Merriweather', Georgia, 'Times New Roman', serif;
+            font-size: 1.1rem;
+            font-weight: 400;
+            line-height: 1.85;
+            letter-spacing: 0.01em;
             color: #1a1410;
+            margin-bottom: 14px;
+            max-width: 68ch;
         }
-        .message.assistant .message-content strong { color: var(--crimson); }
+        .message.assistant .message-content strong { color: var(--crimson); font-weight: 700; }
         .message.assistant .message-content em { color: var(--text-secondary); }
+        .message.assistant .message-content ul, 
+        .message.assistant .message-content ol {
+            padding-left: 1.5em;
+            margin-bottom: 14px;
+        }
+        .message.assistant .message-content li {
+            margin-bottom: 6px;
+        }
+        .message.assistant .message-content a {
+            color: var(--amber);
+            text-decoration: underline;
+            text-underline-offset: 2px;
+            text-decoration-thickness: 1px;
+            transition: color 0.2s;
+        }
+        .message.assistant .message-content a:hover {
+            color: var(--crimson);
+        }
+        .message.assistant .message-content blockquote {
+            border-left: 3px solid var(--gold-light);
+            padding: 8px 16px;
+            margin: 14px 0;
+            color: var(--text-secondary);
+            font-style: italic;
+            background: rgba(184, 134, 11, 0.04);
+            border-radius: 0 8px 8px 0;
+        }
+        .message.assistant .message-content code {
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            font-size: 0.9rem;
+            background: var(--cream);
+            padding: 1px 5px;
+            border-radius: 4px;
+            color: var(--crimson);
+        }
 
         /* COPY BUTTON */
         .copy-btn {
