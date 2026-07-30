@@ -26,6 +26,9 @@
             --border: #e8e0d4;
             --shadow: rgba(44, 24, 16, 0.08);
             --shadow-lg: rgba(44, 24, 16, 0.12);
+            --green: #2d6a4f;
+            --green-light: #40916c;
+            --green-bg: #edf7f0;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -48,10 +51,25 @@
 
         /* HEADER */
         .header {
-            background: white;
+            background: linear-gradient(135deg, #ffffff 0%, var(--gold-bg) 50%, #ffffff 100%);
+            background-size: 200% 200%;
             padding: 24px 32px;
             border-bottom: 1px solid var(--border);
             box-shadow: 0 2px 8px var(--shadow);
+            animation: gradientShift 8s ease infinite;
+            position: relative;
+            overflow: hidden;
+        }
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--gold-light), var(--crimson), var(--gold-light));
+            background-size: 200% 100%;
+            animation: shimmer 4s linear infinite;
         }
         .header-inner {
             max-width: 900px;
@@ -67,6 +85,10 @@
             color: var(--crimson);
             font-weight: 700;
             line-height: 1.2;
+            background: linear-gradient(135deg, var(--crimson) 0%, var(--crimson-light) 50%, var(--gold) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
         .header-text p {
             font-size: 0.85rem;
@@ -250,6 +272,25 @@
             margin-right: auto;
             border-bottom-left-radius: 6px;
             box-shadow: 0 2px 8px var(--shadow);
+            position: relative;
+        }
+        .message.assistant::before {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            border-radius: 18px;
+            border-bottom-left-radius: 8px;
+            background: linear-gradient(135deg, var(--gold-light), transparent, var(--crimson-bg));
+            z-index: -1;
+            opacity: 0.4;
+            transition: opacity 0.4s ease;
+        }
+        .message.assistant:hover::before {
+            opacity: 0.8;
+        }
+        .message.assistant:hover {
+            box-shadow: 0 4px 16px var(--shadow-lg);
+            transform: translateY(-1px);
         }
         .message.error {
             background: #fff5f5;
@@ -342,7 +383,8 @@
         .input-wrapper textarea:focus {
             outline: none;
             border-color: var(--gold);
-            box-shadow: 0 0 0 3px rgba(200, 162, 78, 0.15);
+            box-shadow: 0 0 0 3px rgba(200, 162, 78, 0.15), 0 0 20px rgba(200, 162, 78, 0.08);
+            animation: borderGlow 2s ease-in-out infinite;
         }
         .btn {
             padding: 14px 24px;
@@ -803,15 +845,24 @@
         #geminiStatus {
             transition: all 0.3s ease;
         }
+        #geminiStatus:not(:empty) {
+            animation: fadeInScale 0.3s ease;
+        }
 
         /* Send button enhanced */
         #sendBtn:not(:disabled) {
             animation: pulseGlow 3s ease-in-out infinite;
+            background: linear-gradient(135deg, var(--crimson) 0%, #5a1020 25%, var(--crimson-light) 50%, var(--crimson) 75%, #5a1020 100%);
+            background-size: 300% 300%;
+            animation: pulseGlow 3s ease-in-out infinite, shimmer 4s linear infinite;
         }
         #sendBtn:not(:disabled):hover {
-            animation: none;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 24px rgba(122, 26, 46, 0.45);
+            animation: shimmer 2s linear infinite !important;
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 6px 24px rgba(122, 26, 46, 0.45), 0 0 40px rgba(154, 117, 32, 0.15);
+        }
+        #sendBtn:not(:disabled):active {
+            transform: translateY(0) scale(0.97);
         }
 
         /* Welcome icon enhanced glow */
@@ -831,6 +882,21 @@
         /* Download bar entrance */
         .download-bar {
             animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        .download-bar::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            background-size: 200% 100%;
+            animation: shimmer 3s linear infinite;
+            pointer-events: none;
+        }
+        .download-bar.crimson::after {
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+            background-size: 200% 100%;
         }
 
         /* File upload area glow on drag */
@@ -852,15 +918,48 @@
         .messages::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
         .messages::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
 
-        /* ENHANCE BIBLE STUDY BUTTON VISIBILITY */
+        /* Mode toggle buttons - base hover */
+        #essayToggle:hover,
+        #sermonToggle:hover,
+        #bibleStudyToggle:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 3px 10px var(--shadow-lg);
+        }
+        #essayToggle {
+            border-left: 3px solid transparent;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        #sermonToggle {
+            border-left: 3px solid transparent;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
         #bibleStudyToggle {
-            box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+            border-left: 3px solid transparent;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        /* Active mode indicators via inline styles from JS */
+
+        /* Clear history button subtle refinement */
+        .actions .btn-secondary:last-child:hover svg {
+            animation: float 1.5s ease-in-out infinite;
         }
 
-        #bibleStudyToggle:hover {
-            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-            transform: translateY(-1px);
+        /* Key badge entrance */
+        #personalKeyBadge {
+            animation: fadeInScale 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
+
+        /* Home button glow on hover */
+        .header-inner > a[href="../index.html"]:hover svg {
+            animation: float 1.5s ease-in-out infinite;
+        }
+
+        /* Page entrance */
+        .header { animation: fadeInUp 0.5s ease both; }
+        .api-section { animation: fadeInUp 0.5s ease 0.1s both; }
+        #personalKeySection { animation: fadeInUp 0.5s ease 0.15s both; }
+        .chat-container { animation: fadeInUp 0.5s ease 0.2s both; }
+        .footer { animation: fadeInUp 0.5s ease 0.3s both; }
 
         @media (max-width: 640px) {
             .header { padding: 16px 20px; }
