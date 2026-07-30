@@ -621,6 +621,230 @@
         .loading-dots span:nth-child(2) { animation-delay: -0.16s; }
         @keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        /* === ANIMATED ENHANCEMENTS === */
+        @keyframes breathe {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.85; }
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-6px); }
+        }
+        @keyframes floatSlow {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-4px) rotate(1deg); }
+            66% { transform: translateY(2px) rotate(-1deg); }
+        }
+        @keyframes shimmer {
+            0% { background-position: -200% center; }
+            100% { background-position: 200% center; }
+        }
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 2px 8px rgba(122, 26, 46, 0.25); }
+            50% { box-shadow: 0 2px 20px rgba(122, 26, 46, 0.45), 0 0 30px rgba(154, 117, 32, 0.15); }
+        }
+        @keyframes pulseGold {
+            0%, 100% { box-shadow: 0 2px 6px rgba(154, 117, 32, 0.35); }
+            50% { box-shadow: 0 2px 16px rgba(154, 117, 32, 0.55), 0 0 24px rgba(154, 117, 32, 0.15); }
+        }
+        @keyframes ripple {
+            from { transform: scale(0); opacity: 0.6; }
+            to { transform: scale(4); opacity: 0; }
+        }
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(30px) scale(0.97); }
+            to { opacity: 1; transform: translateX(0) scale(1); }
+        }
+        @keyframes slideInLeft {
+            from { opacity: 0; transform: translateX(-30px) scale(0.97); }
+            to { opacity: 1; transform: translateX(0) scale(1); }
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeInScale {
+            from { opacity: 0; transform: scale(0.92); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        @keyframes typingDot {
+            0%, 80%, 100% { transform: scale(0.4); opacity: 0.3; }
+            40% { transform: scale(1); opacity: 1; }
+        }
+        @keyframes glowPulse {
+            0%, 100% { filter: drop-shadow(0 0 4px rgba(154, 117, 32, 0.3)); }
+            50% { filter: drop-shadow(0 0 12px rgba(154, 117, 32, 0.6)); }
+        }
+        @keyframes borderGlow {
+            0%, 100% { border-color: var(--gold-light); box-shadow: 0 0 0 rgba(154, 117, 32, 0); }
+            50% { border-color: var(--gold); box-shadow: 0 0 12px rgba(154, 117, 32, 0.2); }
+        }
+        @keyframes sweepGradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        /* Pulse ring for status indicator */
+        @keyframes ringPulse {
+            0% { box-shadow: 0 0 0 0 rgba(6, 95, 70, 0.5); }
+            100% { box-shadow: 0 0 0 6px rgba(6, 95, 70, 0); }
+        }
+        @keyframes ringPulseAmber {
+            0% { box-shadow: 0 0 0 0 rgba(146, 64, 14, 0.5); }
+            100% { box-shadow: 0 0 0 6px rgba(146, 64, 14, 0); }
+        }
+        @keyframes ringPulseBlue {
+            0% { box-shadow: 0 0 0 0 rgba(30, 64, 175, 0.4); }
+            100% { box-shadow: 0 0 0 6px rgba(30, 64, 175, 0); }
+        }
+        .animate-breathe { animation: breathe 3s ease-in-out infinite; }
+        .animate-float { animation: float 4s ease-in-out infinite; }
+        .animate-float-slow { animation: floatSlow 6s ease-in-out infinite; }
+        .animate-shimmer {
+            background-size: 200% auto;
+            animation: shimmer 3s linear infinite;
+        }
+        .animate-pulse-glow { animation: pulseGlow 2s ease-in-out infinite; }
+        .animate-pulse-gold { animation: pulseGold 2.5s ease-in-out infinite; }
+        .animate-border-glow { animation: borderGlow 2s ease-in-out infinite; }
+        .animate-glow-pulse { animation: glowPulse 2.5s ease-in-out infinite; }
+        .animate-ring-pulse { animation: ringPulse 2s ease-in-out infinite; }
+        .animate-ring-pulse-amber { animation: ringPulseAmber 2s ease-in-out infinite; }
+        .animate-ring-pulse-blue { animation: ringPulseBlue 2s ease-in-out infinite; }
+
+        /* Message entrance animation overrides */
+        .message.assistant {
+            animation: slideInLeft 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .message.user {
+            animation: slideInRight 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .message.error {
+            animation: fadeInScale 0.3s ease;
+        }
+
+        /* Stagger entrance for welcome section children */
+        .welcome .welcome-icon { animation: fadeInScale 0.6s ease 0.1s both; }
+        .welcome h2 { animation: fadeInUp 0.5s ease 0.2s both; }
+        .welcome > p { animation: fadeInUp 0.5s ease 0.3s both; }
+        .welcome .scope { animation: fadeInUp 0.5s ease 0.4s both; }
+        .welcome .suggested-questions { animation: fadeInUp 0.5s ease 0.5s both; }
+
+        /* Chip enhancements */
+        .chip {
+            position: relative;
+            overflow: hidden;
+        }
+        .chip::after {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            border-radius: 22px;
+            background: linear-gradient(135deg, var(--gold), var(--crimson), var(--gold));
+            background-size: 300% 300%;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            animation: sweepGradient 3s ease infinite;
+        }
+        .chip:hover::after {
+            opacity: 1;
+        }
+
+        /* Ripple container for buttons */
+        .ripple-btn {
+            position: relative;
+            overflow: hidden;
+        }
+        .ripple-effect {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.4);
+            transform: scale(0);
+            animation: ripple 0.6s ease-out;
+            pointer-events: none;
+        }
+
+        /* Floating particles canvas */
+        #particleCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* Ensure content sits above canvas */
+        .header, .api-section, #personalKeySection, .chat-container, .footer {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Typewriter cursor blink */
+        .typewriter-cursor::after {
+            content: '|';
+            animation: blink 0.8s step-end infinite;
+            color: var(--gold);
+            font-weight: 300;
+        }
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        /* Status indicator pulse */
+        #geminiStatus {
+            transition: all 0.3s ease;
+        }
+
+        /* Send button enhanced */
+        #sendBtn:not(:disabled) {
+            animation: pulseGlow 3s ease-in-out infinite;
+        }
+        #sendBtn:not(:disabled):hover {
+            animation: none;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 24px rgba(122, 26, 46, 0.45);
+        }
+
+        /* Welcome icon enhanced glow */
+        .welcome-icon {
+            position: relative;
+        }
+        .welcome-icon::before {
+            content: '';
+            position: absolute;
+            inset: -8px;
+            border-radius: 24px;
+            background: linear-gradient(135deg, var(--gold-light), transparent, var(--crimson-bg));
+            opacity: 0.3;
+            animation: breathe 4s ease-in-out infinite;
+        }
+
+        /* Download bar entrance */
+        .download-bar {
+            animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* File upload area glow on drag */
+        .file-upload-area.dragover {
+            animation: borderGlow 0.6s ease-in-out infinite;
+        }
+
+        /* Loading indicator enhancement */
+        .loading.active {
+            animation: fadeInScale 0.3s ease;
+        }
+        .loading-dots span {
+            animation: typingDot 1.4s infinite ease-in-out;
+        }
 
         /* SCROLLBAR */
         .messages::-webkit-scrollbar { width: 6px; }
@@ -650,6 +874,8 @@
     </style>
 </head>
 <body>
+    <!-- Animated particle canvas background -->
+    <canvas id="particleCanvas"></canvas>
     <div class="header">
         <div class="header-inner">
             <a href="../index.html" style="text-decoration:none;display:inline-flex;align-items:center;gap:8px;padding:8px 16px;background:linear-gradient(135deg, var(--crimson) 0%, #5a1020 100%);color:white;border-radius:8px;font-size:0.85rem;font-weight:600;transition:all 0.3s;box-shadow:0 2px 10px rgba(122,26,46,0.3);border:1px solid rgba(255,255,255,0.1);flex-shrink:0;" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 6px 20px rgba(122,26,46,0.4)'" onmouseout="this.style.transform='';this.style.boxShadow='0 2px 10px rgba(122,26,46,0.3)'">
@@ -1349,6 +1575,12 @@ Reasoning rules:
         window.downloadAsDoc = downloadAsDoc;
 
         function addMessage(content, type, essayMarkdown) {
+            // Delegate to enhanced version with typewriter effect if available
+            if (window.enhancedAddMessage) {
+                window.enhancedAddMessage(content, type, essayMarkdown);
+                return;
+            }
+            // Fallback original implementation
             const div = document.createElement('div');
             div.className = 'message ' + type;
 
@@ -1610,6 +1842,289 @@ Reasoning rules:
         currentProvider = 'gemini-direct';
         window.handleModelChange('gemini-direct');
         document.getElementById('modelProvider').value = 'gemini-direct';
+
+        // ============================================================
+        // PARTICLE SYSTEM — "Truth Sparks" floating golden background
+        // ============================================================
+        (function initParticles() {
+            const canvas = document.getElementById('particleCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            let particles = [];
+            let animId = null;
+
+            function resizeCanvas() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+            window.addEventListener('resize', resizeCanvas);
+            resizeCanvas();
+
+            // Create particles - fewer on mobile for perf
+            const isMobile = window.innerWidth < 640;
+            const count = isMobile ? 25 : 55;
+
+            for (let i = 0; i < count; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    size: 1.5 + Math.random() * 3,
+                    speedX: (Math.random() - 0.5) * 0.3,
+                    speedY: -(0.15 + Math.random() * 0.35),
+                    opacity: 0.1 + Math.random() * 0.5,
+                    opacitySpeed: 0.003 + Math.random() * 0.008,
+                    phase: Math.random() * Math.PI * 2,
+                    wobble: Math.random() * 0.5,
+                    hue: 38 + Math.random() * 15, // gold-amber range
+                });
+            }
+
+            function drawParticle(p) {
+                const gradient = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.size * 3);
+                gradient.addColorStop(0, 'rgba(255, 215, 140, ' + (p.opacity * 0.8) + ')');
+                gradient.addColorStop(0.4, 'rgba(200, 162, 78, ' + (p.opacity * 0.3) + ')');
+                gradient.addColorStop(1, 'rgba(200, 162, 78, 0)');
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size * 3, 0, Math.PI * 2);
+                ctx.fillStyle = gradient;
+                ctx.fill();
+
+                // Core dot
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size * 0.6, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(255, 235, 200, ' + (p.opacity * 0.9) + ')';
+                ctx.fill();
+            }
+
+            function connectParticles() {
+                const maxDist = 120;
+                for (let i = 0; i < particles.length; i++) {
+                    for (let j = i + 1; j < particles.length; j++) {
+                        const dx = particles[i].x - particles[j].x;
+                        const dy = particles[i].y - particles[j].y;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+                        if (dist < maxDist) {
+                            const opacity = (1 - dist / maxDist) * 0.12;
+                            ctx.beginPath();
+                            ctx.moveTo(particles[i].x, particles[i].y);
+                            ctx.lineTo(particles[j].x, particles[j].y);
+                            ctx.strokeStyle = 'rgba(200, 162, 78, ' + opacity + ')';
+                            ctx.lineWidth = 0.6;
+                            ctx.stroke();
+                        }
+                    }
+                }
+            }
+
+            function animateParticles() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                for (const p of particles) {
+                    // Movement
+                    p.x += p.speedX + Math.sin(p.phase) * p.wobble * 0.2;
+                    p.y += p.speedY;
+
+                    // Opacity oscillation
+                    p.opacity += p.opacitySpeed;
+                    if (p.opacity > 0.7 || p.opacity < 0.08) p.opacitySpeed *= -1;
+
+                    // Phase
+                    p.phase += 0.01;
+
+                    // Wrap around
+                    if (p.y < -10) { p.y = canvas.height + 10; p.x = Math.random() * canvas.width; }
+                    if (p.x < -10) p.x = canvas.width + 10;
+                    if (p.x > canvas.width + 10) p.x = -10;
+
+                    drawParticle(p);
+                }
+                connectParticles();
+
+                animId = requestAnimationFrame(animateParticles);
+            }
+
+            // Stop animation when tab is hidden (performance)
+            document.addEventListener('visibilitychange', function() {
+                if (document.hidden && animId) {
+                    cancelAnimationFrame(animId);
+                    animId = null;
+                } else if (!document.hidden && !animId) {
+                    animateParticles();
+                }
+            });
+
+            animateParticles();
+        })();
+
+        // ============================================================
+        // TYPEWRITER EFFECT for assistant messages
+        // ============================================================
+        let typewriterEnabled = true;
+        let typewriterSpeed = 18; // ms per character
+        let typewriterId = 0;
+
+        function typewriterDisplay(element, text, callback) {
+            if (!typewriterEnabled || text.length > 4000) {
+                element.textContent = text;
+                if (callback) callback();
+                return;
+            }
+            const thisId = ++typewriterId;
+            let index = 0;
+            element.textContent = '';
+            element.classList.add('typewriter-cursor');
+
+            function typeChar() {
+                // Stop if another typewriter started or element detached
+                if (thisId !== typewriterId || !document.contains(element)) {
+                    element.classList.remove('typewriter-cursor');
+                    if (!document.contains(element) && callback) callback();
+                    return;
+                }
+                if (index >= text.length) {
+                    element.classList.remove('typewriter-cursor');
+                    if (callback) callback();
+                    return;
+                }
+                const batchSize = text.length > 1000 ? 3 : 1;
+                const chunk = text.slice(index, index + batchSize);
+                element.textContent += chunk;
+                index += batchSize;
+                // Scroll to bottom, but only if user isn't scrolled up
+                const distFromBottom = messagesDiv.scrollHeight - messagesDiv.scrollTop - messagesDiv.clientHeight;
+                if (distFromBottom < 80) {
+                    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+                }
+
+                const adaptiveDelay = text.length > 2000 ? Math.min(typewriterSpeed * 0.6, 6) : typewriterSpeed;
+                setTimeout(typeChar, adaptiveDelay);
+            }
+            typeChar();
+        }
+
+        // ============================================================
+        // RIPPLE EFFECT for all .btn elements
+        // ============================================================
+        function addRippleEffect() {
+            document.querySelectorAll('.btn, .download-bar-btn, .chip, .btn-gemini, .header-inner > a[href]').forEach(function(el) {
+                el.classList.add('ripple-btn');
+                el.addEventListener('click', function(e) {
+                    const rect = this.getBoundingClientRect();
+                    const size = Math.max(rect.width, rect.height);
+                    const x = e.clientX - rect.left - size / 2;
+                    const y = e.clientY - rect.top - size / 2;
+                    const ripple = document.createElement('span');
+                    ripple.className = 'ripple-effect';
+                    ripple.style.width = ripple.style.height = size + 'px';
+                    ripple.style.left = x + 'px';
+                    ripple.style.top = y + 'px';
+                    this.appendChild(ripple);
+                    ripple.addEventListener('animationend', function() { ripple.remove(); });
+                });
+            });
+        }
+        // Run after DOM is ready; also observe for dynamically added buttons
+        addRippleEffect();
+        const rippleObserver = new MutationObserver(function() { addRippleEffect(); });
+        rippleObserver.observe(document.body, { childList: true, subtree: true });
+
+        // ============================================================
+        // ENHANCED addMessage with typewriter animation
+        // ============================================================
+        function enhancedAddMessage(content, type, essayMarkdown) {
+            const div = document.createElement('div');
+            div.className = 'message ' + type;
+
+            const label = document.createElement('div');
+            label.className = 'message-label';
+
+            const icons = {
+                user: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>',
+                assistant: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>',
+                error: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>'
+            };
+
+            label.innerHTML = icons[type] + (type === 'user' ? 'You' : type === 'assistant' ? 'Agent' : 'Error');
+
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'message-content';
+            if (type === 'assistant' && typewriterEnabled && content.length <= 4000) {
+                contentDiv.textContent = '';
+            } else {
+                contentDiv.textContent = content;
+            }
+
+            div.appendChild(label);
+            div.appendChild(contentDiv);
+
+            if (type === 'assistant') {
+                const btnContainer = document.createElement('div');
+                btnContainer.className = 'btn-container';
+                btnContainer.style.cssText = 'display:flex;justify-content:space-between;align-items:center;margin-top:12px;flex-wrap:wrap;gap:8px;';
+                const leftGroup = document.createElement('div');
+                leftGroup.style.cssText = 'display:flex;gap:8px;align-items:center;flex-wrap:wrap;';
+                const rightGroup = document.createElement('div');
+                rightGroup.style.cssText = 'display:flex;gap:8px;align-items:center;flex-wrap:wrap;';
+
+                if (essayMarkdown) {
+                    const essayBtn = document.createElement('button');
+                    essayBtn.className = 'copy-btn';
+                    essayBtn.style.cssText = 'opacity:1;background:linear-gradient(135deg,var(--gold-bg) 0%,white 100%);border-color:var(--gold);color:var(--gold);font-weight:600;';
+                    essayBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy Full Essay';
+                    essayBtn.onclick = function() {
+                        navigator.clipboard.writeText(essayMarkdown).then(function() {
+                            essayBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+                            setTimeout(() => {
+                                essayBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy Full Essay';
+                            }, 2000);
+                        });
+                    };
+                    leftGroup.appendChild(essayBtn);
+                    const copyBtn = document.createElement('button');
+                    copyBtn.className = 'copy-btn';
+                    copyBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy';
+                    copyBtn.onclick = function() {
+                        navigator.clipboard.writeText(content).then(function() {
+                            copyBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+                            copyBtn.classList.add('copied');
+                            setTimeout(function() {
+                                copyBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy';
+                                copyBtn.classList.remove('copied');
+                            }, 2000);
+                        });
+                    };
+                    leftGroup.appendChild(copyBtn);
+                } else {
+                    const copyBtn = document.createElement('button');
+                    copyBtn.className = 'copy-btn';
+                    copyBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy';
+                    copyBtn.onclick = function() {
+                        navigator.clipboard.writeText(content).then(function() {
+                            copyBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+                            copyBtn.classList.add('copied');
+                            setTimeout(function() {
+                                copyBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy';
+                                copyBtn.classList.remove('copied');
+                            }, 2000);
+                        });
+                    };
+                    rightGroup.appendChild(copyBtn);
+                }
+                btnContainer.appendChild(leftGroup);
+                btnContainer.appendChild(rightGroup);
+                div.appendChild(btnContainer);
+            }
+
+            messagesDiv.appendChild(div);
+
+            if (type === 'assistant' && typewriterEnabled && content.length <= 4000) {
+                typewriterDisplay(contentDiv, content, function() {
+                    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+                });
+            }
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+        window.enhancedAddMessage = enhancedAddMessage;
 
     </script>
 </body>
