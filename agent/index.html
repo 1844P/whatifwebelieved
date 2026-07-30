@@ -1052,6 +1052,28 @@
         .messages::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
         .messages::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
 
+        /* Mode exit indicator — elegant × on active mode */
+        .mode-exit {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 18px;
+            height: 18px;
+            margin-left: 6px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            font-size: 14px;
+            font-weight: 600;
+            line-height: 1;
+            transition: background 0.2s ease, transform 0.2s ease;
+            cursor: pointer;
+            vertical-align: middle;
+        }
+        .mode-exit:hover {
+            background: rgba(255,255,255,0.4);
+            transform: scale(1.15);
+        }
+
         /* Mode toggle buttons - base hover */
         #essayToggle:hover,
         #sermonToggle:hover,
@@ -1963,40 +1985,48 @@ Reasoning rules:
             const textarea = document.getElementById('userInput');
             const downloadBar = document.getElementById('downloadBar');
 
+            // Store original button content on first call
+            if (!essayBtn._origHtml) {
+                essayBtn._origHtml = essayBtn.innerHTML;
+                sermonBtn._origHtml = sermonBtn.innerHTML;
+                bibleBtn._origHtml = bibleBtn.innerHTML;
+            }
+
             function resetBtn(btn) {
                 btn.removeAttribute('style');
+                btn.innerHTML = btn._origHtml;
             }
             resetBtn(essayBtn);
             resetBtn(sermonBtn);
             resetBtn(bibleBtn);
 
+            function activateBtn(btn, bg, textColor, border, shadow) {
+                btn.style.background = bg;
+                btn.style.color = textColor;
+                btn.style.borderColor = border;
+                btn.style.boxShadow = shadow;
+                btn.style.position = 'relative';
+                btn.innerHTML = btn._origHtml + '<span class="mode-exit" aria-label="Exit mode">&times;</span>';
+            }
+
             switch (mode) {
                 case 'essay':
                     essayMode = true;
-                    essayBtn.style.background = 'linear-gradient(135deg, var(--gold) 0%, #7a5c10 100%)';
-                    essayBtn.style.color = 'white';
-                    essayBtn.style.borderColor = 'var(--gold)';
-                    essayBtn.style.boxShadow = '0 2px 8px rgba(154,117,32,0.3)';
+                    activateBtn(essayBtn, 'linear-gradient(135deg, var(--gold) 0%, #7a5c10 100%)', 'white', 'var(--gold)', '0 2px 8px rgba(154,117,32,0.3)');
                     textarea.placeholder = 'Describe your essay topic... (e.g. "Write an essay on the investigative judgment and its biblical basis")';
                     if (lastEssayContent) showDownloadBar('Essay ready', false);
                     else downloadBar.style.display = 'none';
                     break;
                 case 'sermon':
                     sermonMode = true;
-                    sermonBtn.style.background = 'linear-gradient(135deg, #7a1a2e 0%, #9a2a3e 100%)';
-                    sermonBtn.style.color = 'white';
-                    sermonBtn.style.borderColor = 'var(--crimson)';
-                    sermonBtn.style.boxShadow = '0 2px 8px rgba(122,26,46,0.3)';
+                    activateBtn(sermonBtn, 'linear-gradient(135deg, #7a1a2e 0%, #9a2a3e 100%)', 'white', 'var(--crimson)', '0 2px 8px rgba(122,26,46,0.3)');
                     textarea.placeholder = 'Describe your sermon topic... (e.g. "Write a sermon on the sanctuary and the hope of the believer")';
                     if (lastSermonContent) showDownloadBar('Sermon ready', true);
                     else downloadBar.style.display = 'none';
                     break;
                 case 'bible':
                     bibleStudyMode = true;
-                    bibleBtn.style.background = 'linear-gradient(135deg, #2d6a4f 0%, #1b4d32 100%)';
-                    bibleBtn.style.color = 'white';
-                    bibleBtn.style.borderColor = '#2d6a4f';
-                    bibleBtn.style.boxShadow = '0 2px 8px rgba(45,106,79,0.3)';
+                    activateBtn(bibleBtn, 'linear-gradient(135deg, #2d6a4f 0%, #1b4d32 100%)', 'white', '#2d6a4f', '0 2px 8px rgba(45,106,79,0.3)');
                     textarea.placeholder = "Describe your Bible study topic... (e.g. \"Prepare a study on John 3:16 and God's love\")";
                     if (lastBibleStudyContent) showDownloadBar('Bible study ready', false);
                     else downloadBar.style.display = 'none';
