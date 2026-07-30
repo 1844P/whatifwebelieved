@@ -14,19 +14,23 @@
         :root {
             --cream: #faf8f4;
             --warm-white: #f5f0e8;
+            --parchment: #f2ece0;
             --gold: #9a7520;
             --gold-light: #e8d5a0;
             --gold-bg: #f9f3e3;
+            --amber: #b8860b;
+            --amber-light: #d4a030;
             --crimson: #7a1a2e;
             --crimson-light: #a52a43;
             --crimson-bg: #fdf0f2;
             --text: #2c1810;
             --text-secondary: #6b5b4f;
             --text-muted: #9a8b7d;
-            --border: #e8e0d4;
+            --border: #e2d9c8;
             --shadow: rgba(44, 24, 16, 0.08);
             --shadow-lg: rgba(44, 24, 16, 0.15);
             --shadow-xl: rgba(44, 24, 16, 0.2);
+            --warm-glow: rgba(184, 134, 11, 0.12);
             --green: #2d6a4f;
             --green-light: #40916c;
             --green-bg: #edf7f0;
@@ -43,9 +47,10 @@
             flex-direction: column;
             background-image: 
                 url('wallpaper-pitons.svg'),
-                radial-gradient(ellipse at 15% 0%, rgba(200, 162, 78, 0.12) 0%, transparent 55%),
-                radial-gradient(ellipse at 85% 30%, rgba(200, 162, 78, 0.06) 0%, transparent 45%),
-                radial-gradient(ellipse at 50% 100%, rgba(122, 26, 46, 0.07) 0%, transparent 50%);
+                radial-gradient(ellipse at 10% 0%, rgba(200, 162, 78, 0.1) 0%, transparent 50%),
+                radial-gradient(ellipse at 90% 20%, rgba(200, 162, 78, 0.06) 0%, transparent 40%),
+                radial-gradient(ellipse at 50% 80%, rgba(122, 26, 46, 0.05) 0%, transparent 45%),
+                radial-gradient(ellipse at 30% 100%, var(--warm-glow) 0%, transparent 50%);
             background-position: center bottom;
             background-repeat: no-repeat;
             background-attachment: fixed;
@@ -294,6 +299,7 @@
             border: 1px solid var(--border);
             border-radius: 20px;
             box-shadow: 0 4px 24px var(--shadow), inset 0 1px 0 rgba(255,255,255,0.8);
+            border-color: rgba(232, 213, 160, 0.4);
         }
 
         /* MESSAGES */
@@ -338,9 +344,9 @@
             transition: opacity 0.5s ease;
         }
         .message.assistant:hover {
-            box-shadow: 0 8px 28px var(--shadow-lg), 0 1px 3px rgba(44,24,16,0.08);
+            box-shadow: 0 8px 28px var(--shadow-lg), 0 1px 3px rgba(44,24,16,0.08), 0 0 30px var(--warm-glow);
             transform: translateY(-2px);
-            border-color: var(--gold-light);
+            border-color: var(--amber-light);
         }
         .message.assistant:hover::before {
             opacity: 0.7;
@@ -429,8 +435,8 @@
             box-shadow: 0 2px 10px var(--shadow);
         }
         .input-wrapper:focus-within {
-            border-color: var(--gold);
-            box-shadow: 0 0 0 4px rgba(200, 162, 78, 0.1), 0 4px 20px var(--shadow-lg);
+            border-color: var(--amber);
+            box-shadow: 0 0 0 4px var(--warm-glow), 0 4px 24px var(--shadow-lg);
         }
         .input-wrapper textarea {
             flex: 1;
@@ -743,11 +749,11 @@
             box-shadow: 0 1px 4px rgba(44,24,16,0.04);
         }
         .chip:hover {
-            border-color: var(--gold);
-            color: var(--gold);
-            background: var(--gold-bg);
+            border-color: var(--amber);
+            color: var(--amber);
+            background: linear-gradient(135deg, var(--gold-bg) 0%, #fffcf5 100%);
             transform: translateY(-2px);
-            box-shadow: 0 4px 14px rgba(154,117,32,0.18);
+            box-shadow: 0 4px 14px var(--warm-glow);
         }
 
         /* LOADING */
@@ -772,10 +778,10 @@
         .loading-dots span {
             width: 10px;
             height: 10px;
-            background: linear-gradient(135deg, var(--gold) 0%, #b8892a 100%);
+            background: linear-gradient(135deg, var(--gold) 0%, var(--amber) 100%);
             border-radius: 50%;
             animation: bounce 1.4s infinite ease-in-out;
-            box-shadow: 0 1px 4px rgba(154,117,32,0.3);
+            box-shadow: 0 1px 6px var(--warm-glow);
         }
         .loading-dots span:nth-child(1) { animation-delay: -0.32s; }
         .loading-dots span:nth-child(2) { animation-delay: -0.16s; }
@@ -810,7 +816,7 @@
         }
         @keyframes pulseGold {
             0%, 100% { box-shadow: 0 2px 6px rgba(154, 117, 32, 0.35); }
-            50% { box-shadow: 0 2px 16px rgba(154, 117, 32, 0.55), 0 0 24px rgba(154, 117, 32, 0.15); }
+            50% { box-shadow: 0 2px 16px rgba(154, 117, 32, 0.55), 0 0 24px var(--warm-glow); }
         }
         @keyframes ripple {
             from { transform: scale(0); opacity: 0.6; }
@@ -842,12 +848,12 @@
             40% { transform: scale(1); opacity: 1; }
         }
         @keyframes glowPulse {
-            0%, 100% { filter: drop-shadow(0 0 4px rgba(154, 117, 32, 0.3)); }
-            50% { filter: drop-shadow(0 0 12px rgba(154, 117, 32, 0.6)); }
+            0%, 100% { filter: drop-shadow(0 0 4px var(--warm-glow)); }
+            50% { filter: drop-shadow(0 0 12px rgba(184, 134, 11, 0.4)); }
         }
         @keyframes borderGlow {
             0%, 100% { border-color: var(--gold-light); box-shadow: 0 0 0 rgba(154, 117, 32, 0); }
-            50% { border-color: var(--gold); box-shadow: 0 0 12px rgba(154, 117, 32, 0.2); }
+            50% { border-color: var(--amber); box-shadow: 0 0 12px rgba(184, 134, 11, 0.25); }
         }
         @keyframes sweepGradient {
             0% { background-position: 0% 50%; }
@@ -1009,14 +1015,14 @@
         /* Send button enhanced */
         #sendBtn:not(:disabled) {
             animation: pulseGlow 3s ease-in-out infinite;
-            background: linear-gradient(135deg, var(--crimson) 0%, #5a1020 25%, var(--crimson-light) 50%, var(--crimson) 75%, #5a1020 100%);
+            background: linear-gradient(135deg, var(--crimson) 0%, #5a1020 25%, #8a1e36 50%, var(--crimson) 75%, #5a1020 100%);
             background-size: 300% 300%;
             animation: pulseGlow 3s ease-in-out infinite, shimmer 4s linear infinite;
         }
         #sendBtn:not(:disabled):hover {
             animation: shimmer 2s linear infinite !important;
             transform: translateY(-2px) scale(1.02);
-            box-shadow: 0 6px 24px rgba(122, 26, 46, 0.45), 0 0 40px rgba(154, 117, 32, 0.15);
+            box-shadow: 0 6px 24px rgba(122, 26, 46, 0.45), 0 0 40px rgba(154, 117, 32, 0.15), 0 0 60px var(--warm-glow);
         }
         #sendBtn:not(:disabled):active {
             transform: translateY(0) scale(0.97);
@@ -1049,8 +1055,8 @@
         /* SCROLLBAR */
         .messages::-webkit-scrollbar { width: 6px; }
         .messages::-webkit-scrollbar-track { background: transparent; }
-        .messages::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
-        .messages::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+        .messages::-webkit-scrollbar-thumb { background: var(--gold-light); border-radius: 3px; transition: background 0.2s; }
+        .messages::-webkit-scrollbar-thumb:hover { background: var(--amber); }
 
         /* Mode exit indicator — elegant × on active mode */
         .mode-exit {
@@ -1079,19 +1085,42 @@
         #sermonToggle:hover,
         #bibleStudyToggle:hover {
             transform: translateY(-1px);
-            box-shadow: 0 3px 10px var(--shadow-lg);
+        }
+        #essayToggle:hover {
+            box-shadow: 0 3px 12px var(--shadow-lg), 0 0 0 2px var(--warm-glow);
+        }
+        #sermonToggle:hover {
+            box-shadow: 0 3px 12px var(--shadow-lg), 0 0 0 2px rgba(122,26,46,0.1);
+        }
+        #bibleStudyToggle:hover {
+            box-shadow: 0 3px 12px var(--shadow-lg), 0 0 0 2px rgba(45,106,79,0.1);
         }
         #essayToggle {
             border-left: 3px solid transparent;
             transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            font-weight: 600;
+        }
+        #essayToggle:not([style*="background"]) {
+            border-color: transparent;
+            background: linear-gradient(135deg, white, var(--cream));
         }
         #sermonToggle {
             border-left: 3px solid transparent;
             transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            font-weight: 600;
+        }
+        #sermonToggle:not([style*="background"]) {
+            border-color: transparent;
+            background: linear-gradient(135deg, white, var(--cream));
         }
         #bibleStudyToggle {
             border-left: 3px solid transparent;
             transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            font-weight: 600;
+        }
+        #bibleStudyToggle:not([style*="background"]) {
+            border-color: transparent;
+            background: linear-gradient(135deg, white, var(--cream));
         }
         /* Active mode indicators via inline styles from JS */
 
@@ -2057,7 +2086,7 @@ Reasoning rules:
             switch (mode) {
                 case 'essay':
                     essayMode = true;
-                    activateBtn(essayBtn, 'linear-gradient(135deg, var(--gold) 0%, #7a5c10 100%)', 'white', 'var(--gold)', '0 2px 8px rgba(154,117,32,0.3)', '', 'Essay Mode active \u00b7 Click the button or \u00d7 to clear');
+                    activateBtn(essayBtn, 'linear-gradient(135deg, var(--gold) 0%, var(--amber) 50%, #7a5c10 100%)', 'white', 'var(--amber)', '0 2px 10px rgba(154,117,32,0.3), 0 0 20px var(--warm-glow)', '', 'Essay Mode active \u00b7 Click the button or \u00d7 to clear');
                     textarea.placeholder = 'Describe your essay topic... (e.g. "Write an essay on the investigative judgment and its biblical basis")';
                     if (lastEssayContent) showDownloadBar('Essay ready', false);
                     else downloadBar.style.display = 'none';
