@@ -1465,119 +1465,82 @@ Reasoning rules:
             document.getElementById('loadingText').textContent = 'Thinking...';
         }
 
-        window.toggleEssayMode = toggleEssayMode;
-        window.toggleSermonMode = toggleSermonMode;
-        window.toggleBibleStudyMode = toggleBibleStudyMode;
-
-        function toggleEssayMode() {
+        // Centralized mode manager - ensures clean transitions between all modes
+        function setMode(mode) {
+            // Always reset all mode flags first
+            essayMode = false;
+            sermonMode = false;
+            bibleStudyMode = false;
             resetMessageState();
-            essayMode = !essayMode;
-            if (essayMode) sermonMode = false;
-            const btn = document.getElementById('essayToggle');
+
+            const essayBtn = document.getElementById('essayToggle');
             const sermonBtn = document.getElementById('sermonToggle');
+            const bibleBtn = document.getElementById('bibleStudyToggle');
             const textarea = document.getElementById('userInput');
-            if (essayMode) {
-                btn.style.background = 'linear-gradient(135deg, var(--gold) 0%, #7a5c10 100%)';
-                btn.style.color = 'white';
-                btn.style.borderColor = 'var(--gold)';
-                btn.style.boxShadow = '0 2px 8px rgba(154,117,32,0.3)';
-                sermonBtn.style.background = '';
-                sermonBtn.style.color = '';
-                sermonBtn.style.borderColor = '';
-                sermonBtn.style.boxShadow = '';
-                textarea.placeholder = 'Describe your essay topic... (e.g. "Write an essay on the investigative judgment and its biblical basis")';
-                if (lastEssayContent) {
-                    showDownloadBar('Essay ready', false);
-                } else {
-                    document.getElementById('downloadBar').style.display = 'none';
-                }
-            } else {
+            const downloadBar = document.getElementById('downloadBar');
+
+            function resetBtn(btn) {
                 btn.style.background = '';
                 btn.style.color = '';
                 btn.style.borderColor = '';
                 btn.style.boxShadow = '';
-                textarea.placeholder = 'Ask about Adventist theology or Christian philosophy...';
-                document.getElementById('downloadBar').style.display = 'none';
             }
+            resetBtn(essayBtn);
+            resetBtn(sermonBtn);
+            resetBtn(bibleBtn);
+
+            switch (mode) {
+                case 'essay':
+                    essayMode = true;
+                    essayBtn.style.background = 'linear-gradient(135deg, var(--gold) 0%, #7a5c10 100%)';
+                    essayBtn.style.color = 'white';
+                    essayBtn.style.borderColor = 'var(--gold)';
+                    essayBtn.style.boxShadow = '0 2px 8px rgba(154,117,32,0.3)';
+                    textarea.placeholder = 'Describe your essay topic... (e.g. "Write an essay on the investigative judgment and its biblical basis")';
+                    if (lastEssayContent) showDownloadBar('Essay ready', false);
+                    else downloadBar.style.display = 'none';
+                    break;
+                case 'sermon':
+                    sermonMode = true;
+                    sermonBtn.style.background = 'linear-gradient(135deg, #7a1a2e 0%, #9a2a3e 100%)';
+                    sermonBtn.style.color = 'white';
+                    sermonBtn.style.borderColor = 'var(--crimson)';
+                    sermonBtn.style.boxShadow = '0 2px 8px rgba(122,26,46,0.3)';
+                    textarea.placeholder = 'Describe your sermon topic... (e.g. "Write a sermon on the sanctuary and the hope of the believer")';
+                    if (lastSermonContent) showDownloadBar('Sermon ready', true);
+                    else downloadBar.style.display = 'none';
+                    break;
+                case 'bible':
+                    bibleStudyMode = true;
+                    bibleBtn.style.background = 'linear-gradient(135deg, #2d6a4f 0%, #1b4d32 100%)';
+                    bibleBtn.style.color = 'white';
+                    bibleBtn.style.borderColor = '#2d6a4f';
+                    bibleBtn.style.boxShadow = '0 2px 8px rgba(45,106,79,0.3)';
+                    textarea.placeholder = 'Describe your Bible study topic... (e.g. "Prepare a study on John 3:16 and God's love")';
+                    if (lastBibleStudyContent) showDownloadBar('Bible study ready', false);
+                    else downloadBar.style.display = 'none';
+                    break;
+                default: // 'chat'
+                    textarea.placeholder = 'Ask about Adventist theology or Christian philosophy...';
+                    downloadBar.style.display = 'none';
+                    break;
+            }
+        }
+
+        function toggleEssayMode() {
+            setMode(essayMode ? 'chat' : 'essay');
         }
 
         function toggleSermonMode() {
-            resetMessageState();
-            sermonMode = !sermonMode;
-            if (sermonMode) essayMode = false;
-            if (sermonMode) bibleStudyMode = false;
-            const btn = document.getElementById('sermonToggle');
-            const essayBtn = document.getElementById('essayToggle');
-            const bibleBtn = document.getElementById('bibleStudyToggle');
-            const textarea = document.getElementById('userInput');
-            if (sermonMode) {
-                btn.style.background = 'linear-gradient(135deg, #7a1a2e 0%, #9a2a3e 100%)';
-                btn.style.color = 'white';
-                btn.style.borderColor = 'var(--crimson)';
-                btn.style.boxShadow = '0 2px 8px rgba(122,26,46,0.3)';
-                essayBtn.style.background = '';
-                essayBtn.style.color = '';
-                essayBtn.style.borderColor = '';
-                essayBtn.style.boxShadow = '';
-                bibleBtn.style.background = '';
-                bibleBtn.style.color = '';
-                bibleBtn.style.borderColor = '';
-                bibleBtn.style.boxShadow = '';
-                textarea.placeholder = 'Describe your sermon topic... (e.g. "Write a sermon on the sanctuary and the hope of the believer")';
-                if (lastSermonContent) {
-                    showDownloadBar('Sermon ready', true);
-                } else {
-                    document.getElementById('downloadBar').style.display = 'none';
-                }
-            } else {
-                btn.style.background = '';
-                btn.style.color = '';
-                btn.style.borderColor = '';
-                btn.style.boxShadow = '';
-                textarea.placeholder = 'Ask about Adventist theology or Christian philosophy...';
-                document.getElementById('downloadBar').style.display = 'none';
-            }
+            setMode(sermonMode ? 'chat' : 'sermon');
         }
 
         function toggleBibleStudyMode() {
-            resetMessageState();
-            bibleStudyMode = !bibleStudyMode;
-            if (bibleStudyMode) {
-                essayMode = false;
-                sermonMode = false;
-            }
-            const btn = document.getElementById('bibleStudyToggle');
-            const essayBtn = document.getElementById('essayToggle');
-            const sermonBtn = document.getElementById('sermonToggle');
-            const textarea = document.getElementById('userInput');
-            if (bibleStudyMode) {
-                btn.style.background = 'linear-gradient(135deg, #2d6a4f 0%, #1b4d32 100%)';
-                btn.style.color = 'white';
-                btn.style.borderColor = '#2d6a4f';
-                btn.style.boxShadow = '0 2px 8px rgba(45,106,79,0.3)';
-                essayBtn.style.background = '';
-                essayBtn.style.color = '';
-                essayBtn.style.borderColor = '';
-                essayBtn.style.boxShadow = '';
-                sermonBtn.style.background = '';
-                sermonBtn.style.color = '';
-                sermonBtn.style.borderColor = '';
-                sermonBtn.style.boxShadow = '';
-                textarea.placeholder = "Describe your Bible study topic... (e.g. \"Prepare a study on John 3:16 and God's love\")";
-                if (lastBibleStudyContent) {
-                    showDownloadBar('Bible study ready', false);
-                } else {
-                    document.getElementById('downloadBar').style.display = 'none';
-                }
-            } else {
-                btn.style.background = '';
-                btn.style.color = '';
-                btn.style.borderColor = '';
-                btn.style.boxShadow = '';
-                textarea.placeholder = 'Ask about Adventist theology or Christian philosophy...';
-                document.getElementById('downloadBar').style.display = 'none';
-            }
+            setMode(bibleStudyMode ? 'chat' : 'bible');
         }
+
+
+        
 
         // Personal API key management
         function savePersonalKey() {
