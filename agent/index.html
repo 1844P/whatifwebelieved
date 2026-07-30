@@ -2092,7 +2092,7 @@ Reasoning rules:
 
             const contentDiv = document.createElement('div');
             contentDiv.className = 'message-content';
-            contentDiv.textContent = content;
+            contentDiv.innerHTML = renderMarkdown(content);
 
             div.appendChild(label);
             div.appendChild(contentDiv);
@@ -2478,6 +2478,34 @@ Reasoning rules:
         let typewriterSpeed = 18; // ms per character
         let typewriterId = 0;
 
+        // Lightweight markdown renderer — converts ** * ` []() to HTML
+        function renderMarkdown(text) {
+            // Escape HTML special chars first, then apply markdown
+            let html = text
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;');
+            // ***bold italic***
+            html = html.replace(/\*\*\*(.+?)\*\*\*/g, '<strong><em>$1</em></strong>');
+            // **bold**
+            html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+            // *italic*
+            html = html.replace(/\*(.+?)\*/g, '<em>$1</em>');
+            // `inline code`
+            html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+            // [text](url)
+            html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+            // Double line-break → paragraph
+            html = html.replace(/\n\n/g, '</p><p>');
+            // Single line-break → <br>
+            html = html.replace(/\n/g, '<br>');
+            // Wrap in <p> if paragraphs exist
+            if (html.indexOf('</p>') > -1) {
+                html = '<p>' + html + '</p>';
+            }
+            return html;
+        }
+
         function typewriterDisplay(element, text, callback) {
             if (!typewriterEnabled || text.length > 4000) {
                 element.textContent = text;
@@ -2564,10 +2592,11 @@ Reasoning rules:
 
             const contentDiv = document.createElement('div');
             contentDiv.className = 'message-content';
+            const renderedHTML = renderMarkdown(content);
             if (type === 'assistant' && typewriterEnabled && content.length <= 4000) {
                 contentDiv.textContent = '';
             } else {
-                contentDiv.textContent = content;
+                contentDiv.innerHTML = renderedHTML;
             }
 
             div.appendChild(label);
@@ -2636,6 +2665,7 @@ Reasoning rules:
 
             if (type === 'assistant' && typewriterEnabled && content.length <= 4000) {
                 typewriterDisplay(contentDiv, content, function() {
+                    contentDiv.innerHTML = renderedHTML;
                     messagesDiv.scrollTop = messagesDiv.scrollHeight;
                 });
             }
