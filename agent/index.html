@@ -1301,7 +1301,7 @@ Reasoning rules:
             return data.choices[0].message.content;
         }
 
-        async function callGeminiDirect(message, history) {
+        async function callGeminiDirect(message, history, fileInfo) {
             const key = personalKey;
             if (!key) throw new Error('No personal API key set');
 
@@ -1310,7 +1310,16 @@ Reasoning rules:
                 contents.push({ role: 'user', parts: [{ text: h.user }] });
                 contents.push({ role: 'model', parts: [{ text: h.assistant }] });
             }
-            contents.push({ role: 'user', parts: [{ text: message }] });
+            const parts = [{ text: message }];
+            if (fileInfo) {
+                parts.push({
+                    inlineData: {
+                        mimeType: fileInfo.mimeType,
+                        data: fileInfo.data
+                    }
+                });
+            }
+            contents.push({ role: 'user', parts: parts });
 
             const models = ['gemini-3.6-flash', 'gemini-2.0-flash', 'gemini-2.0-flash-lite', 'gemini-1.5-flash', 'gemini-1.5-flash-8b'];
             let lastError = null;
@@ -1431,7 +1440,12 @@ Reasoning rules:
                 let essayMarkdown = null;
                 
                 if (currentProvider === 'gemini-direct') {
-                    const directResult = await callGeminiDirect(fullMessage, conversationHistory);
+                    let fileInfo = null;
+                    if (selectedFile && fileContent && (selectedFile.type.startsWith('image/') || selectedFile.type === 'application/pdf')) {
+                        const dataParts = fileContent.split(',');
+                        fileInfo = { mimeType: selectedFile.type, data: dataParts[1] };
+                    }
+                    const directResult = await callGeminiDirect(fullMessage, conversationHistory, fileInfo);
                     responseText = directResult.text;
                 } else if (currentProvider === 'gemini') {
                     const res = await callWorker(fullMessage, conversationHistory);
