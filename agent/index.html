@@ -1748,7 +1748,7 @@ Reasoning rules:
                     bibleBtn.style.color = 'white';
                     bibleBtn.style.borderColor = '#2d6a4f';
                     bibleBtn.style.boxShadow = '0 2px 8px rgba(45,106,79,0.3)';
-                    textarea.placeholder = 'Describe your Bible study topic... (e.g. "Prepare a study on John 3:16 and God's love")';
+                    textarea.placeholder = "Describe your Bible study topic... (e.g. \"Prepare a study on John 3:16 and God's love\")";
                     if (lastBibleStudyContent) showDownloadBar('Bible study ready', false);
                     else downloadBar.style.display = 'none';
                     break;
@@ -2007,6 +2007,7 @@ Reasoning rules:
         // ============================================================
         function addRippleEffect() {
             document.querySelectorAll('.btn, .download-bar-btn, .chip, .btn-gemini, .header-inner > a[href]').forEach(function(el) {
+                if (el.classList.contains('ripple-btn')) return; // already initialized
                 el.classList.add('ripple-btn');
                 el.addEventListener('click', function(e) {
                     const rect = this.getBoundingClientRect();
@@ -2023,7 +2024,7 @@ Reasoning rules:
                 });
             });
         }
-        // Run after DOM is ready; also observe for dynamically added buttons
+        // Initialize once; observe for dynamically added buttons (process only new ones)
         addRippleEffect();
         const rippleObserver = new MutationObserver(function() { addRippleEffect(); });
         rippleObserver.observe(document.body, { childList: true, subtree: true });
