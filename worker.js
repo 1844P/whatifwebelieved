@@ -67,15 +67,41 @@ const SERMON_FORMATS = {
   typological: `\n\n[SERMON MODE — TYPOLOGICAL FORMAT — Produce a full written sermon of at least 2500 words. This must be substantive and theologically meaty. Structure: Identify the Old Testament type with grammatical-historical detail → Trace the type through Scripture (show how Scripture interprets Scripture) → Reveal the New Testament antitype with at least 2-3 connecting texts → Draw the great controversy significance with Ellen White citations → Apply concretely to the believer's experience → Close with 3 specific calls to action. Particularly suited to sanctuary, Sabbath, and prophetic themes. Format as markdown. Begin with sermon title as # heading.]`,
 };
 
-const BIBLE_STUDY_SUFFIX = `\n\n[BIBLE STUDY MODE — Produce a comprehensive, seeker-friendly Bible study guide on this topic using the WiwB methodology. This must be substantive, warm, and theologically grounded in Adventist belief while remaining accessible to non-Adventist seekers.
+const BIBLE_STUDY_SUFFIX = `\n\n[BIBLE STUDY MODE — Produce a complete, standalone Bible study document of at least 2000 words on the given topic or passage. This must be substantive, warm, and theologically grounded in Adventist belief while remaining accessible to non-Adventist seekers. Output the FULL Bible study document as markdown, not an outline or notes.
 
-REQUIREMENTS FOR SUBSTANCE:
-- OPENING PRAYER: Begin with a short, sincere prayer inviting the Holy Spirit to guide the study.
-- ESTABLISH CONTEXT: Who wrote this? To whom? When? Why? What is the literary genre (narrative, poetry, prophecy, epistle)? How does this passage fit into the larger biblical story?
-- READ & OBSERVE: Present the Scripture passage(s) clearly. Ask "What stands out to you?" Encourage the seeker to notice key words, repeated phrases, contrasts, and commands. Let the seeker discover truth before you explain it.
-- INTERPRET: What did this passage mean to its original audience? What timeless principle does it reveal about God, humanity, or salvation? How does the rest of Scripture confirm or illuminate this truth? (Let Scripture interpret Scripture.)
-- APPLY: What does this passage mean for your life today? Is there a promise to claim, a command to obey, a warning to heed, or a truth about God to embrace? Encourage one specific, actionable takeaway.
-- CLOSE WITH PRAYER & REFLECTION: Summarize the key insight. Pray together, thanking God for what was learned and asking for strength to apply it. Suggest a passage for the seeker to read before the next study.
+REQUIRED OUTPUT STRUCTURE — The final document MUST include these sections in order:
+
+# [Title of the Bible Study]
+
+## Opening Prayer
+A short, sincere prayer inviting the Holy Spirit to guide the study.
+
+## Introduction
+Hook the reader with a question, story, or observation that connects the topic to everyday life. State what the study will cover.
+
+## Context
+Who wrote this? To whom? When? Why? What is the literary genre (narrative, poetry, prophecy, epistle)? How does this passage fit into the larger biblical story? Cite at least one Ellen G. White passage from a specific work that illuminates the context.
+
+## Scripture Reading
+Present the key passage(s) in full (NKJV, ESV, NIV, or KJV). Include references.
+
+## Observation
+Walk through the passage verse-by-verse or thought-by-thought. Ask "What stands out?" Highlight key words, repeated phrases, contrasts, commands, and promises. Let the reader discover truth before you explain it. Include at least 3 questions the reader should reflect on.
+
+## Interpretation
+What did this passage mean to its original audience? What timeless principle does it reveal about God, humanity, or salvation? How does the rest of Scripture confirm or illuminate this truth? (Let Scripture interpret Scripture — cite at least 2-3 cross-references.) Include a relevant Ellen G. White citation from a specific work with the reference named.
+
+## Theological Connection
+Connect the passage to the great controversy narrative and to at least one distinctive Adventist doctrine (the sanctuary, the Sabbath, the state of the dead, the investigative judgment, righteousness by faith, the second coming, etc.). Explain the doctrine in plain, accessible language and show how it grows out of the text. Engage at least one Adventist scholar by name (e.g., Froom, Knight, Davidson, Rodriguez, Holbrook, Heppenstall, Whidden, etc.).
+
+## Application
+What does this passage mean for your life today? Give 3 specific, concrete action steps — not vague generalizations. Include a promise to claim, a command to obey, and a truth about God to embrace.
+
+## Closing Prayer & Reflection
+Summarize the key insight in one sentence. Offer a closing prayer that embodies the study's theme. Suggest a related passage for the seeker to read before the next study.
+
+## For Further Study
+Recommend 2-3 specific books, Ellen G. White works, or Bible passages the reader can explore to go deeper.
 
 TONE & APPROACH:
 - Warm, humble, reverent — never arrogant, condescending, or denominationally proud.
@@ -113,10 +139,15 @@ CRISIS PROTOCOL:
 - If a seeker expresses abuse or danger, express concern. Urge them to seek safety and professional help. Do not attempt to counsel on these matters.
 - If a seeker expresses deep theological confusion or distress, acknowledge the struggle. Suggest they speak with a local SDA pastor who can provide personal guidance.
 
-FORMAT: Output as well-structured Markdown. Begin with the study title as a # heading.]`;
+OUTPUT REQUIREMENTS:
+- Minimum 2000 words.
+- Output the COMPLETE Bible study document as markdown, not an outline or summary.
+- Use ## for section headings (except title which is #).
+- Begin with the title as a # heading.
+- End with a horizontal rule (---) after "For Further Study."]`;
 
 async function callGemini(apiKey, body) {
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${apiKey}`;
   const response = await fetch(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
