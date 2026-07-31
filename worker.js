@@ -375,7 +375,7 @@ export default {
         const label = sermonMode ? 'sermon' : essayMode ? 'essay' : 'bible-study';
         const lines = rawText.split('\n');
         const summaryEnd = Math.min(lines.length, 15);
-        const summary = lines.slice(0, summaryEnd).join('\n').trim() + `\n\n---\n**The full ${label} is ready. Use the download bar above to save it as a Word document.**`;
+        const summary = lines.slice(0, summaryEnd).join('\n').trim() + `\n\n---\n**The full ${label} is ready. Use the download bar below to save it as a Word document.**`;
         return new Response(JSON.stringify({ text: summary, essay: rawText, provider }), {
           headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
         });
