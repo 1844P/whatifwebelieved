@@ -2424,26 +2424,103 @@
     </section>
 
     <!-- WHAT IF WE BELIEVED RADIO -->
-    <section id="radio" class="section" style="padding:80px 0;background:radial-gradient(1200px 700px at 50% -10%,#8a5a2e 0%,#6b3f1f 45%,#3d2414 100%);color:#fff6e8;border-top:1px solid rgba(240,197,110,0.4);border-bottom:1px solid rgba(240,197,110,0.4);box-shadow:inset 0 0 120px rgba(0,0,0,0.25);">
+    <style>
+        /* ---- radio listening-room atmosphere ---- */
+        .radio-hero { position: relative; overflow: hidden; }
+        .radio-hero::before { content: ''; position: absolute; inset: 0; pointer-events: none; background:
+            radial-gradient(600px 320px at 12% 0%, rgba(240,197,110,0.14), transparent 60%),
+            radial-gradient(560px 320px at 88% 100%, rgba(255,246,232,0.07), transparent 60%); }
+        .radio-orbs { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+        .radio-orbs span { position: absolute; border-radius: 50%; filter: blur(44px); opacity: .32; animation: orbFloat 14s ease-in-out infinite; }
+        .radio-orbs span:nth-child(1) { width: 230px; height: 230px; background: #f0c56e; top: -40px; left: 7%; }
+        .radio-orbs span:nth-child(2) { width: 190px; height: 190px; background: #ff8f70; bottom: -36px; right: 9%; animation-delay: -5s; opacity: .16; }
+        .radio-orbs span:nth-child(3) { width: 150px; height: 150px; background: #aef7c4; top: 42%; left: 56%; animation-delay: -9s; opacity: .10; }
+        @keyframes orbFloat { 0%,100% { transform: translateY(0) scale(1); } 50% { transform: translateY(24px) scale(1.06); } }
+
+        /* ---- vintage radio cabinet ---- */
+        .radio-cab { position: relative; width: 100%; max-width: 420px; margin: 0 auto 44px; }
+        .radio-cab .cabinet { position: relative; border-radius: 26px; padding: 30px 26px 26px;
+            background: linear-gradient(160deg, #9c6b3a 0%, #7c4a23 45%, #4e2c12 100%);
+            border: 1px solid rgba(240,197,110,0.5);
+            box-shadow: 0 24px 60px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,246,232,0.2), inset 0 -18px 30px rgba(0,0,0,0.25); }
+        .radio-cab .grille { display: flex; gap: 10px; justify-content: center; padding: 12px 0 10px; }
+        .radio-cab .grille i { width: 9px; height: 9px; border-radius: 50%; background: rgba(43,22,10,0.9); box-shadow: inset 0 1px 2px rgba(0,0,0,0.7); }
+        .radio-cab .dial { position: relative; background: linear-gradient(180deg, #2b1c10, #3d2414); border: 1px solid rgba(240,197,110,0.35); border-radius: 14px; padding: 14px 12px 10px; margin-top: 6px; box-shadow: inset 0 2px 10px rgba(0,0,0,0.5); }
+        .radio-cab .freq { font-family: 'Playfair Display', serif; color: var(--cream); text-align: center; letter-spacing: 2px; font-size: 1.15rem; }
+        .radio-cab .band { display: flex; justify-content: space-between; font-size: .62rem; color: rgba(247,239,220,0.5); letter-spacing: 1px; margin-top: 4px; padding: 0 2px; }
+        .radio-cab .needle { position: absolute; bottom: 9px; left: 50%; width: 2px; height: 46px; background: #ff5252; transform-origin: 50% 100%; box-shadow: 0 0 8px rgba(255,82,82,0.8); animation: needleSway 6s ease-in-out infinite; }
+        .radio-cab .needle::after { content: ''; position: absolute; top: -5px; left: -3px; width: 8px; height: 8px; border-radius: 50%; background: #ff5252; box-shadow: 0 0 10px #ff5252; }
+        @keyframes needleSway { 0%,100% { transform: rotate(-6deg); } 50% { transform: rotate(8deg); } }
+        .radio-cab .onair { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 13px; font-size: .78rem; letter-spacing: 3px; color: rgba(247,239,220,0.85); text-transform: uppercase; }
+        .radio-cab .onair .dot { width: 10px; height: 10px; border-radius: 50%; background: #ff5252; box-shadow: 0 0 12px #ff5252; animation: pulseDot 1.6s ease-in-out infinite; }
+        @keyframes pulseDot { 0%,100% { opacity: 1; } 50% { opacity: .35; } }
+        .radio-cab .knobs { display: flex; justify-content: center; gap: 26px; margin-top: 16px; }
+        .radio-cab .knob { width: 46px; height: 46px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #e0b45a, #8a6d2f 70%); box-shadow: 0 4px 12px rgba(0,0,0,0.4), inset 0 2px 3px rgba(255,255,255,0.35); position: relative; }
+        .radio-cab .knob::after { content: ''; position: absolute; top: 8px; left: 50%; transform: translateX(-50%); width: 4px; height: 11px; background: rgba(255,246,232,0.85); border-radius: 2px; }
+        .radio-cab .warm-glow { position: absolute; inset: auto 10% -18px 10%; height: 48px; background: radial-gradient(ellipse at center, rgba(240,197,110,0.4), transparent 70%); filter: blur(10px); pointer-events: none; }
+
+        /* ---- today's lineup strip ---- */
+        .radio-lineup { max-width: 700px; margin: 0 auto 44px; }
+        .radio-lineup h4 { font-size: .8rem; letter-spacing: 3px; color: #f2c979; text-transform: uppercase; text-align: center; margin: 0 0 14px; }
+        .radio-lineup .strip { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+        .radio-lineup .slot { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: 30px; background: rgba(255,246,232,0.06); border: 1px solid rgba(240,197,110,0.25); color: rgba(255,246,232,0.92); font-size: .85rem; transition: all .3s; }
+        .radio-lineup .slot:hover { background: rgba(240,197,110,0.18); border-color: rgba(240,197,110,0.6); transform: translateY(-2px); }
+        .radio-lineup .slot .t { color: #f2c979; font-weight: 700; }
+
+        /* ---- feature cards ---- */
+        .radio-card { transition: transform .35s ease, box-shadow .35s ease, border-color .35s ease; }
+        .radio-card:hover { transform: translateY(-6px); box-shadow: 0 18px 44px rgba(0,0,0,0.25), 0 0 0 1px rgba(240,197,110,0.25), 0 0 30px rgba(240,197,110,0.10); border-color: rgba(240,197,110,0.6); }
+        .radio-card .icon { transition: transform .35s ease; }
+        .radio-card:hover .icon { transform: scale(1.12) rotate(-3deg); }
+    </style>
+    <section id="radio" class="section radio-hero" style="padding:80px 0;background:radial-gradient(1200px 700px at 50% -10%,#8a5a2e 0%,#6b3f1f 45%,#3d2414 100%);color:#fff6e8;border-top:1px solid rgba(240,197,110,0.4);border-bottom:1px solid rgba(240,197,110,0.4);box-shadow:inset 0 0 120px rgba(0,0,0,0.25);">
+        <div class="radio-orbs" aria-hidden="true"><span></span><span></span><span></span></div>
         <div class="container">
             <div class="section-header">
                 <div class="section-label" style="display:inline-block;padding:8px 20px;border-radius:30px;background:rgba(240,197,110,0.16);border:1px solid rgba(240,197,110,0.45);font-size:1rem;color:#f2c979;letter-spacing:1.5px;">The Station &middot; Coming Soon</div>
                 <h2 class="section-title" style="font-size:2.6rem;color:#fff6e8;text-shadow:0 2px 24px rgba(240,197,110,0.25);">What If We Believed Radio</h2>
                 <p class="section-subtitle" style="font-size:1.2rem;color:rgba(255,246,232,0.95);">A retro radio experience &mdash; turn the dial, hear the static crackle, and catch worship, Bible stories, prayer, and hymns broadcast live in your browser.</p>
             </div>
+
+            <div class="radio-cab" aria-hidden="true">
+                <div class="cabinet">
+                    <div class="grille"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+                    <div class="dial">
+                        <div class="freq">92.1 MHz</div>
+                        <div class="band"><span>88</span><span>96</span><span>104</span><span>108</span></div>
+                        <div class="needle"></div>
+                    </div>
+                    <div class="onair"><span class="dot"></span> ON AIR</div>
+                    <div class="knobs"><div class="knob"></div><div class="knob"></div></div>
+                </div>
+                <div class="warm-glow"></div>
+            </div>
+
+            <div class="radio-lineup">
+                <h4>&#128197; Today&rsquo;s Lineup &mdash; find your time, pull up a chair</h4>
+                <div class="strip">
+                    <span class="slot"><span class="t">06:00</span> &#127749; Morning Worship</span>
+                    <span class="slot"><span class="t">09:00</span> &#128214; Bible Stories</span>
+                    <span class="slot"><span class="t">12:00</span> &#128365; Prayer Hour</span>
+                    <span class="slot"><span class="t">15:00</span> &#127932; Hymns &amp; Praise</span>
+                    <span class="slot"><span class="t">18:00</span> &#128118; Kids&rsquo; Bible Hour</span>
+                    <span class="slot"><span class="t">21:00</span> &#127748; Night of Reflection</span>
+                </div>
+            </div>
+
             <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-bottom:36px;">
-                <div style="background:rgba(255,246,232,0.08);border:1px solid rgba(240,197,110,0.35);border-radius:16px;padding:32px 28px;text-align:center;transition:transform 0.3s, box-shadow 0.3s;">
-                    <div style="font-size:44px;margin-bottom:10px;">&#128225;</div>
+                <div class="radio-card" style="background:rgba(255,246,232,0.08);border:1px solid rgba(240,197,110,0.35);border-radius:16px;padding:32px 28px;text-align:center;">
+                    <div class="icon" style="font-size:44px;margin-bottom:10px;">&#128225;</div>
                     <h3 style="font-family:'Playfair Display',serif;font-size:1.35rem;color:#fff6e8;margin-bottom:6px;">5 Living Stations</h3>
                     <p style="font-size:1.05rem;color:rgba(255,246,232,0.9);">Morning Worship, Bible Stories, Prayer Hour, Hymns &amp; Praise, and a Kids' Bible Hour.</p>
                 </div>
-                <div style="background:rgba(255,246,232,0.08);border:1px solid rgba(240,197,110,0.35);border-radius:16px;padding:32px 28px;text-align:center;transition:transform 0.3s, box-shadow 0.3s;">
-                    <div style="font-size:44px;margin-bottom:10px;">&#127925;</div>
+                <div class="radio-card" style="background:rgba(255,246,232,0.08);border:1px solid rgba(240,197,110,0.35);border-radius:16px;padding:32px 28px;text-align:center;">
+                    <div class="icon" style="font-size:44px;margin-bottom:10px;">&#127925;</div>
                     <h3 style="font-family:'Playfair Display',serif;font-size:1.35rem;color:#fff6e8;margin-bottom:6px;">Real Radio Sound</h3>
                     <p style="font-size:1.05rem;color:rgba(255,246,232,0.9);">Static, dial clicks, and jingles are synthesized live with the Web Audio API &mdash; no files, no streaming.</p>
                 </div>
-                <div style="background:rgba(255,246,232,0.08);border:1px solid rgba(240,197,110,0.35);border-radius:16px;padding:32px 28px;text-align:center;transition:transform 0.3s, box-shadow 0.3s;">
-                    <div style="font-size:44px;margin-bottom:10px;">&#128264;</div>
+                <div class="radio-card" style="background:rgba(255,246,232,0.08);border:1px solid rgba(240,197,110,0.35);border-radius:16px;padding:32px 28px;text-align:center;">
+                    <div class="icon" style="font-size:44px;margin-bottom:10px;">&#128264;</div>
                     <h3 style="font-family:'Playfair Display',serif;font-size:1.35rem;color:#fff6e8;margin-bottom:6px;">Tune It Yourself</h3>
                     <p style="font-size:1.05rem;color:rgba(255,246,232,0.9);">Drag the knobs, watch the signal meter, and let the announcer tell you what's on air.</p>
                 </div>
