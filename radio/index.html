@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>What If We Believed Radio</title>
+<meta name="description" content="Tune in to What If We Believed Radio — a retro radio experience with worship, Bible stories, prayer, and hymns. Turn the dial, hear the static, and catch the broadcast.">
+<link rel="canonical" href="https://whatifwebelieved.vercel.app/radio/">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="page-wrap">
+
+    <header class="page-header">
+        <p class="brand">WHAT IF WE <span>BELIEVED</span></p>
+        <h1 class="page-title">&#128251; What If We Believed Radio</h1>
+        <p class="page-tagline">Turn the dial, ride the static, and catch the broadcast.<br>All sounds are generated live in your browser &mdash; no streaming, just radio magic.</p>
+        <label class="announcer-toggle">
+            <input type="checkbox" id="announcerToggle" checked>
+            <span class="toggle-track"><span class="toggle-knob"></span></span>
+            &#128264; Announcer voice
+        </label>
+    </header>
+
+    <div class="soon-banner">
+        &#128227; <strong>Coming soon:</strong> full live broadcasts will be going on the air soon! Until then, enjoy this preview edition &mdash; switch on, tune the dial, and feel the reception.
+    </div>
+
+    <!-- THE RADIO -->
+    <div class="radio" id="radio">
+        <div class="radio-top">
+            <div class="nameplate">WHAT IF WE BELIEVED &middot; RADIO</div>
+            <div class="power-indicator" id="powerIndicator" title="Power"></div>
+        </div>
+
+        <!-- Screen -->
+        <div class="screen" id="screen">
+            <div class="screen-static" id="screenStatic"></div>
+            <div class="screen-inner">
+                <div class="screen-freq" id="screenFreq">OFF</div>
+                <div class="screen-station" id="screenStation">Welcome!</div>
+                <div class="screen-show" id="screenShow">Press the power button to begin</div>
+                <div class="screen-bottom">
+                    <div class="signal" id="signal" title="Signal strength">
+                        <span></span><span></span><span></span><span></span><span></span>
+                    </div>
+                    <div class="onair" id="onair"><span class="dot"></span> ON AIR</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="controls">
+            <div class="knob-wrap">
+                <div class="knob" id="volumeKnob" role="slider" aria-label="Volume" tabindex="0">
+                    <div class="knob-notch"></div>
+                </div>
+                <div class="knob-label">VOLUME</div>
+            </div>
+
+            <div class="dial-center">
+                <div class="dial-readout" id="dialReadout">92.1 MHz</div>
+                <div class="dial-ticks">
+                    <span>88</span><span>92</span><span>96</span><span>100</span><span>104</span><span>108</span>
+                </div>
+                <div class="dial-track"><div class="dial-needle" id="dialNeedle"></div></div>
+                <div class="tune-hint">&#8593;&#8595; drag the knob to tune</div>
+            </div>
+
+            <div class="knob-wrap">
+                <div class="knob" id="tuneKnob" role="slider" aria-label="Tuning" tabindex="0">
+                    <div class="knob-notch"></div>
+                </div>
+                <div class="knob-label">TUNING</div>
+            </div>
+        </div>
+
+        <!-- Power -->
+        <div class="power-row">
+            <button class="power-btn" id="powerBtn">&#9889; POWER</button>
+        </div>
+    </div>
+
+    <!-- Stations -->
+    <div class="stations-section">
+        <h2 class="stations-title">&#128225; Station Guide</h2>
+        <p class="stations-sub">Tap a station to tune straight in &mdash; or drag the TUNING knob and listen for the static to clear.</p>
+        <div class="station-chips" id="stationChips"></div>
+        <div class="schedule">
+            <h3>&#128197; Today&rsquo;s Lineup</h3>
+            <ul>
+                <li><span>06:00</span> &#127749; Morning Worship</li>
+                <li><span>09:00</span> &#128214; Bible Stories</li>
+                <li><span>12:00</span> &#128365; Prayer Hour</li>
+                <li><span>15:00</span> &#127932; Hymns &amp; Praise</li>
+                <li><span>18:00</span> &#128118; Kids&rsquo; Bible Hour</li>
+                <li><span>21:00</span> &#127748; Night of Reflection</li>
+            </ul>
+        </div>
+    </div>
+
+    <footer class="page-footer">
+        <a href="../index.html">&#8592; Back to WhatIfWeBelieved.vercel.app</a>
+        <p>All audio is synthesized on your device with the Web Audio API &mdash; nothing is recorded or streamed.</p>
+    </footer>
+
+</div>
+
+<script src="radio-audio.js"></script>
+<script src="radio-app.js"></script>
+</body>
+</html>

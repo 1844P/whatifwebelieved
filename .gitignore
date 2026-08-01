@@ -22,3 +22,5 @@ key.pem
 wrangler.toml
 wrangler.jsonc
 .wrangler/
+.vercel
+.env*

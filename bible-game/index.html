@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bible Game for Children — 600 Question Adventure!</title>
+    <meta name="description" content="A fun, colorful Bible quiz adventure for kids! 600 questions across 10 adventures, with stars, streaks, badges, and celebrations.">
+    <link rel="canonical" href="https://whatifwebelieved.vercel.app/bible-game/">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Fredoka:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Floating background decorations -->
+    <div class="sky">
+        <div class="sun">&#9728;&#65039;</div>
+        <div class="cloud cloud-1"></div>
+        <div class="cloud cloud-2"></div>
+        <div class="cloud cloud-3"></div>
+        <div class="rainbow"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+    </div>
+
+    <!-- ================= START SCREEN ================= -->
+    <section id="screen-start" class="screen">
+        <div class="card title-card">
+            <div class="dance-row">
+                <span class="dancer dancer-1">&#128585;</span>
+                <span class="dancer dancer-2">&#128018;</span>
+                <span class="dancer dancer-3">&#129417;</span>
+                <span class="dancer dancer-4">&#128017;</span>
+                <span class="dancer dancer-5">&#128031;</span>
+                <span class="dancer dancer-6">&#128585;</span>
+            </div>
+            <div class="mascot">&#128214;</div>
+            <h1 class="game-title">Bible Game<br><span class="for-children">for Children</span></h1>
+            <p class="tagline">The Big 600-Question Adventure! &#127752;</p>
+
+            <div class="adventure-chips" title="Your 10 adventures!">
+                <span>&#127757;</span><span>&#129409;</span><span>&#11088;</span><span>&#128214;</span><span>&#128081;</span><span>&#127925;</span><span>&#10024;</span><span>&#128038;</span><span>&#128140;</span><span>&#128293;</span>
+            </div>
+
+            <div class="how-to">
+                <div class="how-to-item"><span>&#127919;</span><p>Answer questions from 10 Bible adventures</p></div>
+                <div class="how-to-item"><span>&#11088;</span><p>Earn stars and points with every right answer</p></div>
+                <div class="how-to-item"><span>&#128293;</span><p>Win badges and become a Bible Champion!</p></div>
+            </div>
+
+            <div id="continue-wrap" class="hidden">
+                <button id="btn-continue" class="btn btn-big btn-continue">&#128260; Continue My Quest</button>
+                <p class="continue-note">You're on question <span id="continue-info"></span></p>
+            </div>
+
+            <div class="start-buttons">
+                <button id="btn-start" class="btn btn-big btn-start">&#127752; Play!</button>
+                <button id="btn-sound" class="btn btn-round" title="Toggle sound" aria-label="Toggle sound">&#128266;</button>
+            </div>
+
+            <a href="../index.html" class="back-home">&#8592; Back to WhatIfWeBelieved</a>
+        </div>
+    </section>
+
+    <!-- ================= GAME SCREEN ================= -->
+    <section id="screen-game" class="screen hidden">
+        <header class="game-header">
+            <div class="progress-dots" id="progress-dots" aria-label="Adventure progress"></div>
+            <div class="top-stats">
+                <div class="stat" title="Score"><span class="stat-emoji">&#127942;</span><span id="stat-score">0</span></div>
+                <div class="stat" title="Streak"><span class="stat-emoji">&#128293;</span><span id="stat-streak">0</span></div>
+                <div class="stat" title="Correct answers"><span class="stat-emoji">&#9989;</span><span id="stat-correct">0</span></div>
+                <button id="btn-sound-game" class="btn btn-round btn-small" title="Toggle sound" aria-label="Toggle sound">&#128266;</button>
+            </div>
+        </header>
+
+        <div class="card game-card">
+            <div class="adventure-badge">
+                <span id="adventure-emoji">&#127757;</span>
+                <span id="adventure-name">Adventure 1</span>
+                <span class="q-counter" id="q-counter">Q 1 / 60</span>
+            </div>
+
+            <div class="timer-wrap">
+                <div class="timer-bar" id="timer-bar"></div>
+                <div class="timer-text" id="timer-text">60</div>
+            </div>
+
+            <h2 class="question-text" id="question-text">Loading question…</h2>
+            <p class="scripture-hint hidden" id="scripture-hint">&#128218; Peek: <span id="scripture-ref"></span></p>
+
+            <div class="choices" id="choices"></div>
+
+            <div class="feedback hidden" id="feedback"></div>
+            <p class="encouragement hidden" id="encouragement"></p>
+
+            <div class="lifelines">
+                <button id="btn-skip" class="btn btn-lifeline">&#127937; Skip <span id="skip-count">3</span></button>
+                <button id="btn-peek" class="btn btn-lifeline">&#128583;&#8205;&#9794;&#65039; Peek <span id="peek-count">3</span></button>
+                <button id="btn-next" class="btn btn-big btn-next hidden">&#128073; Next Question!</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= END SCREEN ================= -->
+    <section id="screen-end" class="screen hidden">
+        <div class="card end-card">
+            <div class="end-emoji" id="end-emoji">&#127881;</div>
+            <h1 class="end-title" id="end-title">The Adventure Is Complete!</h1>
+            <p class="end-subtitle" id="end-subtitle">You answered all 600 questions!</p>
+
+            <div class="end-stats">
+                <div class="stat"><span class="stat-emoji">&#127942;</span><span id="end-score">0</span><br><span class="stat-label">points</span></div>
+                <div class="stat"><span class="stat-emoji">&#9989;</span><span id="end-correct">0</span><br><span class="stat-label">correct</span></div>
+                <div class="stat"><span class="stat-emoji">&#128293;</span><span id="end-best-streak">0</span><br><span class="stat-label">best streak</span></div>
+            </div>
+
+            <div class="badges-earned">
+                <h3>Badges You Won &#127873;</h3>
+                <div id="end-badges" class="badge-grid"></div>
+            </div>
+
+            <div class="end-actions">
+                <button id="btn-play-again" class="btn btn-big btn-start">&#128260; Play Again!</button>
+                <a href="../index.html" class="back-home">&#8592; Back to WhatIfWeBelieved</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Badge popup -->
+    <div id="badge-popup" class="badge-popup hidden">
+        <div class="badge-popup-inner">
+            <div class="badge-popup-emoji" id="badge-popup-emoji">&#127873;</div>
+            <div class="badge-popup-title">You earned a badge!</div>
+            <div class="badge-popup-name" id="badge-popup-name">Badge</div>
+            <button id="btn-badge-close" class="btn btn-small btn-start">&#128077; Awesome!</button>
+            <div class="badge-popup-hint">&#128072; Click to continue</div>
+        </div>
+    </div>
+
+    <!-- Adventure-complete celebration popup -->
+    <div id="tier-popup" class="badge-popup hidden">
+        <div class="badge-popup-inner tier-popup-inner">
+            <div class="dance-row tier-dance">
+                <span class="dancer dancer-1">&#127881;</span>
+                <span class="dancer dancer-2">&#128378;</span>
+                <span class="dancer dancer-3">&#128131;</span>
+                <span class="dancer dancer-4">&#127882;</span>
+                <span class="dancer dancer-5">&#128378;</span>
+                <span class="dancer dancer-6">&#127881;</span>
+            </div>
+            <div class="badge-popup-emoji" id="tier-popup-emoji">&#127942;</div>
+            <div class="badge-popup-title" id="tier-popup-title">Adventure Complete!</div>
+            <div class="badge-popup-name" id="tier-popup-name">Adventure 1</div>
+            <div class="tier-stars" id="tier-popup-stars">&#11088;&#11088;&#11088;</div>
+            <button id="btn-tier-next" class="btn btn-big btn-start">&#128073; On to Adventure 2!</button>
+            <div class="badge-popup-hint">&#128072; Click to continue</div>
+        </div>
+    </div>
+
+    <!-- Confetti canvas -->
+    <canvas id="confetti-canvas"></canvas>
+
+    <script src="questions.js"></script>
+    <script src="game-audio.js"></script>
+    <script src="game-core.js"></script>
+    <script src="game-flow.js"></script>
+    <script src="game.js"></script>
+</body>
+</html>
