@@ -70,6 +70,7 @@
     let utteranceSeq = 0;
     let hymnTriggerTimer = null;
     let hymnPlayedForSeq = 0;
+    let hymnRestoreTimer = null;
 
     function pickVoice() {
         if (!('speechSynthesis' in window)) return null;
@@ -104,35 +105,54 @@
 
     function startHymnIfStillCurrent(seq) {
         if (seq !== utteranceSeq) return; // a newer announcement replaced this one
-        if (!(state.power && state.locked && announcerToggle.checked)) return;
+        if (!(state.power && state.locked)) return;
         if (hymnPlayedForSeq === seq) return; // already started
         hymnPlayedForSeq = seq;
         if (hymnTriggerTimer) { clearTimeout(hymnTriggerTimer); hymnTriggerTimer = null; }
         RadioAudio.playHymn(90);
+        // Visual confirmation on the radio screen so the broadcast is obvious.
+        const prevShow = state.locked ? state.locked.show : '';
+        screenShow.textContent = 'Now playing: How Great Thou Art';
+        if (hymnRestoreTimer) { clearTimeout(hymnRestoreTimer); hymnRestoreTimer = null; }
+        hymnRestoreTimer = setTimeout(function () {
+            hymnRestoreTimer = null;
+            if (state.locked) screenShow.textContent = prevShow;
+        }, 90000);
     }
 
     function announce(text) {
-        if (!announcerToggle.checked) return;
         try {
-            if (!('speechSynthesis' in window)) return;
             RadioAudio.stopHymn(); // never overlap an ongoing hymn
-            window.speechSynthesis.cancel();
             if (hymnTriggerTimer) { clearTimeout(hymnTriggerTimer); hymnTriggerTimer = null; }
-            const u = new SpeechSynthesisUtterance(text);
-            const v = pickVoice();
-            if (v) u.voice = v;
-            u.rate = 0.9;
-            u.pitch = 1.0;
-            u.volume = 0.85;
             const seq = ++utteranceSeq;
-            // Primary trigger: when the announcer finishes, broadcast the hymn (1 min 30 sec).
-            u.onend = function () { startHymnIfStillCurrent(seq); };
-            window.speechSynthesis.speak(u);
-            // Safety net: if onend never fires (known Chrome issue), the hymn still plays on schedule.
+
+            // When the announcer is enabled AND speech synthesis is available,
+            // speak first, then start the hymn when speech finishes.
+            if (announcerToggle.checked && 'speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const u = new SpeechSynthesisUtterance(text);
+                const v = pickVoice();
+                if (v) u.voice = v;
+                u.rate = 0.9;
+                u.pitch = 1.0;
+                u.volume = 0.85;
+                // Primary trigger: when the announcer finishes, broadcast the hymn (1 min 30 sec).
+                u.onend = function () { startHymnIfStillCurrent(seq); };
+                window.speechSynthesis.speak(u);
+                // Safety net: if onend never fires (known Chrome issue), the hymn still plays on schedule.
+                hymnTriggerTimer = setTimeout(function () {
+                    hymnTriggerTimer = null;
+                    startHymnIfStillCurrent(seq);
+                }, estimateSpeechMs(text));
+                return;
+            }
+
+            // Announcer off (or unsupported): still feature the broadcast —
+            // the sax hymn begins after a short pause, no voice required.
             hymnTriggerTimer = setTimeout(function () {
                 hymnTriggerTimer = null;
                 startHymnIfStillCurrent(seq);
-            }, estimateSpeechMs(text));
+            }, 3500);
         } catch (e) { /* ignore */ }
     }
 
@@ -190,9 +210,9 @@
                 state.locked = station;
                 RadioAudio.chime();
                 RadioAudio.startStation(station.pattern);
-                if (opts.announce !== false) {
-                    announce(stationLine(station));
-                }
+            }
+            if (opts.announce !== false) {
+                announce(stationLine(station));
             }
         } else {
             if (state.locked) {
@@ -209,7 +229,7 @@
     }
 
     /* ---------- power ---------- */
-    const welcomeAudio = new Audio('welcome.mp3?v=20260802b');
+    const welcomeAudio = new Audio('welcome.mp3?v=20260802c');
 
     function playWelcome() {
         try {
@@ -227,10 +247,12 @@
             RadioAudio.setVolume(state.volume);
             playWelcome();
             tuneTo(state.freq, { announce: false });
+            if (state.locked) announce(stationLine(state.locked));
         } else {
             welcomeAudio.pause();
             window.speechSynthesis.cancel();
             if (hymnTriggerTimer) { clearTimeout(hymnTriggerTimer); hymnTriggerTimer = null; }
+            if (hymnRestoreTimer) { clearTimeout(hymnRestoreTimer); hymnRestoreTimer = null; }
             RadioAudio.stopHymn();
             screenStatic.style.opacity = '0';
             state.locked = null;
