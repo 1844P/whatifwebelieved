@@ -8,23 +8,21 @@
     <meta http-equiv="Expires" content="0">
     <meta name="version" content="2026-07-29-v3">
     <title>Adventist Theology & Christian Philosophy Agent</title>
-    <meta name="description" content="Ask a free AI theology agent trained on Adventist doctrine, Ellen G. White's writings, Christian philosophy, and Scripture — get scholarly, cited answers to your biblical and theological questions.">
+    <meta name="description" content="An AI research agent trained on Adventist doctrines, Ellen G. White's writings, Christian philosophy, and Scripture. Get scholarly, cited answers on the Sabbath, sanctuary, investigative judgment, Great Controversy, and more.">
     <link rel="canonical" href="https://whatifwebelieved.vercel.app/agent/">
     <meta name="robots" content="index, follow">
-    <meta name="theme-color" content="#7a1a2e">
-    <link rel="icon" type="image/svg+xml" href="wallpaper-pitons.svg">
     <!-- Open Graph -->
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="WhatIfWeBelieved">
     <meta property="og:title" content="Adventist Theology & Christian Philosophy Agent | WhatIfWeBelieved">
-    <meta property="og:description" content="Ask a free AI theology agent trained on Adventist doctrine, Ellen G. White's writings, Christian philosophy, and Scripture — scholarly, cited answers.">
+    <meta property="og:description" content="An AI research agent trained on Adventist doctrines, Ellen G. White's writings, Christian philosophy, and Scripture. Get scholarly, cited answers.">
     <meta property="og:url" content="https://whatifwebelieved.vercel.app/agent/">
     <meta property="og:image" content="https://whatifwebelieved.vercel.app/bg-1.jpg">
     <meta property="og:locale" content="en_US">
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Adventist Theology & Christian Philosophy Agent | WhatIfWeBelieved">
-    <meta name="twitter:description" content="Ask a free AI theology agent trained on Adventist doctrine, Ellen G. White's writings, and Scripture — scholarly, cited answers.">
+    <meta name="twitter:description" content="An AI research agent trained on Adventist doctrines, Ellen G. White's writings, Christian philosophy, and Scripture. Get scholarly, cited answers.">
     <meta name="twitter:image" content="https://whatifwebelieved.vercel.app/bg-1.jpg">
     <script type="application/ld+json">
     {
@@ -36,6 +34,7 @@
         "description": "An AI research agent trained on Adventist doctrines, Ellen G. White's writings, Christian philosophy, and Scripture, providing scholarly, cited answers.",
         "applicationCategory": "EducationalApplication",
         "operatingSystem": "Any",
+        "inLanguage": "en",
         "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
         "publisher": {
             "@type": "Organization",
@@ -49,13 +48,21 @@
     <!-- Vercel Web Analytics -->
     <script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments)};</script>
     <script defer src="/_vercel/insights/script.js"></script>
-    <!-- Google Analytics (GA4) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9ZM6VF3FZY"></script>
+    <!-- Google Analytics - Replace G-9ZM6VF3FZY with your actual GA4 measurement ID -->
     <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'G-9ZM6VF3FZY');
+        (function() {
+            var id = 'G-9ZM6VF3FZY'; // <-- SET YOUR GA4 MEASUREMENT ID HERE
+            if (id && id !== 'G-9ZM6VF3FZY' && id.startsWith('G-')) {
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', id);
+                var s = document.createElement('script');
+                s.src = 'https://www.googletagmanager.com/gtag/js?id=' + id;
+                s.async = true;
+                document.head.appendChild(s);
+            }
+        })();
     </script>
     <style>
         :root {
@@ -84,6 +91,8 @@
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; }
         
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -451,6 +460,7 @@
             box-shadow: 0 8px 40px rgba(0,0,0,0.15), 0 0 0 1px rgba(184, 134, 11, 0.06);
             backdrop-filter: blur(8px);
             position: relative;
+            scroll-behavior: smooth;
         }
 
         /* MESSAGES */
@@ -1633,6 +1643,12 @@ Reasoning rules:
         let lastEssayContent = null;
         let lastBibleStudyContent = null;
 
+        // Helper to determine if a file should be treated as text
+        function isTextFile(file) {
+            return file.type.startsWith('text/') ||
+                   ['.txt', '.md'].some(ext => file.name.toLowerCase().endsWith(ext));
+        }
+
         const messagesDiv = document.getElementById('messages');
         const scrollBottomBtn = document.getElementById('scrollBottomBtn');
         const userInput = document.getElementById('userInput');
@@ -1761,10 +1777,14 @@ Reasoning rules:
             filePreview.style.display = 'flex';
 
             const reader = new FileReader();
+            if (isTextFile(file)) {
+                reader.readAsText(file);
+            } else {
+                reader.readAsDataURL(file);
+            }
             reader.onload = function(e) {
                 fileContent = e.target.result;
             };
-            reader.readAsDataURL(file);
         }
 
         function formatFileSize(bytes) {
@@ -1965,13 +1985,14 @@ Reasoning rules:
             if (welcome) welcome.style.display = 'none';
 
             let fullMessage = message;
-            const isBinaryFile = selectedFile && (selectedFile.type.startsWith('image/') || selectedFile.type === 'application/pdf');
+            const isBinaryFile = selectedFile && !isTextFile(selectedFile);
             
             if (selectedFile && fileContent) {
                 if (!isBinaryFile) {
                     fullMessage = message ? `${message}\n\n--- File Content (${selectedFile.name}) ---\n${fileContent}` : `Please analyze the following file (${selectedFile.name}):\n\n${fileContent}`;
                 } else {
-                    fullMessage = message || `Please analyze this ${selectedFile.type.startsWith('image/') ? 'image' : 'PDF document'}.`;
+                    const fileType = selectedFile.type.startsWith('image/') ? 'image' : selectedFile.type === 'application/pdf' ? 'PDF document' : 'document';
+                    fullMessage = message || `Please analyze this ${fileType}.`;
                 }
             }
 
@@ -2431,6 +2452,29 @@ Reasoning rules:
         window.handleModelChange('gemini');
         document.getElementById('modelProvider').value = 'gemini';
 
+        // Handle query parameter for pre-populating questions
+        const urlParams = new URLSearchParams(window.location.search);
+        const questionParam = urlParams.get('q');
+        if (questionParam) {
+            try {
+                // Decode the parameter (it might be URL-encoded)
+                const decodedQuestion = decodeURIComponent(questionParam);
+                if (userInput) {
+                    // Set the value
+                    userInput.value = decodedQuestion;
+                    // Adjust textarea height based on content
+                    userInput.style.height = 'auto';
+                    userInput.style.height = Math.min(userInput.scrollHeight, 150) + 'px';
+                    // Focus the textarea
+                    userInput.focus();
+                } else {
+                    console.error('userInput element not found');
+                }
+            } catch (e) {
+                console.error('Error processing question parameter:', e);
+            }
+        }
+
         // ============================================================
         // PARTICLE SYSTEM — "Truth Sparks" floating golden background
         // ============================================================
@@ -2578,7 +2622,6 @@ Reasoning rules:
             }
             return html;
         }
-
         function typewriterDisplay(element, text, callback) {
             if (!typewriterEnabled || text.length > 4000) {
                 element.textContent = text;
@@ -2744,8 +2787,6 @@ Reasoning rules:
             }
             messagesDiv.scrollTop = messagesDiv.scrollHeight;
         }
-        window.enhancedAddMessage = enhancedAddMessage;
-
-    </script>
+        window.enhancedAddMessage = enhancedAddMessage;    </script>
 </body>
 </html>
