@@ -224,15 +224,34 @@ const RadioAudio = (function () {
     }
 
     /* ---------- sax hymn: "How Great Thou Art" ---------- */
-    // O STORE GUD melody in G (alto-sax friendly range G4–E5).
+    // O STORE GUD melody in G (alto-sax friendly range F#4–E5).
+    // Verified against the hymnary incipit (55535 55664 66665) and published
+    // letter-note transcriptions. Each entry is [frequency, beats] where one
+    // beat = 0.62 s. The verse+chorus loop repeats for the broadcast duration.
     var HYM = [
-        [392.00, 1], [392.00, 1], [392.00, 1], [392.00, 1],
-        [440.00, 1], [493.88, 1], [587.33, 2], [493.88, 1], [440.00, 1], [392.00, 2],
-        [440.00, 1], [493.88, 1], [587.33, 1], [493.88, 1], [392.00, 1], [329.63, 1], [293.66, 1], [293.66, 1], [293.66, 2],
-        [392.00, 1], [440.00, 1], [493.88, 1], [440.00, 1], [392.00, 1], [440.00, 1], [493.88, 1], [440.00, 1], [392.00, 2],
-        [493.88, 1], [587.33, 1], [587.33, 1], [523.25, 1], [493.88, 1], [440.00, 1], [493.88, 1], [440.00, 1], [392.00, 2],
-        [392.00, 1], [440.00, 1], [493.88, 1], [587.33, 1], [587.33, 1], [523.25, 1], [493.88, 1], [440.00, 1], [493.88, 1], [392.00, 2],
-        [523.25, 1], [587.33, 1], [659.26, 1.5], [587.33, 0.5], [523.25, 1], [493.88, 1], [440.00, 1], [392.00, 2]
+        // Verse: "O Lord my God, when I in awesome wonder"
+        [587.33, 1], [587.33, 1], [587.33, 1], [493.88, 1],
+        [587.33, 1], [587.33, 1], [587.33, 1], [659.26, 1], [659.26, 1], [523.25, 1], [659.26, 2],
+        // "Consider all the worlds Thy hands have made"
+        [659.26, 1], [659.26, 1], [659.26, 1], [587.33, 1],
+        [493.88, 1], [587.33, 1], [587.33, 1], [523.25, 1], [523.25, 1], [493.88, 2],
+        // "I see the stars, I hear the rolling thunder"
+        [587.33, 1], [587.33, 1], [587.33, 1], [493.88, 1],
+        [587.33, 1], [587.33, 1], [587.33, 1], [659.26, 1], [659.26, 1], [523.25, 1], [659.26, 2],
+        // "Thy power throughout the universe displayed."
+        [659.26, 1], [659.26, 1], [659.26, 1], [587.33, 1],
+        [493.88, 1], [587.33, 1], [587.33, 1], [523.25, 1], [523.25, 1], [493.88, 2],
+        // Chorus: "Then sings my soul, my Savior God, to Thee"
+        [587.33, 1], [587.33, 1], [392.00, 1], [493.88, 1],
+        [440.00, 1], [392.00, 1], [369.99, 1], [392.00, 1], [659.26, 1], [587.33, 2],
+        // "How great Thou art! How great Thou art!"
+        [392.00, 1], [369.99, 1], [392.00, 1], [440.00, 1],
+        [523.25, 1], [659.26, 1], [587.33, 1], [493.88, 2],
+        // "Then sings my soul, my Savior God, to Thee"
+        [587.33, 1], [587.33, 1], [392.00, 1], [493.88, 1],
+        [440.00, 1], [392.00, 1], [369.99, 1], [392.00, 1], [659.26, 1], [587.33, 2],
+        // "How great Thou art!" (final)
+        [493.88, 1], [523.25, 1], [369.99, 1], [392.00, 2]
     ];
 
     // One shared vibrato LFO for the whole hymn (cheap: avoids per-note oscillators).
@@ -292,9 +311,10 @@ const RadioAudio = (function () {
         var total = duration || 90;
         var t0 = ctx.currentTime + 0.2;
         var beat = 0.62;
-        // Duck the station bed so the sax is the featured broadcast.
+        // Full separation: duck the station bed to silence so the sax is the
+        // only featured broadcast (no pad/arp playing underneath).
         stationGain.gain.cancelScheduledValues(t0);
-        stationGain.gain.setTargetAtTime(0.06, t0, 0.5);
+        stationGain.gain.setTargetAtTime(0, t0, 0.3);
         hymnGain.gain.cancelScheduledValues(t0);
         hymnGain.gain.setTargetAtTime(0.85, t0, 0.4);
 
