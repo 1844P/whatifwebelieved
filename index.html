@@ -267,11 +267,6 @@
         }
 
         .hero-top-motto {
-            position: absolute;
-            top: 40px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 2;
             font-family: 'Playfair Display', serif;
             font-size: 1.1rem;
             font-weight: 900;
@@ -284,7 +279,8 @@
             white-space: nowrap;
             animation: heroFadeIn 1s ease 0.2s forwards;
             opacity: 0;
-            transform: translateX(-50%) translateY(-10px);
+            transform: translateY(-10px);
+            margin-bottom: 16px;
         }
 
         .hero .container {
@@ -2331,8 +2327,8 @@
             </div>
         </div>
         <div class="hero-overlay"></div>
-        <div class="hero-top-motto">We Affirm Faith &middot; We Celebrate Critical Thinking</div>
         <div class="container">
+            <div class="hero-top-motto">We Affirm Faith &middot; We Celebrate Critical Thinking</div>
             <div class="hero-emblem-large">
                 <svg viewBox="0 0 72 88" fill="none">
                     <path d="M36 4 L68 14 L68 30 C68 46 36 60 36 60 C36 60 4 46 4 30 L4 14 Z" stroke="#9a7520" stroke-width="1.5"/>
