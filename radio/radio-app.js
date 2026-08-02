@@ -71,6 +71,7 @@
     let hymnTriggerTimer = null;
     let hymnPlayedForSeq = 0;
     let hymnRestoreTimer = null;
+    let welcomeEndTimer = null;
 
     function pickVoice() {
         if (!('speechSynthesis' in window)) return null;
@@ -124,11 +125,20 @@
         try {
             RadioAudio.stopHymn(); // never overlap an ongoing hymn
             if (hymnTriggerTimer) { clearTimeout(hymnTriggerTimer); hymnTriggerTimer = null; }
+            // One voice on air: cut any welcome jingle still playing or pending.
+            if (welcomeEndTimer) { clearTimeout(welcomeEndTimer); welcomeEndTimer = null; }
+            welcomeAudio.onended = null;
+            welcomeAudio.onerror = null;
+            try { welcomeAudio.pause(); } catch (e) { /* noop */ }
+
             const seq = ++utteranceSeq;
 
             // When the announcer is enabled AND speech synthesis is available,
             // speak first, then start the hymn when speech finishes.
             if (announcerToggle.checked && 'speechSynthesis' in window) {
+                // Cancel the previous announcement, then speak a tick later so
+                // Chrome has actually stopped the old voice before the new one
+                // starts (prevents two stations talking over each other).
                 window.speechSynthesis.cancel();
                 const u = new SpeechSynthesisUtterance(text);
                 const v = pickVoice();
@@ -138,12 +148,14 @@
                 u.volume = 0.85;
                 // Primary trigger: when the announcer finishes, broadcast the hymn (1 min 30 sec).
                 u.onend = function () { startHymnIfStillCurrent(seq); };
-                window.speechSynthesis.speak(u);
+                setTimeout(function () {
+                    if (seq === utteranceSeq) window.speechSynthesis.speak(u);
+                }, 50);
                 // Safety net: if onend never fires (known Chrome issue), the hymn still plays on schedule.
                 hymnTriggerTimer = setTimeout(function () {
                     hymnTriggerTimer = null;
                     startHymnIfStillCurrent(seq);
-                }, estimateSpeechMs(text));
+                }, estimateSpeechMs(text) + 100);
                 return;
             }
 
@@ -229,13 +241,29 @@
     }
 
     /* ---------- power ---------- */
-    const welcomeAudio = new Audio('welcome.mp3?v=20260802d');
+    const welcomeAudio = new Audio('welcome.mp3?v=20260802e');
 
-    function playWelcome() {
+    // Play the pre-recorded welcome jingle, then run onEnded when it finishes.
+    // A safety timer covers browsers where the jingle never fires 'ended'.
+    function playWelcome(onEnded) {
+        const done = function () {
+            if (welcomeEndTimer) { clearTimeout(welcomeEndTimer); welcomeEndTimer = null; }
+            welcomeAudio.onended = null;
+            welcomeAudio.onerror = null;
+            if (onEnded) onEnded();
+        };
         try {
+            welcomeAudio.onended = done;
+            welcomeAudio.onerror = done;
             welcomeAudio.currentTime = 0;
             welcomeAudio.play();
-        } catch (e) { /* autoplay blocked — user clicked, so rare */ }
+            if (onEnded) {
+                if (welcomeEndTimer) clearTimeout(welcomeEndTimer);
+                welcomeEndTimer = setTimeout(done, 17000);
+            }
+        } catch (e) {
+            done();
+        }
     }
 
     function setPower(on) {
@@ -245,11 +273,22 @@
         powerBtn.classList.toggle('on', on);
         if (on) {
             RadioAudio.setVolume(state.volume);
-            playWelcome();
             tuneTo(state.freq, { announce: false });
-            if (state.locked) announce(stationLine(state.locked));
+            // Sequence voices: welcome jingle first, then the announcer greets,
+            // then the hymn follows. Only one voice is ever on air at a time.
+            if (state.locked) {
+                const welcomeStation = state.locked;
+                playWelcome(function () {
+                    if (state.power && state.locked === welcomeStation) {
+                        announce(stationLine(welcomeStation));
+                    }
+                });
+            } else {
+                playWelcome(null);
+            }
         } else {
             welcomeAudio.pause();
+            if (welcomeEndTimer) { clearTimeout(welcomeEndTimer); welcomeEndTimer = null; }
             window.speechSynthesis.cancel();
             if (hymnTriggerTimer) { clearTimeout(hymnTriggerTimer); hymnTriggerTimer = null; }
             if (hymnRestoreTimer) { clearTimeout(hymnRestoreTimer); hymnRestoreTimer = null; }
