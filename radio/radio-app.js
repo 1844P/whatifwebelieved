@@ -68,6 +68,8 @@
 
     /* ---------- natural announcer voice ---------- */
     let utteranceSeq = 0;
+    let hymnTriggerTimer = null;
+    let hymnPlayedForSeq = 0;
 
     function pickVoice() {
         if (!('speechSynthesis' in window)) return null;
@@ -93,12 +95,29 @@
             'Sit back, take a breath, and enjoy the hour with us.';
     }
 
+    // Rough spoken duration (ms) at rate 0.9 — used as a safety net for the hymn.
+    function estimateSpeechMs(text) {
+        const words = (text.trim().match(/\S+/g) || []).length;
+        // ~2.2 words per second at a calm pace, plus a short lead-in.
+        return Math.min(30000, Math.max(3000, (words / 2.2) * 1000 + 900));
+    }
+
+    function startHymnIfStillCurrent(seq) {
+        if (seq !== utteranceSeq) return; // a newer announcement replaced this one
+        if (!(state.power && state.locked && announcerToggle.checked)) return;
+        if (hymnPlayedForSeq === seq) return; // already started
+        hymnPlayedForSeq = seq;
+        if (hymnTriggerTimer) { clearTimeout(hymnTriggerTimer); hymnTriggerTimer = null; }
+        RadioAudio.playHymn(90);
+    }
+
     function announce(text) {
         if (!announcerToggle.checked) return;
         try {
             if (!('speechSynthesis' in window)) return;
             RadioAudio.stopHymn(); // never overlap an ongoing hymn
             window.speechSynthesis.cancel();
+            if (hymnTriggerTimer) { clearTimeout(hymnTriggerTimer); hymnTriggerTimer = null; }
             const u = new SpeechSynthesisUtterance(text);
             const v = pickVoice();
             if (v) u.voice = v;
@@ -106,13 +125,14 @@
             u.pitch = 1.0;
             u.volume = 0.85;
             const seq = ++utteranceSeq;
-            // When the announcer finishes, broadcast the hymn (1 min 30 sec).
-            u.onend = function () {
-                if (seq === utteranceSeq && state.power && state.locked && announcerToggle.checked) {
-                    RadioAudio.playHymn(90);
-                }
-            };
+            // Primary trigger: when the announcer finishes, broadcast the hymn (1 min 30 sec).
+            u.onend = function () { startHymnIfStillCurrent(seq); };
             window.speechSynthesis.speak(u);
+            // Safety net: if onend never fires (known Chrome issue), the hymn still plays on schedule.
+            hymnTriggerTimer = setTimeout(function () {
+                hymnTriggerTimer = null;
+                startHymnIfStillCurrent(seq);
+            }, estimateSpeechMs(text));
         } catch (e) { /* ignore */ }
     }
 
@@ -189,7 +209,7 @@
     }
 
     /* ---------- power ---------- */
-    const welcomeAudio = new Audio('welcome.mp3?v=20260802');
+    const welcomeAudio = new Audio('welcome.mp3?v=20260802b');
 
     function playWelcome() {
         try {
@@ -210,6 +230,7 @@
         } else {
             welcomeAudio.pause();
             window.speechSynthesis.cancel();
+            if (hymnTriggerTimer) { clearTimeout(hymnTriggerTimer); hymnTriggerTimer = null; }
             RadioAudio.stopHymn();
             screenStatic.style.opacity = '0';
             state.locked = null;

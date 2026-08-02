@@ -235,9 +235,24 @@ const RadioAudio = (function () {
         [523.25, 1], [587.33, 1], [659.26, 1.5], [587.33, 0.5], [523.25, 1], [493.88, 1], [440.00, 1], [392.00, 2]
     ];
 
+    // One shared vibrato LFO for the whole hymn (cheap: avoids per-note oscillators).
+    var hymnVibOsc = null;
+    var hymnVibGain = null;
+
+    function ensureHymnVibrato() {
+        if (hymnVibOsc) return;
+        hymnVibOsc = ctx.createOscillator();
+        hymnVibOsc.frequency.value = 5.4;
+        hymnVibGain = ctx.createGain();
+        hymnVibGain.gain.value = 6;
+        hymnVibOsc.connect(hymnVibGain);
+        hymnVibOsc.start();
+        hymnNodes.push(hymnVibOsc, hymnVibGain);
+    }
+
     // One synthesized saxophone note with vibrato, breathy attack, soft release.
     function saxNote(freq, t, dur) {
-        var vol = 0.16;
+        var vol = 0.18;
         var o1 = ctx.createOscillator();
         o1.type = 'sawtooth';
         o1.frequency.value = freq;
@@ -246,10 +261,6 @@ const RadioAudio = (function () {
         o2.type = 'sawtooth';
         o2.frequency.value = freq;
         o2.detune.value = 5;
-        var o3 = ctx.createOscillator();
-        o3.type = 'square';
-        o3.frequency.value = freq / 2;
-        o3.detune.value = -3;
 
         var f = ctx.createBiquadFilter();
         f.type = 'lowpass';
@@ -263,26 +274,21 @@ const RadioAudio = (function () {
         g.gain.setValueAtTime(vol * 0.7, t + dur * 0.55);
         g.gain.exponentialRampToValueAtTime(0.001, t + dur);
 
-        var vib = ctx.createOscillator();
-        vib.frequency.value = 5.4;
-        var vibGain = ctx.createGain();
-        vibGain.gain.value = 7;
-        vib.connect(vibGain);
-        vibGain.connect(o1.frequency);
-        vibGain.connect(o2.frequency);
-        vibGain.connect(o3.frequency);
+        hymnVibGain.connect(o1.frequency);
+        hymnVibGain.connect(o2.frequency);
 
-        o1.connect(f); o2.connect(f); o3.connect(f);
+        o1.connect(f); o2.connect(f);
         f.connect(g); g.connect(hymnGain);
-        o1.start(t); o2.start(t); o3.start(t); vib.start(t);
-        o1.stop(t + dur + 0.1); o2.stop(t + dur + 0.1); o3.stop(t + dur + 0.1); vib.stop(t + dur + 0.1);
-        hymnNodes.push(o1, o2, o3, vib, vibGain, f, g);
+        o1.start(t); o2.start(t);
+        o1.stop(t + dur + 0.1); o2.stop(t + dur + 0.1);
+        hymnNodes.push(o1, o2, f, g);
     }
 
     // Broadcast the hymn for a given number of seconds (default 90).
     function playHymn(duration) {
         if (!ctx) return;
         stopHymn();
+        ensureHymnVibrato();
         var total = duration || 90;
         var t0 = ctx.currentTime + 0.2;
         var beat = 0.62;
@@ -322,6 +328,8 @@ const RadioAudio = (function () {
             try { node.disconnect && node.disconnect(); } catch (e) { /* noop */ }
         });
         hymnNodes = [];
+        hymnVibOsc = null;
+        hymnVibGain = null;
     }
 
     return {
