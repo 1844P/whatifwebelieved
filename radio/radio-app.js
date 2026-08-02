@@ -189,7 +189,7 @@
     }
 
     /* ---------- power ---------- */
-    const welcomeAudio = new Audio('welcome.mp3');
+    const welcomeAudio = new Audio('welcome.mp3?v=20260802');
 
     function playWelcome() {
         try {
