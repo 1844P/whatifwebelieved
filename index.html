@@ -281,6 +281,27 @@
                 linear-gradient(135deg, rgba(255,255,255,0.25) 0%, rgba(255,255,255,0.1) 100%);
         }
 
+        .hero-top-motto {
+            position: absolute;
+            top: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1rem;
+            font-weight: 900;
+            font-style: italic;
+            color: var(--gold-light);
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            text-shadow: 0 2px 20px rgba(200,162,78,0.5), 0 0 40px rgba(200,162,78,0.2);
+            line-height: 1.4;
+            white-space: nowrap;
+            animation: heroFadeIn 1s ease 0.2s forwards;
+            opacity: 0;
+            transform: translateX(-50%) translateY(-10px);
+        }
+
         .hero .container {
             position: relative;
             z-index: 2;
@@ -323,40 +344,6 @@
         .hero-emblem-large svg text {
             fill: var(--gold);
             opacity: 0.8;
-        }
-
-        .hero-motto {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.5rem;
-            font-weight: 900;
-            font-style: italic;
-            color: var(--gold-light);
-            letter-spacing: 4px;
-            text-transform: uppercase;
-            margin-bottom: 24px;
-            text-shadow: 0 2px 20px rgba(200,162,78,0.5), 0 0 40px rgba(200,162,78,0.2);
-            line-height: 1.4;
-            position: relative;
-            display: inline-block;
-        }
-
-        .hero-motto::before,
-        .hero-motto::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            width: 80px;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, var(--gold), transparent);
-            box-shadow: 0 0 12px rgba(200,162,78,0.4);
-        }
-
-        .hero-motto::before {
-            right: calc(100% + 20px);
-        }
-
-        .hero-motto::after {
-            left: calc(100% + 20px);
         }
 
         .hero h1 {
@@ -1391,8 +1378,7 @@
             }
             .hero .container { padding: 60px 20px; }
             .hero h1 { font-size: 2.6rem; }
-            .hero-motto { font-size: 1.1rem; letter-spacing: 2px; }
-            .hero-motto::before, .hero-motto::after { display: none; }
+            .hero-top-motto { font-size: 0.9rem; letter-spacing: 2px; top: 24px; }
             .section-title { font-size: 2rem; }
 
             .videos-grid { grid-template-columns: 1fr; }
@@ -1494,7 +1480,7 @@
         @media (max-width: 480px) {
             .hero { min-height: 60vh; }
             .hero h1 { font-size: 2rem; }
-            .hero-motto { font-size: 0.9rem; letter-spacing: 1px; }
+            .hero-top-motto { font-size: 0.8rem; letter-spacing: 1px; top: 20px; }
             .hero-emblem-large { width: 60px; height: 72px; }
             .footer-grid { grid-template-columns: 1fr; }
         }
@@ -2360,6 +2346,7 @@
             </div>
         </div>
         <div class="hero-overlay"></div>
+        <div class="hero-top-motto">We Affirm Faith &middot; We Celebrate Critical Thinking</div>
         <div class="container">
             <div class="hero-emblem-large">
                 <svg viewBox="0 0 72 88" fill="none">
@@ -2368,7 +2355,6 @@
                     <text x="36" y="38" text-anchor="middle" fill="#9a7520" font-size="16" font-weight="bold" font-family="serif">W</text>
                 </svg>
             </div>
-            <div class="hero-motto">We Affirm Faith &middot; We Celebrate Critical Thinking</div>
             <h1>What If We <span class="highlight">Believed</span>?<br><span class="gold-highlight">Exploring Faith Together</span></h1>
             <div class="hero-ticker">
                 <div class="hero-ticker-track">
