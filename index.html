@@ -1715,6 +1715,229 @@
             transform: translateY(0);
         }
 
+        /* --- QUICK ACCESS BAR + DROPDOWN MENUS --- */
+        .quickbar {
+            display: flex;
+            align-items: stretch;
+            gap: 10px;
+            flex-wrap: nowrap;
+            padding: 10px 0 4px;
+            border-bottom: 1px solid rgba(200,162,78,0.14);
+        }
+
+        .qb-item {
+            position: relative;
+        }
+
+        .qb-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 9px 16px;
+            border-radius: 12px;
+            border: 1px solid var(--glass-border);
+            background: rgba(255,255,255,0.65);
+            color: var(--ink);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.88rem;
+            font-weight: 600;
+            letter-spacing: 0.2px;
+            cursor: pointer;
+            transition: all 0.25s;
+            white-space: nowrap;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+        }
+
+        .qb-btn:hover,
+        .qb-item.open .qb-btn {
+            border-color: rgba(200,162,78,0.5);
+            background: #fff;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+            transform: translateY(-1px);
+        }
+
+        .qb-btn .qb-chev {
+            width: 12px;
+            height: 12px;
+            transition: transform 0.25s;
+            flex-shrink: 0;
+        }
+
+        .qb-item.open .qb-chev {
+            transform: rotate(180deg);
+        }
+
+        .qb-badge {
+            font-size: 0.62rem;
+            font-weight: 800;
+            letter-spacing: 0.6px;
+            text-transform: uppercase;
+            padding: 2px 7px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, #ff5252, #fb8500);
+            color: #fff;
+            box-shadow: 0 2px 8px rgba(255,82,82,0.35);
+            flex-shrink: 0;
+        }
+
+        .qb-badge.first {
+            background: linear-gradient(135deg, var(--crimson) 0%, #9a2a3e 100%);
+            box-shadow: 0 2px 8px rgba(122,26,46,0.35);
+        }
+
+        .qb-live {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #ff5252;
+            box-shadow: 0 0 0 0 rgba(255,82,82,0.55);
+            animation: qbPulse 1.8s infinite;
+            flex-shrink: 0;
+        }
+
+        @keyframes qbPulse {
+            0% { box-shadow: 0 0 0 0 rgba(255,82,82,0.55); }
+            70% { box-shadow: 0 0 0 8px rgba(255,82,82,0); }
+            100% { box-shadow: 0 0 0 0 rgba(255,82,82,0); }
+        }
+
+        .qb-panel {
+            position: absolute;
+            top: calc(100% + 12px);
+            left: 0;
+            width: 380px;
+            max-width: calc(100vw - 32px);
+            background: #fff;
+            border: 1px solid var(--glass-border);
+            border-radius: 18px;
+            box-shadow: 0 18px 50px rgba(0,0,0,0.14), 0 2px 10px rgba(0,0,0,0.06);
+            padding: 22px;
+            z-index: 200;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(8px);
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .qb-item.open .qb-panel {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .qb-panel .qb-eyebrow {
+            font-size: 0.66rem;
+            font-weight: 800;
+            letter-spacing: 1.4px;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 6px;
+        }
+
+        .qb-panel h4 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.25rem;
+            color: var(--ink);
+            margin: 0 0 8px;
+            line-height: 1.2;
+        }
+
+        .qb-panel p {
+            font-size: 0.88rem;
+            line-height: 1.55;
+            color: var(--ink-light);
+            margin: 0 0 12px;
+        }
+
+        .qb-panel ul {
+            list-style: none;
+            margin: 0 0 16px;
+            padding: 0;
+            display: grid;
+            gap: 8px;
+        }
+
+        .qb-panel ul li {
+            font-size: 0.84rem;
+            color: var(--ink-light);
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+        }
+
+        .qb-panel ul li::before {
+            content: '✦';
+            color: var(--gold);
+            font-size: 0.7rem;
+            margin-top: 2px;
+            flex-shrink: 0;
+        }
+
+        .qb-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 10px 18px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-decoration: none;
+            color: #fff;
+            background: linear-gradient(135deg, var(--crimson) 0%, var(--crimson-dark) 100%);
+            box-shadow: 0 4px 14px rgba(122,26,46,0.28);
+            transition: all 0.25s;
+        }
+
+        .qb-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 22px rgba(122,26,46,0.38);
+        }
+
+        .qb-cta.gold {
+            background: linear-gradient(135deg, #f0c56e 0%, #b8872f 100%);
+            color: #2a1606;
+            box-shadow: 0 4px 14px rgba(240,197,110,0.35);
+        }
+
+        .qb-cta.gold:hover {
+            box-shadow: 0 8px 22px rgba(240,197,110,0.45);
+        }
+
+        .qb-cta.kids {
+            background: linear-gradient(135deg, #fb8500 0%, #ff5252 100%);
+            box-shadow: 0 4px 14px rgba(251,133,0,0.35);
+        }
+
+        .qb-cta.kids:hover {
+            box-shadow: 0 8px 22px rgba(251,133,0,0.45);
+        }
+
+        .qb-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 14px;
+        }
+
+        .qb-chip {
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 20px;
+            background: #f5f1ea;
+            border: 1px solid rgba(200,162,78,0.2);
+            color: var(--ink-light);
+        }
+
+        @media (max-width: 900px) {
+            .quickbar { overflow-x: auto; scrollbar-width: none; }
+            .quickbar::-webkit-scrollbar { display: none; }
+        }
+
+        @media (max-width: 640px) {
+            .qb-panel { left: 0; right: 0; margin: 0 auto; }
+        }
+
         /* --- BACK TO TOP --- */
         #back-to-top {
             position: fixed;
@@ -1956,6 +2179,68 @@
                 <span></span><span></span><span></span>
             </button>
         </nav>
+
+        <!-- QUICK ACCESS BAR + DROPDOWN MENUS -->
+        <div class="quickbar" id="quickbar">
+            <div class="qb-item" data-qb="kids">
+                <button class="qb-btn" type="button" aria-haspopup="true" aria-expanded="false">
+                    Kids' Corner
+                    <span class="qb-badge">New</span>
+                    <svg class="qb-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+                <div class="qb-panel">
+                    <div class="qb-eyebrow">Kids' Corner · New</div>
+                    <h4>Bible Game for Children</h4>
+                    <p>A colorful 600-question Bible adventure made just for kids &mdash; with stars, streaks, badges, music, and lots of celebration!</p>
+                    <ul>
+                        <li>600 questions across the whole Bible</li>
+                        <li>Stars, streaks &amp; 19 collectible badges</li>
+                        <li>Music, confetti &amp; a kid-safe design</li>
+                    </ul>
+                    <a class="qb-cta kids" href="bible-game/index.html">Play the Bible Game &rarr;</a>
+                    <div class="qb-chips"><span class="qb-chip">Free</span><span class="qb-chip">Ages 5&ndash;12</span><span class="qb-chip">No sign-up</span></div>
+                </div>
+            </div>
+            <div class="qb-item" data-qb="radio">
+                <button class="qb-btn" type="button" aria-haspopup="true" aria-expanded="false">
+                    <span class="qb-live" aria-hidden="true"></span>
+                    The Station
+                    <span class="qb-badge">On the Air</span>
+                    <svg class="qb-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+                <div class="qb-panel">
+                    <div class="qb-eyebrow">The Station · On the Air</div>
+                    <h4>What If We Believed Radio</h4>
+                    <p>An original radio experience with hymns, encouragement, and truth &mdash; now broadcasting live to the world.</p>
+                    <ul>
+                        <li>90-second broadcasts, on demand</li>
+                        <li>Beautiful hymns &amp; a warm station sound</li>
+                        <li>New episodes arriving every week</li>
+                    </ul>
+                    <a class="qb-cta gold" href="radio/index.html">&#128251; Tune In to the Radio &rarr;</a>
+                    <div class="qb-chips"><span class="qb-chip">Live now</span><span class="qb-chip">Free</span><span class="qb-chip">Any device</span></div>
+                </div>
+            </div>
+            <div class="qb-item" data-qb="agent">
+                <button class="qb-btn" type="button" aria-haspopup="true" aria-expanded="false">
+                    AI Agent
+                    <span class="qb-badge first">First of its kind</span>
+                    <svg class="qb-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+                <div class="qb-panel">
+                    <div class="qb-eyebrow">Possibly the First Adventist-Focused AI Agent</div>
+                    <h4>Ask Anything About Adventist Theology</h4>
+                    <p>Thoughtful, Scripture-rooted answers to your deepest questions about faith, prophecy, and the Bible.</p>
+                    <ul>
+                        <li>Rooted in Adventist theology &amp; the Bible</li>
+                        <li>Clear, compassionate, thoughtful answers</li>
+                        <li>Free to use &mdash; right in your browser</li>
+                    </ul>
+                    <a class="qb-cta" href="#ai-agent-showcase">Meet the AI Agent &rarr;</a>
+                    <div class="qb-chips"><span class="qb-chip">Try it now</span><span class="qb-chip">Free</span></div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- MOBILE NAV OVERLAY & PANEL -->
@@ -2923,6 +3208,54 @@
             if (e.key === 'Escape' && navPanel && navPanel.classList.contains('open')) {
                 closeMobileNav();
             }
+        });
+
+        // --- QUICK ACCESS DROPDOWN MENUS ---
+        var qbItems = document.querySelectorAll('.qb-item');
+        var qbCanHover = window.matchMedia('(hover: hover)').matches;
+
+        function closeAllQb(except) {
+            qbItems.forEach(function(item) {
+                if (item !== except) {
+                    item.classList.remove('open');
+                    var btn = item.querySelector('.qb-btn');
+                    if (btn) btn.setAttribute('aria-expanded', 'false');
+                }
+            });
+        }
+
+        qbItems.forEach(function(item) {
+            var btn = item.querySelector('.qb-btn');
+
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                var isOpen = item.classList.contains('open');
+                closeAllQb(item);
+                if (!isOpen) {
+                    item.classList.add('open');
+                    btn.setAttribute('aria-expanded', 'true');
+                }
+            });
+
+            if (qbCanHover) {
+                item.addEventListener('mouseenter', function() {
+                    closeAllQb(item);
+                    item.classList.add('open');
+                    btn.setAttribute('aria-expanded', 'true');
+                });
+                item.addEventListener('mouseleave', function() {
+                    item.classList.remove('open');
+                    btn.setAttribute('aria-expanded', 'false');
+                });
+            }
+        });
+
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.qb-item')) closeAllQb();
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeAllQb();
         });
 
         // --- ACTIVE NAV LINK ---
