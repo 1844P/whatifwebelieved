@@ -7,12 +7,12 @@
 :root {
     --brass: #c9a24b;
     --brass-dark: #8a6d2f;
-    --wood-1: #7c4a23;
-    --wood-2: #4e2c12;
-    --ink: #1d1207;
+    --wood-1: #8a5a2e;
+    --wood-2: #5f3c1f;
+    --ink: #241505;
     --cream: #f7efdc;
     --lcd: #aef7c4;
-    --lcd-dim: #3f8f5e;
+    --lcd-dim: #4f9f6e;
     --red: #ff5252;
 }
 
@@ -21,8 +21,8 @@ body {
     font-family: Georgia, 'Times New Roman', serif;
     color: var(--cream);
     background:
-        radial-gradient(900px 420px at 50% -8%, rgba(240, 197, 110, 0.16), transparent 65%),
-        radial-gradient(1200px 700px at 50% -10%, #8a5a2e 0%, #6b3f1f 45%, #3d2414 100%);
+        radial-gradient(900px 420px at 50% -8%, rgba(240, 197, 110, 0.22), transparent 65%),
+        radial-gradient(1200px 700px at 50% -10%, #a96f3d 0%, #7d4e29 45%, #4f351e 100%);
     min-height: 100vh;
     background-attachment: fixed;
 }
@@ -84,7 +84,7 @@ body {
     width: 42px;
     height: 22px;
     border-radius: 11px;
-    background: #3a2f22;
+    background: #4a3a26;
     border: 1px solid var(--brass-dark);
     position: relative;
     transition: background 0.25s;
@@ -109,9 +109,9 @@ body {
     padding: 18px 18px 22px;
     box-shadow:
         inset 0 2px 0 rgba(255, 255, 255, 0.12),
-        0 18px 50px rgba(0, 0, 0, 0.55),
-        0 0 0 6px #33200f,
-        0 0 0 9px #6b4423;
+        0 18px 50px rgba(0, 0, 0, 0.45),
+        0 0 0 6px #432a13,
+        0 0 0 9px #7a5128;
     position: relative;
 }
 .radio::before {
@@ -385,10 +385,10 @@ body {
     padding: 12px 10px;
     border-radius: 16px;
     border: 2px solid var(--brass-dark);
-    background: linear-gradient(170deg, #3d2b16, #241607);
+    background: linear-gradient(170deg, #4f3a24, #33210f);
     color: var(--cream);
     cursor: pointer;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     transition: transform 0.15s, border-color 0.2s, box-shadow 0.2s;
 }
 .station-chip:hover {
@@ -410,7 +410,7 @@ body {
 .schedule {
     margin: 30px auto 0;
     max-width: 380px;
-    background: linear-gradient(170deg, rgba(61, 43, 22, 0.55), rgba(36, 22, 7, 0.55));
+    background: linear-gradient(170deg, rgba(79, 58, 36, 0.6), rgba(51, 33, 15, 0.6));
     border: 1px solid var(--brass-dark);
     border-radius: 16px;
     padding: 20px 26px;

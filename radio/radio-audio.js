@@ -19,6 +19,9 @@ const RadioAudio = (function () {
     let timers = [];
     let droneOsc = null;
     let droneGain = null;
+    let hymnGain = null;
+    let hymnNodes = [];
+    let hymnEndTimer = null;
 
     function ensure() {
         if (ctx) return;
@@ -59,6 +62,11 @@ const RadioAudio = (function () {
         stationGain = ctx.createGain();
         stationGain.gain.value = 0;
         stationGain.connect(volGain);
+
+        // Hymn solo bus (sax feature broadcast).
+        hymnGain = ctx.createGain();
+        hymnGain.gain.value = 0;
+        hymnGain.connect(volGain);
     }
 
     function buildNoise(seconds) {
@@ -215,6 +223,107 @@ const RadioAudio = (function () {
         droneGain = null;
     }
 
+    /* ---------- sax hymn: "How Great Thou Art" ---------- */
+    // O STORE GUD melody in G (alto-sax friendly range G4–E5).
+    var HYM = [
+        [392.00, 1], [392.00, 1], [392.00, 1], [392.00, 1],
+        [440.00, 1], [493.88, 1], [587.33, 2], [493.88, 1], [440.00, 1], [392.00, 2],
+        [440.00, 1], [493.88, 1], [587.33, 1], [493.88, 1], [392.00, 1], [329.63, 1], [293.66, 1], [293.66, 1], [293.66, 2],
+        [392.00, 1], [440.00, 1], [493.88, 1], [440.00, 1], [392.00, 1], [440.00, 1], [493.88, 1], [440.00, 1], [392.00, 2],
+        [493.88, 1], [587.33, 1], [587.33, 1], [523.25, 1], [493.88, 1], [440.00, 1], [493.88, 1], [440.00, 1], [392.00, 2],
+        [392.00, 1], [440.00, 1], [493.88, 1], [587.33, 1], [587.33, 1], [523.25, 1], [493.88, 1], [440.00, 1], [493.88, 1], [392.00, 2],
+        [523.25, 1], [587.33, 1], [659.26, 1.5], [587.33, 0.5], [523.25, 1], [493.88, 1], [440.00, 1], [392.00, 2]
+    ];
+
+    // One synthesized saxophone note with vibrato, breathy attack, soft release.
+    function saxNote(freq, t, dur) {
+        var vol = 0.16;
+        var o1 = ctx.createOscillator();
+        o1.type = 'sawtooth';
+        o1.frequency.value = freq;
+        o1.detune.value = -5;
+        var o2 = ctx.createOscillator();
+        o2.type = 'sawtooth';
+        o2.frequency.value = freq;
+        o2.detune.value = 5;
+        var o3 = ctx.createOscillator();
+        o3.type = 'square';
+        o3.frequency.value = freq / 2;
+        o3.detune.value = -3;
+
+        var f = ctx.createBiquadFilter();
+        f.type = 'lowpass';
+        f.frequency.setValueAtTime(Math.min(3600, freq * 4.5), t);
+        f.frequency.exponentialRampToValueAtTime(Math.max(600, freq * 1.8), t + dur * 0.7);
+        f.Q.value = 1.1;
+
+        var g = ctx.createGain();
+        g.gain.setValueAtTime(0.0001, t);
+        g.gain.exponentialRampToValueAtTime(vol, t + 0.07);
+        g.gain.setValueAtTime(vol * 0.7, t + dur * 0.55);
+        g.gain.exponentialRampToValueAtTime(0.001, t + dur);
+
+        var vib = ctx.createOscillator();
+        vib.frequency.value = 5.4;
+        var vibGain = ctx.createGain();
+        vibGain.gain.value = 7;
+        vib.connect(vibGain);
+        vibGain.connect(o1.frequency);
+        vibGain.connect(o2.frequency);
+        vibGain.connect(o3.frequency);
+
+        o1.connect(f); o2.connect(f); o3.connect(f);
+        f.connect(g); g.connect(hymnGain);
+        o1.start(t); o2.start(t); o3.start(t); vib.start(t);
+        o1.stop(t + dur + 0.1); o2.stop(t + dur + 0.1); o3.stop(t + dur + 0.1); vib.stop(t + dur + 0.1);
+        hymnNodes.push(o1, o2, o3, vib, vibGain, f, g);
+    }
+
+    // Broadcast the hymn for a given number of seconds (default 90).
+    function playHymn(duration) {
+        if (!ctx) return;
+        stopHymn();
+        var total = duration || 90;
+        var t0 = ctx.currentTime + 0.2;
+        var beat = 0.62;
+        // Duck the station bed so the sax is the featured broadcast.
+        stationGain.gain.cancelScheduledValues(t0);
+        stationGain.gain.setTargetAtTime(0.06, t0, 0.5);
+        hymnGain.gain.cancelScheduledValues(t0);
+        hymnGain.gain.setTargetAtTime(0.85, t0, 0.4);
+
+        var t = t0;
+        var i = 0;
+        while (t < t0 + (total - 5)) {
+            var note = HYM[i % HYM.length];
+            var dur = note[1] * beat;
+            saxNote(note[0], t, dur * 0.92);
+            t += dur;
+            i++;
+        }
+        var fadeAt = t0 + total - 5;
+        hymnGain.gain.setValueAtTime(0.85, fadeAt);
+        hymnGain.gain.linearRampToValueAtTime(0, t0 + total);
+        // Restore the station bed once the hymn has ended.
+        hymnEndTimer = setTimeout(function () {
+            if (ctx && stationGain) {
+                stationGain.gain.setTargetAtTime(0.32, ctx.currentTime, 1.2);
+            }
+        }, total * 1000);
+    }
+
+    function stopHymn() {
+        if (hymnEndTimer) { clearTimeout(hymnEndTimer); hymnEndTimer = null; }
+        if (hymnGain && ctx) {
+            hymnGain.gain.setTargetAtTime(0, ctx.currentTime, 0.12);
+        }
+        hymnNodes.forEach(function (node) {
+            try { node.stop && node.stop(); } catch (e) { /* already stopped */ }
+            try { node.disconnect && node.disconnect(); } catch (e) { /* noop */ }
+        });
+        hymnNodes = [];
+    }
+
     return {
         resume: resume,
         setVolume: setVolume,
@@ -223,6 +332,8 @@ const RadioAudio = (function () {
         setStatic: setStatic,
         chime: chime,
         startStation: startStation,
-        stopStation: stopStation
+        stopStation: stopStation,
+        playHymn: playHymn,
+        stopHymn: stopHymn
     };
 })();

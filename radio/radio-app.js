@@ -66,15 +66,52 @@
         return KNOB_START + ((freq - MIN_FREQ) / (MAX_FREQ - MIN_FREQ)) * KNOB_SWEEP;
     }
 
+    /* ---------- natural announcer voice ---------- */
+    let utteranceSeq = 0;
+
+    function pickVoice() {
+        if (!('speechSynthesis' in window)) return null;
+        const voices = window.speechSynthesis.getVoices();
+        if (!voices || !voices.length) return null;
+        const prefs = ['google us english', 'microsoft aria', 'microsoft jenny', 'microsoft guy', 'samantha', 'karen', 'daniel', 'google uk english female', 'natural'];
+        for (const p of prefs) {
+            const v = voices.find((x) => x && x.name && x.name.toLowerCase().includes(p));
+            if (v) return v;
+        }
+        return voices.find((v) => v && v.lang && v.lang.toLowerCase().startsWith('en')) || null;
+    }
+
+    // Natural, unhurried on-air greeting for a station.
+    function stationLine(station) {
+        const h = new Date().getHours();
+        let greet = 'Welcome';
+        if (h < 5) greet = 'Greetings in the quiet hours';
+        else if (h < 12) greet = 'Good morning';
+        else if (h < 18) greet = 'Good afternoon';
+        else greet = 'Good evening';
+        return greet + ' to ' + station.name + '. ' + station.show + '. ' +
+            'Sit back, take a breath, and enjoy the hour with us.';
+    }
+
     function announce(text) {
         if (!announcerToggle.checked) return;
         try {
             if (!('speechSynthesis' in window)) return;
+            RadioAudio.stopHymn(); // never overlap an ongoing hymn
             window.speechSynthesis.cancel();
             const u = new SpeechSynthesisUtterance(text);
-            u.rate = 0.95;
-            u.pitch = 1.05;
-            u.volume = 0.75;
+            const v = pickVoice();
+            if (v) u.voice = v;
+            u.rate = 0.9;
+            u.pitch = 1.0;
+            u.volume = 0.85;
+            const seq = ++utteranceSeq;
+            // When the announcer finishes, broadcast the hymn (1 min 30 sec).
+            u.onend = function () {
+                if (seq === utteranceSeq && state.power && state.locked && announcerToggle.checked) {
+                    RadioAudio.playHymn(90);
+                }
+            };
             window.speechSynthesis.speak(u);
         } catch (e) { /* ignore */ }
     }
@@ -134,13 +171,14 @@
                 RadioAudio.chime();
                 RadioAudio.startStation(station.pattern);
                 if (opts.announce !== false) {
-                    announce("You're listening to " + station.name + ". " + station.show);
+                    announce(stationLine(station));
                 }
             }
         } else {
             if (state.locked) {
                 state.locked = null;
                 RadioAudio.stopStation();
+                RadioAudio.stopHymn();
             }
             RadioAudio.setStatic(signalLevel(state.freq) < 1 ? 1 : 0);
         }
@@ -171,6 +209,8 @@
             tuneTo(state.freq, { announce: false });
         } else {
             welcomeAudio.pause();
+            window.speechSynthesis.cancel();
+            RadioAudio.stopHymn();
             screenStatic.style.opacity = '0';
             state.locked = null;
             renderScreen();
@@ -238,6 +278,9 @@
     });
 
     /* ---------- init ---------- */
+    if ('speechSynthesis' in window) {
+        window.speechSynthesis.onvoiceschanged = function () { /* warm voice cache */ };
+    }
     setPower(false);
     renderDial();
 })();
