@@ -87,12 +87,17 @@
 
     // Natural, unhurried on-air greeting for a station.
     function stationLine(station) {
-        const h = new Date().getHours();
         let greet = 'Welcome';
-        if (h < 5) greet = 'Greetings in the quiet hours';
-        else if (h < 12) greet = 'Good morning';
-        else if (h < 18) greet = 'Good afternoon';
-        else greet = 'Good evening';
+        // Morning Worship station always gets "Good morning" regardless of actual time
+        if (station.name === 'Morning Worship') {
+            greet = 'Good morning';
+        } else {
+            const h = new Date().getHours();
+            if (h < 5) greet = 'Greetings in the quiet hours';
+            else if (h < 12) greet = 'Good morning';
+            else if (h < 18) greet = 'Good afternoon';
+            else greet = 'Good evening';
+        }
         return greet + ' to ' + station.name + '. ' + station.show + '. ' +
             'Sit back, take a breath, and enjoy the hour with us.';
     }
