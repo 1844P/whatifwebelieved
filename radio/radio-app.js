@@ -102,33 +102,61 @@
             'Sit back, take a breath, and enjoy the hour with us.';
     }
 
-    // Rough spoken duration (ms) at rate 0.9 — used as a safety net for the hymn.
+    // Rough spoken duration (ms) at rate 0.9 — used as a safety net for the track.
     function estimateSpeechMs(text) {
         const words = (text.trim().match(/\S+/g) || []).length;
         // ~2.2 words per second at a calm pace, plus a short lead-in.
         return Math.min(30000, Math.max(3000, (words / 2.2) * 1000 + 900));
     }
 
+    // At the end of the announcement, broadcast the music track:
+    // "Spirit Lead Me Where My Trust Is Without Borders" (Life Illustrated).
     function startHymnIfStillCurrent(seq) {
         if (seq !== utteranceSeq) return; // a newer announcement replaced this one
         if (!(state.power && state.locked)) return;
         if (hymnPlayedForSeq === seq) return; // already started
         hymnPlayedForSeq = seq;
         if (hymnTriggerTimer) { clearTimeout(hymnTriggerTimer); hymnTriggerTimer = null; }
-        RadioAudio.playHymn(90);
+        playSpiritTrack();
         // Visual confirmation on the radio screen so the broadcast is obvious.
         const prevShow = state.locked ? state.locked.show : '';
-        screenShow.textContent = 'Now playing: How Great Thou Art';
+        screenShow.textContent = 'Now playing: Spirit Lead Me';
+        // Restore the station line when the track finishes (or on error),
+        // with a safety net for browsers that never fire 'ended'.
         if (hymnRestoreTimer) { clearTimeout(hymnRestoreTimer); hymnRestoreTimer = null; }
-        hymnRestoreTimer = setTimeout(function () {
+        const restore = function () {
             hymnRestoreTimer = null;
             if (state.locked) screenShow.textContent = prevShow;
-        }, 90000);
+        };
+        spiritAudio.onended = restore;
+        spiritAudio.onerror = restore;
+        hymnRestoreTimer = setTimeout(restore, 100000); // ~92s track + margin
+    }
+
+    // Play the broadcast track from the top at the current volume.
+    function playSpiritTrack() {
+        try {
+            spiritAudio.pause();
+            spiritAudio.currentTime = 0;
+            spiritAudio.volume = Math.max(0.05, state.volume * 0.9);
+            const p = spiritAudio.play();
+            if (p && typeof p.catch === 'function') p.catch(function () { /* noop */ });
+        } catch (e) { /* ignore */ }
+    }
+
+    // Cut the broadcast track (new announcement, tuning away, power off).
+    function stopSpiritTrack() {
+        try {
+            spiritAudio.pause();
+            spiritAudio.onended = null;
+            spiritAudio.onerror = null;
+        } catch (e) { /* ignore */ }
     }
 
     function announce(text) {
         try {
             RadioAudio.stopHymn(); // never overlap an ongoing hymn
+            stopSpiritTrack(); // cut any broadcast track still playing
             if (hymnTriggerTimer) { clearTimeout(hymnTriggerTimer); hymnTriggerTimer = null; }
             // One voice on air: cut any welcome jingle still playing or pending.
             if (welcomeEndTimer) { clearTimeout(welcomeEndTimer); welcomeEndTimer = null; }
@@ -139,7 +167,7 @@
             const seq = ++utteranceSeq;
 
             // When the announcer is enabled AND speech synthesis is available,
-            // speak first, then start the hymn when speech finishes.
+            // speak first, then start the music track when speech finishes.
             if (announcerToggle.checked && 'speechSynthesis' in window) {
                 // Cancel the previous announcement, then speak a tick later so
                 // Chrome has actually stopped the old voice before the new one
@@ -151,12 +179,12 @@
                 u.rate = 0.9;
                 u.pitch = 1.0;
                 u.volume = 0.85;
-                // Primary trigger: when the announcer finishes, broadcast the hymn (1 min 30 sec).
+                // Primary trigger: when the announcer finishes, broadcast the music track.
                 u.onend = function () { startHymnIfStillCurrent(seq); };
                 setTimeout(function () {
                     if (seq === utteranceSeq) window.speechSynthesis.speak(u);
                 }, 50);
-                // Safety net: if onend never fires (known Chrome issue), the hymn still plays on schedule.
+                // Safety net: if onend never fires (known Chrome issue), the track still plays on schedule.
                 hymnTriggerTimer = setTimeout(function () {
                     hymnTriggerTimer = null;
                     startHymnIfStillCurrent(seq);
@@ -165,7 +193,7 @@
             }
 
             // Announcer off (or unsupported): still feature the broadcast —
-            // the sax hymn begins after a short pause, no voice required.
+            // the music track begins after a short pause, no voice required.
             hymnTriggerTimer = setTimeout(function () {
                 hymnTriggerTimer = null;
                 startHymnIfStillCurrent(seq);
@@ -236,6 +264,7 @@
                 state.locked = null;
                 RadioAudio.stopStation();
                 RadioAudio.stopHymn();
+                stopSpiritTrack();
             }
             RadioAudio.setStatic(signalLevel(state.freq) < 1 ? 1 : 0);
         }
@@ -247,6 +276,7 @@
 
     /* ---------- power ---------- */
     const welcomeAudio = new Audio('welcome.mp3?v=20260802e');
+    const spiritAudio = new Audio('spirit-lead-me.mp3?v=20260802f');
 
     // Play the pre-recorded welcome jingle, then run onEnded when it finishes.
     // A safety timer covers browsers where the jingle never fires 'ended'.
@@ -298,6 +328,7 @@
             if (hymnTriggerTimer) { clearTimeout(hymnTriggerTimer); hymnTriggerTimer = null; }
             if (hymnRestoreTimer) { clearTimeout(hymnRestoreTimer); hymnRestoreTimer = null; }
             RadioAudio.stopHymn();
+            stopSpiritTrack();
             screenStatic.style.opacity = '0';
             state.locked = null;
             renderScreen();
