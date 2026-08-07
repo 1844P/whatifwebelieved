@@ -1,6 +1,8 @@
 /* ==========================================================================
    WHAT IF WE BELIEVED RADIO — app logic
    Power, tuning, signal strength, static, announcer voice.
+   Continuous broadcast: playlist ring + intermission that repeats the
+   station's opening (welcome jingle + announcer greeting) every few tracks.
    ========================================================================== */
 (function () {
     'use strict';
@@ -24,8 +26,144 @@
         power: false,
         volume: 0.8,
         freq: 92.1,
-        locked: null
+        locked: null,
+        externalAudioUrl: null, // New: for external audio streaming
+        usingExternalAudio: false, // New: flag to track if we're using external audio
+        externalAudioVolume: 0.8 // New: volume for external audio
     };
+
+    /* ---------- continuous playlist ring + intermission ---------- */
+    // The broadcast loops through TRACKS forever. Every INTERMISSION_EVERY
+    // tracks, the station replays its power-on opening: the welcome jingle,
+    // then the announcer's spoken greeting for the tuned station, then music.
+    const INTERMISSION_EVERY = 3;
+
+    // Voice color per station block for the synthesized hymn ring.
+    const TIMBRE = { MW: 'reed', BS: 'flute', PH: 'bell', HP: 'sax', KB: 'musicbox', NR: 'strings' };
+
+    // 31-track ring: Morning Worship -> Bible Stories -> Prayer Hour ->
+    // Hymns & Praise -> Kids' Bible Hour -> Night of Reflection -> loop.
+    // All 30 public-domain tunes are synthesized in-browser from verified
+    // Hymnary incipits (see radio-audio.js HYMNS) in the block's timbre;
+    // only Spirit Lead Me is a real recording (licensed station feature).
+    const TRACKS = [
+        // 06:00 Morning Worship
+        { id: 'when-morning-gilds',            title: 'When Morning Gilds the Skies',        block: 'MW', synth: 'laudes-domini',      approxSec: 180 },
+        { id: 'dawn-of-sabbath',               title: "The Dawn of God's Dear Sabbath",      block: 'MW', synth: 'st-georges-bolton', approxSec: 180 },
+        { id: 'holy-holy-holy',                title: 'Holy, Holy, Holy',                    block: 'MW', synth: 'nicaea',            approxSec: 210 },
+        { id: 'all-creatures',                 title: 'All Creatures of Our God and King',   block: 'MW', synth: 'lasst-uns-erfreuen', approxSec: 210 },
+        { id: 'o-worship-the-king',            title: 'O Worship the King',                  block: 'MW', synth: 'lyons',             approxSec: 180 },
+        // 09:00 Bible Stories
+        { id: 'tell-me-the-story-of-jesus',    title: 'Tell Me the Story of Jesus',          block: 'BS', synth: 'story-of-jesus',     approxSec: 195 },
+        { id: 'tell-me-the-old-old-story',     title: 'Tell Me the Old, Old Story',          block: 'BS', synth: 'evangel',           approxSec: 195 },
+        { id: 'i-love-to-tell-the-story',      title: 'I Love to Tell the Story',            block: 'BS', synth: 'hankey',            approxSec: 195 },
+        { id: 'rescue-the-perishing',          title: 'Rescue the Perishing',                block: 'BS', synth: 'rescue',            approxSec: 180 },
+        { id: 'wonderful-words-of-life',       title: 'Wonderful Words of Life',             block: 'BS', synth: 'words-of-life',     approxSec: 180 },
+        // 12:00 Prayer Hour
+        { id: 'i-need-thee-every-hour',        title: 'I Need Thee Every Hour',              block: 'PH', synth: 'need',              approxSec: 180 },
+        { id: 'sweet-hour-of-prayer',          title: 'Sweet Hour of Prayer',                block: 'PH', synth: 'sweet-hour',        approxSec: 195 },
+        { id: 'what-a-friend',                 title: 'What a Friend We Have in Jesus',      block: 'PH', synth: 'erie',              approxSec: 210 },
+        { id: 'tis-so-sweet-to-trust',         title: "'Tis So Sweet to Trust in Jesus",     block: 'PH', synth: 'trusting-jesus',    approxSec: 180 },
+        { id: 'come-thou-fount',               title: 'Come, Thou Fount of Every Blessing',  block: 'PH', synth: 'nettleton',         approxSec: 195 },
+        // 15:00 Hymns & Praise
+        { id: 'how-great-thou-art',            title: 'How Great Thou Art',                  block: 'HP', synth: 'hymn',              approxSec: 90 },
+        { id: 'spirit-lead-me',                title: 'Spirit Lead Me',                      block: 'HP', file: 'spirit-lead-me.mp3?v=20260802f', approxSec: 92 },
+        { id: 'amazing-grace',                 title: 'Amazing Grace',                       block: 'HP', synth: 'new-britain',       approxSec: 210 },
+        { id: 'nearer-my-god-to-thee',         title: 'Nearer, My God, to Thee',             block: 'HP', synth: 'bethany',           approxSec: 210 },
+        { id: 'it-is-well',                    title: 'It Is Well with My Soul',             block: 'HP', synth: 'ville-du-havre',    approxSec: 210 },
+        { id: 'the-lords-my-shepherd',         title: "The Lord's My Shepherd",              block: 'HP', synth: 'crimond',           approxSec: 180 },
+        // 18:00 Kids' Bible Hour
+        { id: 'jesus-loves-me',                title: 'Jesus Loves Me',                      block: 'KB', synth: 'jesus-loves-me',    approxSec: 150 },
+        { id: 'children-of-the-heavenly-father', title: 'Children of the Heavenly Father',   block: 'KB', synth: 'tryggare',          approxSec: 180 },
+        { id: 'jesus-tender-shepherd',         title: 'Jesus, Tender Shepherd, Hear Me',     block: 'KB', synth: 'shipston',          approxSec: 150 },
+        { id: 'all-things-bright-and-beautiful', title: 'All Things Bright and Beautiful',   block: 'KB', synth: 'royal-oak',         approxSec: 180 },
+        { id: 'i-think-when-i-read',           title: 'I Think When I Read That Sweet Story', block: 'KB', synth: 'sweet-story',       approxSec: 180 },
+        // 21:00 Night of Reflection
+        { id: 'day-is-dying-in-the-west',      title: 'Day Is Dying in the West',            block: 'NR', synth: 'chautauqua',        approxSec: 210 },
+        { id: 'abide-with-me',                 title: 'Abide with Me',                       block: 'NR', synth: 'eventide',          approxSec: 210 },
+        { id: 'softly-now-the-light-of-day',   title: 'Softly Now the Light of Day',         block: 'NR', synth: 'seymour',           approxSec: 180 },
+        { id: 'now-the-day-is-over',           title: 'Now the Day Is Over',                 block: 'NR', synth: 'merrial',           approxSec: 180 },
+        { id: 'the-day-thou-gavest',           title: 'The Day Thou Gavest, Lord, Is Ended', block: 'NR', synth: 'st-clement',        approxSec: 210 }
+    ];
+
+    // Owns the broadcast ring: plays one track, then the next, forever.
+    // A track is an mp3, or a synthesized hymn (synth:'<tune>') via RadioAudio.
+    const Playlist = (function () {
+        let idx = 0;
+        let seq = -1;
+        let intermissionCount = 0;
+        let safetyTimer = null;
+        let curAudio = null;
+
+        function playNext() {
+            stopTrack();
+            if (!(state.power && state.locked)) return;
+            const entry = TRACKS[idx % TRACKS.length];
+            idx++;
+            screenShow.textContent = 'Now playing: ' + entry.title;
+            if (entry.synth) {
+                RadioAudio.playHymn(entry.approxSec, entry.synth, TIMBRE[entry.block] || 'sax');
+                safetyTimer = setTimeout(advance, (entry.approxSec + 6) * 1000);
+                return;
+            }
+            try {
+                curAudio = new Audio(entry.file);
+                curAudio.volume = Math.max(0.05, state.volume * 0.9);
+                curAudio.onended = advance;
+                curAudio.onerror = advance; // 404 or decode failure: move on
+                curAudio.play().catch(function () { /* ignore */ });
+                safetyTimer = setTimeout(advance, entry.approxSec * 1000 + 5000);
+            } catch (e) {
+                advance();
+            }
+        }
+
+        function advance() {
+            if (!(state.power && state.locked)) return;
+            intermissionCount++;
+            if (intermissionCount % INTERMISSION_EVERY === 0) {
+                beginIntermission();
+            } else {
+                playNext();
+            }
+        }
+
+        // Repeats the station's power-on opening (welcome jingle, then the
+        // announcer's greeting). The playlist resumes when the announcer
+        // finishes, via announce() onend -> startHymnIfStillCurrent.
+        function beginIntermission() {
+            const st = state.locked;
+            screenShow.textContent = 'Intermission';
+            playWelcome(function () {
+                if (state.power && state.locked === st) announce(stationLine(st));
+            });
+        }
+
+        function stopTrack() {
+            if (safetyTimer) { clearTimeout(safetyTimer); safetyTimer = null; }
+            if (curAudio) {
+                try { curAudio.pause(); } catch (e) { /* ignore */ }
+                curAudio.onended = null;
+                curAudio.onerror = null;
+                curAudio = null;
+            }
+            RadioAudio.stopHymn();
+        }
+
+        function start(seqNo) {
+            seq = seqNo;
+            intermissionCount = 0;
+            playNext();
+        }
+
+        function stop() {
+            seq = -1;
+            intermissionCount = 0;
+            stopTrack();
+        }
+
+        return { start: start, stop: stop, stopTrack: stopTrack };
+    })();
 
     /* ---------- elements ---------- */
     const powerBtn = $('powerBtn');
@@ -42,6 +180,17 @@
     const tuneKnob = $('tuneKnob');
     const stationChips = $('stationChips');
     const announcerToggle = $('announcerToggle');
+
+    // External audio UI elements
+    const externalAudioConfig = $('externalAudioConfig');
+    const configToggle = $('configToggle');
+    const configContent = $('configContent');
+    const externalAudioUrlInput = $('externalAudioUrl');
+    const externalAudioVolumeInput = $('externalAudioVolume');
+    const externalAudioVolOut = $('externalAudioVolOut');
+    const applyExternalAudioBtn = $('applyExternalAudio');
+    const clearExternalAudioBtn = $('clearExternalAudio');
+    const externalAudioStatus = $('externalAudioStatus');
 
     /* ---------- helpers ---------- */
     function nearestStation(freq) {
@@ -70,7 +219,6 @@
     let utteranceSeq = 0;
     let hymnTriggerTimer = null;
     let hymnPlayedForSeq = 0;
-    let hymnRestoreTimer = null;
     let welcomeEndTimer = null;
 
     function pickVoice() {
@@ -87,43 +235,42 @@
 
     // Natural, unhurried on-air greeting for a station.
     function stationLine(station) {
-        const h = new Date().getHours();
         let greet = 'Welcome';
-        if (h < 5) greet = 'Greetings in the quiet hours';
-        else if (h < 12) greet = 'Good morning';
-        else if (h < 18) greet = 'Good afternoon';
-        else greet = 'Good evening';
+        // Morning Worship station always gets "Good morning" regardless of actual time
+        if (station.name === 'Morning Worship') {
+            greet = 'Good morning';
+        } else {
+            const h = new Date().getHours();
+            if (h < 5) greet = 'Greetings in the quiet hours';
+            else if (h < 12) greet = 'Good morning';
+            else if (h < 18) greet = 'Good afternoon';
+            else greet = 'Good evening';
+        }
         return greet + ' to ' + station.name + '. ' + station.show + '. ' +
             'Sit back, take a breath, and enjoy the hour with us.';
     }
 
-    // Rough spoken duration (ms) at rate 0.9 — used as a safety net for the hymn.
+    // Rough spoken duration (ms) at rate 0.9 — used as a safety net for the track.
     function estimateSpeechMs(text) {
         const words = (text.trim().match(/\S+/g) || []).length;
         // ~2.2 words per second at a calm pace, plus a short lead-in.
         return Math.min(30000, Math.max(3000, (words / 2.2) * 1000 + 900));
     }
 
+    // At the end of the announcement, resume the continuous broadcast.
     function startHymnIfStillCurrent(seq) {
         if (seq !== utteranceSeq) return; // a newer announcement replaced this one
         if (!(state.power && state.locked)) return;
         if (hymnPlayedForSeq === seq) return; // already started
         hymnPlayedForSeq = seq;
         if (hymnTriggerTimer) { clearTimeout(hymnTriggerTimer); hymnTriggerTimer = null; }
-        RadioAudio.playHymn(90);
-        // Visual confirmation on the radio screen so the broadcast is obvious.
-        const prevShow = state.locked ? state.locked.show : '';
-        screenShow.textContent = 'Now playing: How Great Thou Art';
-        if (hymnRestoreTimer) { clearTimeout(hymnRestoreTimer); hymnRestoreTimer = null; }
-        hymnRestoreTimer = setTimeout(function () {
-            hymnRestoreTimer = null;
-            if (state.locked) screenShow.textContent = prevShow;
-        }, 90000);
+        Playlist.start(seq);
     }
 
     function announce(text) {
         try {
             RadioAudio.stopHymn(); // never overlap an ongoing hymn
+            Playlist.stopTrack(); // cut any broadcast track still playing
             if (hymnTriggerTimer) { clearTimeout(hymnTriggerTimer); hymnTriggerTimer = null; }
             // One voice on air: cut any welcome jingle still playing or pending.
             if (welcomeEndTimer) { clearTimeout(welcomeEndTimer); welcomeEndTimer = null; }
@@ -134,7 +281,7 @@
             const seq = ++utteranceSeq;
 
             // When the announcer is enabled AND speech synthesis is available,
-            // speak first, then start the hymn when speech finishes.
+            // speak first, then start the music track when speech finishes.
             if (announcerToggle.checked && 'speechSynthesis' in window) {
                 // Cancel the previous announcement, then speak a tick later so
                 // Chrome has actually stopped the old voice before the new one
@@ -146,12 +293,12 @@
                 u.rate = 0.9;
                 u.pitch = 1.0;
                 u.volume = 0.85;
-                // Primary trigger: when the announcer finishes, broadcast the hymn (1 min 30 sec).
+                // Primary trigger: when the announcer finishes, resume the broadcast.
                 u.onend = function () { startHymnIfStillCurrent(seq); };
                 setTimeout(function () {
                     if (seq === utteranceSeq) window.speechSynthesis.speak(u);
                 }, 50);
-                // Safety net: if onend never fires (known Chrome issue), the hymn still plays on schedule.
+                // Safety net: if onend never fires (known Chrome issue), the track still plays on schedule.
                 hymnTriggerTimer = setTimeout(function () {
                     hymnTriggerTimer = null;
                     startHymnIfStillCurrent(seq);
@@ -160,7 +307,7 @@
             }
 
             // Announcer off (or unsupported): still feature the broadcast —
-            // the sax hymn begins after a short pause, no voice required.
+            // the music track begins after a short pause, no voice required.
             hymnTriggerTimer = setTimeout(function () {
                 hymnTriggerTimer = null;
                 startHymnIfStillCurrent(seq);
@@ -193,8 +340,8 @@
             screenStation.textContent = state.locked.emoji + ' ' + state.locked.name;
             screenShow.textContent = state.locked.show;
         } else {
-            screenStation.textContent = 'Tuning\u2026';
-            screenShow.textContent = 'Searching for signal\u2026';
+            screenStation.textContent = 'Tuning…';
+            screenShow.textContent = 'Searching for signal…';
         }
     }
 
@@ -231,6 +378,7 @@
                 state.locked = null;
                 RadioAudio.stopStation();
                 RadioAudio.stopHymn();
+                Playlist.stopTrack();
             }
             RadioAudio.setStatic(signalLevel(state.freq) < 1 ? 1 : 0);
         }
@@ -273,9 +421,13 @@
         powerBtn.classList.toggle('on', on);
         if (on) {
             RadioAudio.setVolume(state.volume);
+            // Set external audio volume if we're using external audio
+            if (state.usingExternalAudio) {
+                RadioAudio.setExternalAudioVolume(state.externalAudioVolume);
+            }
             tuneTo(state.freq, { announce: false });
             // Sequence voices: welcome jingle first, then the announcer greets,
-            // then the hymn follows. Only one voice is ever on air at a time.
+            // then the broadcast follows. Only one voice is ever on air at a time.
             if (state.locked) {
                 const welcomeStation = state.locked;
                 playWelcome(function () {
@@ -291,8 +443,9 @@
             if (welcomeEndTimer) { clearTimeout(welcomeEndTimer); welcomeEndTimer = null; }
             window.speechSynthesis.cancel();
             if (hymnTriggerTimer) { clearTimeout(hymnTriggerTimer); hymnTriggerTimer = null; }
-            if (hymnRestoreTimer) { clearTimeout(hymnRestoreTimer); hymnRestoreTimer = null; }
+            Playlist.stop();
             RadioAudio.stopHymn();
+            RadioAudio.stopExternalAudio(); // Stop external audio when powering off
             screenStatic.style.opacity = '0';
             state.locked = null;
             renderScreen();
@@ -335,6 +488,12 @@
     attachKnob(volumeKnob, (dy) => {
         state.volume = Math.min(1, Math.max(0, state.volume + dy * 0.02));
         RadioAudio.setVolume(state.volume);
+        // Update external audio volume proportionally if using external audio
+        if (state.usingExternalAudio) {
+            // External audio volume is independent but we'll keep it in sync with main volume for simplicity
+            state.externalAudioVolume = state.volume;
+            RadioAudio.setExternalAudioVolume(state.externalAudioVolume);
+        }
         renderDial();
     });
 
@@ -359,10 +518,82 @@
         stationChips.appendChild(chip);
     });
 
+    /* ---------- external audio controls ---------- */
+    function updateExternalAudioStatus() {
+        if (state.externalAudioUrl) {
+            externalAudioStatus.textContent = `External audio: ${state.externalAudioUrl}`;
+            externalAudioStatus.style.color = '#4CAF50'; // Green
+        } else {
+            externalAudioStatus.textContent = 'No external audio configured';
+            externalAudioStatus.style.color = '#ff9800'; // Orange
+        }
+    }
+
+    configToggle.addEventListener('click', () => {
+        configContent.classList.toggle('open');
+        const isOpen = configContent.classList.contains('open');
+        configToggle.textContent = isOpen ? '�� Hide' : '�� Configure';
+    });
+
+    externalAudioVolumeInput.addEventListener('input', () => {
+        const vol = parseInt(externalAudioVolumeInput.value);
+        externalAudioVolOut.textContent = vol;
+        state.externalAudioVolume = vol / 100;
+        // Update external audio volume if we're using external audio
+        if (state.usingExternalAudio) {
+            RadioAudio.setExternalAudioVolume(state.externalAudioVolume);
+        }
+    });
+
+    applyExternalAudioBtn.addEventListener('click', () => {
+        const url = externalAudioUrlInput.value.trim();
+        if (url) {
+            // Validate URL format (basic check)
+            if (/^https?:\/\//i.test(url)) {
+                state.externalAudioUrl = url;
+                state.usingExternalAudio = true;
+                RadioAudio.setExternalAudio(url);
+                RadioAudio.setExternalAudioVolume(state.externalAudioVolume);
+                updateExternalAudioStatus();
+                externalAudioUrlInput.value = ''; // Clear input after applying
+                // Show success feedback
+                applyExternalAudioBtn.textContent = 'Applied!';
+                setTimeout(() => {
+                    applyExternalAudioBtn.textContent = 'Apply Audio Stream';
+                }, 1500);
+            } else {
+                externalAudioStatus.textContent = 'Please enter a valid URL (http:// or https://)';
+                externalAudioStatus.style.color = '#f44336'; // Red
+                setTimeout(() => {
+                    updateExternalAudioStatus();
+                }, 2000);
+            }
+        } else {
+            externalAudioStatus.textContent = 'Please enter a URL';
+            externalAudioStatus.style.color = '#f44336'; // Red
+            setTimeout(() => {
+                updateExternalAudioStatus();
+            }, 2000);
+        }
+    });
+
+    clearExternalAudioBtn.addEventListener('click', () => {
+        state.externalAudioUrl = null;
+        state.usingExternalAudio = false;
+        RadioAudio.stopExternalAudio();
+        externalAudioUrlInput.value = '';
+        updateExternalAudioStatus();
+        clearExternalAudioBtn.textContent = 'Cleared!';
+        setTimeout(() => {
+            clearExternalAudioBtn.textContent = 'Clear Stream';
+        }, 1500);
+    });
+
     /* ---------- init ---------- */
     if ('speechSynthesis' in window) {
         window.speechSynthesis.onvoiceschanged = function () { /* warm voice cache */ };
     }
     setPower(false);
     renderDial();
+    updateExternalAudioStatus();
 })();
