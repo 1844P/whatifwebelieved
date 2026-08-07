@@ -124,8 +124,15 @@
         </div>
         <div class="config-content" id="configContent">
             <div class="config-row">
-                <label for="externalAudioUrl">Audio Stream URL:</label>
-                <input type="text" id="externalAudioUrl" placeholder="http://127.0.0.1:8000/wiwb or other stream URL">
+                <label for="externalAudioSource">Audio Source:</label>
+                <select id="externalAudioSource">
+                    <option value="http://127.0.0.1:8000/wiwb" selected>Local WIWB Studio (http://127.0.0.1:8000/wiwb)</option>
+                    <option value="">Custom URL...</option>
+                </select>
+            </div>
+            <div class="config-row custom-url-container" style="display: none;">
+                <label for="externalAudioUrl">Custom Stream URL:</label>
+                <input type="text" id="externalAudioUrl" placeholder="Enter custom stream URL (http:// or https://)">
             </div>
             <div class="config-row">
                 <label for="externalAudioVolume">Volume:</label>
@@ -138,6 +145,13 @@
             </div>
             <div class="config-row status">
                 <span id="externalAudioStatus">No external audio configured</span>
+            </div>
+            <div class="config-row instructions">
+                <small>���� To broadcast from your local WIWB Studio:<br>
+                1. Start your WIWB Studio at http://127.0.0.1:4173/<br>
+                2. Click "POWER" then "START BROADCAST"<br>
+                3. Select "Local WIWB Studio" above and click "Apply Audio Stream"<br>
+                4. Your desktop audio will now broadcast through the radio</small>
             </div>
         </div>
     </div>

@@ -185,7 +185,9 @@
     const externalAudioConfig = $('externalAudioConfig');
     const configToggle = $('configToggle');
     const configContent = $('configContent');
+    const externalAudioSourceSelect = $('externalAudioSource');
     const externalAudioUrlInput = $('externalAudioUrl');
+    const customUrlContainer = document.querySelector('.custom-url-container');
     const externalAudioVolumeInput = $('externalAudioVolume');
     const externalAudioVolOut = $('externalAudioVolOut');
     const applyExternalAudioBtn = $('applyExternalAudio');
@@ -529,6 +531,20 @@
         }
     }
 
+    // Handle dropdown selection
+    externalAudioSourceSelect.addEventListener('change', () => {
+        const selectedValue = externalAudioSourceSelect.value;
+        if (selectedValue === '') {
+            // Show custom URL input
+            customUrlContainer.style.display = 'block';
+            externalAudioUrlInput.focus();
+        } else {
+            // Hide custom URL input and use selected value
+            customUrlContainer.style.display = 'none';
+            externalAudioUrlInput.value = '';
+        }
+    });
+
     configToggle.addEventListener('click', () => {
         configContent.classList.toggle('open');
         const isOpen = configContent.classList.contains('open');
@@ -546,7 +562,17 @@
     });
 
     applyExternalAudioBtn.addEventListener('click', () => {
-        const url = externalAudioUrlInput.value.trim();
+        let url = '';
+        const selectedSource = externalAudioSourceSelect.value;
+        
+        if (selectedSource === '') {
+            // Use custom URL
+            url = externalAudioUrlInput.value.trim();
+        } else {
+            // Use selected preset URL
+            url = selectedSource;
+        }
+        
         if (url) {
             // Validate URL format (basic check)
             if (/^https?:\/\//i.test(url)) {
@@ -555,7 +581,12 @@
                 RadioAudio.setExternalAudio(url);
                 RadioAudio.setExternalAudioVolume(state.externalAudioVolume);
                 updateExternalAudioStatus();
-                externalAudioUrlInput.value = ''; // Clear input after applying
+                
+                // Reset form
+                externalAudioSourceSelect.value = 'http://127.0.0.1:8000/wiwb'; // Reset to default
+                customUrlContainer.style.display = 'none';
+                externalAudioUrlInput.value = '';
+                
                 // Show success feedback
                 applyExternalAudioBtn.textContent = 'Applied!';
                 setTimeout(() => {
@@ -569,7 +600,7 @@
                 }, 2000);
             }
         } else {
-            externalAudioStatus.textContent = 'Please enter a URL';
+            externalAudioStatus.textContent = 'Please select or enter a URL';
             externalAudioStatus.style.color = '#f44336'; // Red
             setTimeout(() => {
                 updateExternalAudioStatus();
@@ -581,6 +612,8 @@
         state.externalAudioUrl = null;
         state.usingExternalAudio = false;
         RadioAudio.stopExternalAudio();
+        externalAudioSourceSelect.value = 'http://127.0.0.1:8000/wiwb'; // Reset to default
+        customUrlContainer.style.display = 'none';
         externalAudioUrlInput.value = '';
         updateExternalAudioStatus();
         clearExternalAudioBtn.textContent = 'Cleared!';
