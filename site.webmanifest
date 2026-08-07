@@ -1,0 +1,17 @@
+{
+  "name": "WhatIfWeBelieved",
+  "short_name": "WhatIfWeBelieved",
+  "description": "Exploring faith, theology, and the transformative power of belief — Adventist theology, Bible study, and sermon reviews.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#faf8f5",
+  "theme_color": "#7a1a2e",
+  "icons": [
+    {
+      "src": "/wallpaper-theology.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
