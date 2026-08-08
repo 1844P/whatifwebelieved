@@ -21,6 +21,7 @@
 
         // WhatIfWeBelieved Channel — Live Studio & Teaching Archive
         { freq: 89.3,  emoji: '\u{1F3A4}', name: 'LIVE Studio',       show: 'Live broadcast from @paulos1844',     pattern: { type: 'youtube-live', channelId: 'UCnJMpsZg53Rl4FSuL7Ve58A', title: 'Live Studio' } },
+        { freq: 89.5,  emoji: '\u{1F4FA}', name: 'TEST: GVz2r0v_sNg', show: 'Test specific stream ID',             pattern: { type: 'youtube', videoId: 'GVz2r0v_sNg', title: 'Test Stream GVz2r0v_sNg' } },
         { freq: 93.7,  emoji: '\u{1F4D6}', name: 'Unstoppable',       show: 'The Rebooted Asset',                  pattern: { type: 'youtube', videoId: 'l9V_MDWfUkg', title: 'Unstoppable: The Rebooted Asset' } },
         { freq: 98.1,  emoji: '\u{1F4DA}', name: 'Reprogramming',     show: 'Empire Theology',                     pattern: { type: 'youtube', videoId: 'ea0dtxkE-bw', title: 'Reprogramming an Empire' } },
         { freq: 102.5, emoji: '\u{1F56F}', name: 'No Guardrails',     show: 'Faith Without a Safety Net',          pattern: { type: 'youtube', videoId: 'vfUmeceFEhw', title: 'No Guardrails: Faith Without a Safety Net' } },
