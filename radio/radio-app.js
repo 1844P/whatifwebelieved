@@ -19,12 +19,12 @@
         { freq: 100.3, emoji: '\u{1F3B5}', name: 'Hymns & Praise',    show: 'Timeless hymns, gently played',       pattern: { type: 'arp',    notes: [523.25, 659.25, 783.99, 1046.5], step: 0.3 } },
         { freq: 104.9, emoji: '\u{1F9D2}', name: "Kids' Bible Hour",  show: 'Bible adventures for little ears',    pattern: { type: 'kids',   notes: [523.25, 659.25, 783.99, 659.25, 880], step: 0.18 } },
 
-        // YouTube Audio Stations
-        { freq: 89.3,  emoji: '\u{1F4FA}', name: 'YouTube: Worship',  show: 'Live worship from YouTube',           pattern: { type: 'youtube', videoId: 'D2FfteQ7sXI', title: 'Worship Mix' } },
-        { freq: 93.7,  emoji: '\u{1F4FA}', name: 'YouTube: Sermons',  show: 'Biblical teaching from YouTube',      pattern: { type: 'youtube', videoId: 'jNQXAC9IVRw', title: 'Sermon Archive' } },
-        { freq: 98.1,  emoji: '\u{1F4FA}', name: 'YouTube: Hymns',    show: 'Classic hymns from YouTube',          pattern: { type: 'youtube', videoId: 'l9V_MDWfUkg', title: 'Hymn Collection' } },
-        { freq: 102.5, emoji: '\u{1F4FA}', name: 'YouTube: Prayer',   show: 'Guided prayer from YouTube',          pattern: { type: 'youtube', videoId: '881ddNnGCfs', title: 'Prayer Sessions' } },
-        { freq: 107.3, emoji: '\u{1F4FA}', name: 'YouTube: Kids',     show: 'Children\'s Bible content from YouTube', pattern: { type: 'youtube', videoId: 'dQw4w9WgXcQ', title: 'Kids Bible Songs' } }
+        // WhatIfWeBelieved Channel — Live Studio & Teaching Archive
+        { freq: 89.3,  emoji: '\u{1F3A4}', name: 'LIVE Studio',       show: 'Live broadcast from @paulos1844',     pattern: { type: 'youtube-live', channelId: 'UCnJMpsZg53Rl4FSuL7Ve58A', title: 'Live Studio' } },
+        { freq: 93.7,  emoji: '\u{1F4D6}', name: 'Unstoppable',       show: 'The Rebooted Asset',                  pattern: { type: 'youtube', videoId: 'l9V_MDWfUkg', title: 'Unstoppable: The Rebooted Asset' } },
+        { freq: 98.1,  emoji: '\u{1F4DA}', name: 'Reprogramming',     show: 'Empire Theology',                     pattern: { type: 'youtube', videoId: 'ea0dtxkE-bw', title: 'Reprogramming an Empire' } },
+        { freq: 102.5, emoji: '\u{1F56F}', name: 'No Guardrails',     show: 'Faith Without a Safety Net',          pattern: { type: 'youtube', videoId: 'vfUmeceFEhw', title: 'No Guardrails: Faith Without a Safety Net' } },
+        { freq: 107.3, emoji: '\u{1F4DD}', name: 'How a Good Man',    show: 'Loses His Shape',                     pattern: { type: 'youtube', videoId: '881ddNnGCfs', title: 'How a Good Man Loses His Shape' } },
     ];
 
     const state = {
@@ -32,7 +32,8 @@
         volume: 0.8,
         freq: 92.1,
         locked: null,
-        isYouTube: false
+        isYouTube: false,
+        isYouTubeLive: false
     };
 
     /* ---------- elements ---------- */
@@ -177,7 +178,8 @@
             // When the announcer is enabled AND speech synthesis is available,
             // speak first, then start the music track when speech finishes.
             // Skip music track for YouTube stations (they have their own audio)
-            const isYouTubeStation = state.locked && state.locked.pattern && state.locked.pattern.type === 'youtube';
+            const pattern = state.locked && state.locked.pattern;
+            const isYouTubeStation = pattern && (pattern.type === 'youtube' || pattern.type === 'youtube-live');
             
             if (announcerToggle.checked && 'speechSynthesis' in window) {
                 // Cancel the previous announcement, then speak a tick later so
@@ -268,7 +270,9 @@
         if (distance < lockThreshold()) {
             if (state.locked !== station) {
                 state.locked = station;
-                state.isYouTube = station.pattern && station.pattern.type === 'youtube';
+                const pattern = station.pattern || {};
+                state.isYouTube = pattern.type === 'youtube' || pattern.type === 'youtube-live';
+                state.isYouTubeLive = pattern.type === 'youtube-live';
                 
                 // Stop any existing audio
                 RadioAudio.stopStation();
@@ -278,20 +282,35 @@
                 RadioAudio.chime();
                 
                 if (state.isYouTube) {
-                    // Load and play YouTube video
-                    const videoId = station.pattern.videoId;
-                    screenShow.textContent = 'Loading: ' + station.pattern.title + '...';
-                    RadioAudio.loadYouTubeVideo(videoId).then(function() {
-                        if (state.power && state.locked === station) {
-                            RadioAudio.playYouTube();
-                            screenShow.textContent = 'Now playing: ' + station.pattern.title;
-                        }
-                    }).catch(function(err) {
-                        console.warn('YouTube load failed:', err);
-                        screenShow.textContent = 'YouTube unavailable - try another station';
-                    });
+                    if (state.isYouTubeLive) {
+                        // Load live stream from channel
+                        const channelId = pattern.channelId;
+                        screenShow.textContent = 'Connecting to Live Studio...';
+                        RadioAudio.loadYouTubeLive(channelId).then(function() {
+                            if (state.power && state.locked === station) {
+                                RadioAudio.playYouTube();
+                                screenShow.textContent = '🔴 LIVE: ' + pattern.title;
+                            }
+                        }).catch(function(err) {
+                            console.warn('Live stream load failed:', err);
+                            screenShow.textContent = 'No live broadcast - try recorded teachings';
+                        });
+                    } else {
+                        // Load and play YouTube video
+                        const videoId = pattern.videoId;
+                        screenShow.textContent = 'Loading: ' + pattern.title + '...';
+                        RadioAudio.loadYouTubeVideo(videoId).then(function() {
+                            if (state.power && state.locked === station) {
+                                RadioAudio.playYouTube();
+                                screenShow.textContent = 'Now playing: ' + pattern.title;
+                            }
+                        }).catch(function(err) {
+                            console.warn('YouTube load failed:', err);
+                            screenShow.textContent = 'YouTube unavailable - try another station';
+                        });
+                    }
                 } else {
-                    RadioAudio.startStation(station.pattern);
+                    RadioAudio.startStation(pattern);
                 }
             }
             if (opts.announce !== false) {
@@ -301,6 +320,7 @@
             if (state.locked) {
                 state.locked = null;
                 state.isYouTube = false;
+                state.isYouTubeLive = false;
                 RadioAudio.stopStation();
                 RadioAudio.stopHymn();
                 RadioAudio.stopYouTube();
@@ -372,6 +392,7 @@
             screenStatic.style.opacity = '0';
             state.locked = null;
             state.isYouTube = false;
+            state.isYouTubeLive = false;
             renderScreen();
             renderDial();
         }
