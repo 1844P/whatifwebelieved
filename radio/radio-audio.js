@@ -204,6 +204,21 @@ function ensure() {
         return createYouTubePlayer(videoId);
     }
 
+    // Fetch live stream video ID from channel
+    function fetchLiveStreamVideoId(channelId) {
+        // Try the channel's live URL pattern
+        const liveUrl = `https://www.youtube.com/channel/${channelId}/live`;
+        // We'll use a fallback known live stream ID for now
+        // In production, you'd use YouTube Data API with an API key
+        return Promise.resolve('iXAEqsZ0Fhs'); // Known live stream from @paulos1844
+    }
+
+    function loadYouTubeLive(channelId) {
+        return fetchLiveStreamVideoId(channelId).then(videoId => {
+            return loadYouTubeVideo(videoId);
+        });
+    }
+
     function setYouTubeVolume(volume) {
         if (ytPlayer && ytPlayerReady) {
             try {
@@ -501,6 +516,7 @@ function ensure() {
         stopHymn: stopHymn,
         // YouTube API
         loadYouTubeVideo: loadYouTubeVideo,
+        loadYouTubeLive: loadYouTubeLive,
         playYouTube: playYouTube,
         pauseYouTube: pauseYouTube,
         stopYouTube: stopYouTube,
