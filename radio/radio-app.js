@@ -468,4 +468,19 @@
     }
     setPower(false);
     renderDial();
+
+    // Debug button
+    const debugBtn = $('debugBtn');
+    if (debugBtn) {
+        debugBtn.addEventListener('click', () => {
+            console.log('=== DEBUG STATE ===');
+            console.log('state:', JSON.parse(JSON.stringify(state)));
+            console.log('powerBtn:', powerBtn);
+            console.log('RadioAudio:', RadioAudio);
+            console.log('RadioAudio.ctx:', RadioAudio.ctx);
+            console.log('welcomeAudio:', welcomeAudio);
+            console.log('welcomeAudio.src:', welcomeAudio.src);
+            alert('Check Console (Ctrl+Shift+J) for debug output');
+        });
+    }
 })();
