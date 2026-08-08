@@ -440,6 +440,8 @@
     /* ---------- buttons & chips ---------- */
     powerBtn.addEventListener('click', () => {
         console.log('Power button clicked, current state:', state.power);
+        console.log('powerBtn element:', powerBtn);
+        console.log('RadioAudio:', typeof RadioAudio);
         RadioAudio.resume();
         setPower(!state.power);
     });
@@ -460,6 +462,7 @@
     });
 
     /* ---------- init ---------- */
+    console.log('Radio app initialized, powerBtn:', $('powerBtn'));
     if ('speechSynthesis' in window) {
         window.speechSynthesis.onvoiceschanged = function () { /* warm voice cache */ };
     }
