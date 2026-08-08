@@ -314,6 +314,10 @@ function ensure() {
                             console.error('YouTube Live player error:', msg, 'Code:', e.data);
                             const screenShow = document.getElementById('screenShow');
                             if (screenShow) screenShow.textContent = 'Error: ' + msg;
+                            // If embedding disabled or not found, try fallback for live stations
+                            if ((e.data === 101 || e.data === 150 || e.data === 100) && ytCurrentVideoId && ytCurrentVideoId.includes('channel/')) {
+                                console.log('Live stream error, but this is channel live URL - no further fallback');
+                            }
                         }
                     }
                 });

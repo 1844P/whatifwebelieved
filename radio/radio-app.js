@@ -294,7 +294,7 @@
                             }
                         }).catch(function(err) {
                             console.warn('Live stream load failed:', err);
-                            screenShow.textContent = 'No live broadcast - try recorded teachings';
+                            screenShow.textContent = 'No live broadcast active - go live in YouTube Studio first';
                         });
                     } else {
                         // Load and play YouTube video
@@ -307,7 +307,7 @@
                             }
                         }).catch(function(err) {
                             console.warn('YouTube load failed:', err);
-                            screenShow.textContent = 'YouTube unavailable - try another station';
+                            screenShow.textContent = 'Stream unavailable (embedding disabled / not live) - try 89.3 MHz';
                         });
                     }
                 } else {
