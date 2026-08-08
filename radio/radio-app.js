@@ -334,8 +334,8 @@
     }
 
     /* ---------- power ---------- */
-    const welcomeAudio = new Audio('welcome.mp3?v=20260802e');
-    const spiritAudio = new Audio('spirit-lead-me.mp3?v=20260802f');
+    const welcomeAudio = new Audio('welcome.mp3?v=20260808b');
+    const spiritAudio = new Audio('spirit-lead-me.mp3?v=20260808b');
 
     // Play the pre-recorded welcome jingle, then run onEnded when it finishes.
     // A safety timer covers browsers where the jingle never fires 'ended'.
@@ -439,6 +439,7 @@
 
     /* ---------- buttons & chips ---------- */
     powerBtn.addEventListener('click', () => {
+        console.log('Power button clicked, current state:', state.power);
         RadioAudio.resume();
         setPower(!state.power);
     });
