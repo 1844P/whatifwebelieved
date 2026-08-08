@@ -204,18 +204,83 @@ function ensure() {
         return createYouTubePlayer(videoId);
     }
 
-    // Fetch live stream video ID from channel
-    function fetchLiveStreamVideoId(channelId) {
-        // Try the channel's live URL pattern
+    // Load live stream directly from channel's live URL (auto-detects current stream)
+    function loadYouTubeLive(channelId) {
         const liveUrl = `https://www.youtube.com/channel/${channelId}/live`;
-        // We'll use a fallback known live stream ID for now
-        // In production, you'd use YouTube Data API with an API key
-        return Promise.resolve('iXAEqsZ0Fhs'); // Known live stream from @paulos1844
+        return loadYouTubeByUrl(liveUrl);
     }
 
-    function loadYouTubeLive(channelId) {
-        return fetchLiveStreamVideoId(channelId).then(videoId => {
-            return loadYouTubeVideo(videoId);
+    function loadYouTubeByUrl(url) {
+        if (ytCurrentVideoId === url && ytPlayer && ytPlayerReady) {
+            playYouTube();
+            return Promise.resolve();
+        }
+
+        ytCurrentVideoId = url;
+        ytPlayerLoading = true;
+        stopYouTube();
+        return createYouTubePlayerFromUrl(url);
+    }
+
+    function createYouTubePlayerFromUrl(url) {
+        return loadYouTubeAPI().then(() => {
+            return new Promise((resolve, reject) => {
+                if (!ytPlayerContainer) {
+                    ytPlayerContainer = document.createElement('div');
+                    ytPlayerContainer.id = 'yt-player-container';
+                    ytPlayerContainer.style.cssText = 'position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;';
+                    document.body.appendChild(ytPlayerContainer);
+                }
+
+                // Create player without videoId first, then load by URL
+                ytPlayer = new YT.Player('yt-player-container', {
+                    width: '1',
+                    height: '1',
+                    playerVars: {
+                        autoplay: 0,
+                        controls: 0,
+                        disablekb: 1,
+                        enablejsapi: 1,
+                        fs: 0,
+                        iv_load_policy: 3,
+                        modestbranding: 1,
+                        playsinline: 1,
+                        rel: 0,
+                        showinfo: 0,
+                        origin: window.location.origin
+                    },
+                    events: {
+                        onReady: (e) => {
+                            ytPlayerReady = true;
+                            ytPlayerLoading = false;
+                            // Load the live URL after player is ready
+                            try {
+                                ytPlayer.loadVideoByUrl(url, 0, 'large');
+                            } catch (err) {
+                                console.warn('loadVideoByUrl failed, trying cueVideoByUrl:', err);
+                                try { ytPlayer.cueVideoByUrl(url); } catch (e) {}
+                            }
+                            resolve(ytPlayer);
+                        },
+                        onStateChange: (e) => {
+                            if (e.data === YT.PlayerState.ENDED) {
+                                stopYouTube();
+                            } else if (e.data === YT.PlayerState.PLAYING) {
+                                ytPlayerReady = true;
+                            } else if (e.data === YT.PlayerState.BUFFERING) {
+                                // Buffering
+                            } else if (e.data === YT.PlayerState.CUED) {
+                                // Cued and ready - auto play
+                                playYouTube();
+                            }
+                        },
+                        onError: (e) => {
+                            ytPlayerLoading = false;
+                            console.warn('YouTube player error:', e.data);
+                        }
+                    }
+                });
+            });
         });
     }
 
