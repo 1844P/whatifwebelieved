@@ -133,8 +133,7 @@ function ensure() {
                         modestbranding: 1,
                         playsinline: 1,
                         rel: 0,
-                        showinfo: 0,
-                        origin: window.location.origin
+                        showinfo: 0
                     },
                     events: {
                         onReady: (e) => {
@@ -148,19 +147,33 @@ function ensure() {
                         },
                         onStateChange: (e) => {
                             if (e.data === YT.PlayerState.ENDED) {
-                                // Video ended - could loop or stop
                                 stopYouTube();
                             } else if (e.data === YT.PlayerState.PLAYING) {
                                 ytPlayerReady = true;
+                                console.log('YouTube: PLAYING');
                             } else if (e.data === YT.PlayerState.BUFFERING) {
-                                // Buffering
+                                console.log('YouTube: BUFFERING');
                             } else if (e.data === YT.PlayerState.CUED) {
-                                // Cued and ready
+                                console.log('YouTube: CUED - auto-playing');
+                                playYouTube();
+                            } else if (e.data === YT.PlayerState.UNSTARTED) {
+                                console.log('YouTube: UNSTARTED');
                             }
                         },
                         onError: (e) => {
                             ytPlayerLoading = false;
-                            console.warn('YouTube player error:', e.data);
+                            const errorCodes = {
+                                2: 'Invalid parameter (video ID)',
+                                5: 'HTML5 player error',
+                                100: 'Video not found / private / deleted',
+                                101: 'Embedding disabled by owner',
+                                150: 'Embedding disabled (same as 101)'
+                            };
+                            const msg = errorCodes[e.data] || `Unknown error (${e.data})`;
+                            console.error('YouTube player error:', msg, 'Code:', e.data);
+                            // Notify UI
+                            const screenShow = document.getElementById('screenShow');
+                            if (screenShow) screenShow.textContent = 'Error: ' + msg;
                         }
                     }
                 });
@@ -253,8 +266,8 @@ function ensure() {
                         modestbranding: 1,
                         playsinline: 1,
                         rel: 0,
-                        showinfo: 0,
-                        origin: window.location.origin
+                        showinfo: 0
+                        // origin removed - can cause cross-device issues
                     },
                     events: {
                         onReady: (e) => {
@@ -274,16 +287,29 @@ function ensure() {
                                 stopYouTube();
                             } else if (e.data === YT.PlayerState.PLAYING) {
                                 ytPlayerReady = true;
+                                console.log('YouTube Live: PLAYING');
                             } else if (e.data === YT.PlayerState.BUFFERING) {
-                                // Buffering
+                                console.log('YouTube Live: BUFFERING');
                             } else if (e.data === YT.PlayerState.CUED) {
-                                // Cued and ready - auto play
+                                console.log('YouTube Live: CUED - auto-playing');
                                 playYouTube();
+                            } else if (e.data === YT.PlayerState.UNSTARTED) {
+                                console.log('YouTube Live: UNSTARTED');
                             }
                         },
                         onError: (e) => {
                             ytPlayerLoading = false;
-                            console.warn('YouTube player error:', e.data);
+                            const errorCodes = {
+                                2: 'Invalid parameter (video ID)',
+                                5: 'HTML5 player error',
+                                100: 'Video not found / private / deleted',
+                                101: 'Embedding disabled by owner',
+                                150: 'Embedding disabled (same as 101)'
+                            };
+                            const msg = errorCodes[e.data] || `Unknown error (${e.data})`;
+                            console.error('YouTube Live player error:', msg, 'Code:', e.data);
+                            const screenShow = document.getElementById('screenShow');
+                            if (screenShow) screenShow.textContent = 'Error: ' + msg;
                         }
                     }
                 });
