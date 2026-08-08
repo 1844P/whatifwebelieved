@@ -17,14 +17,22 @@
         { freq: 92.1,  emoji: '\u{1F4D6}', name: 'Bible Stories',     show: 'Stories of faith, told aloud',        pattern: { type: 'arp',    notes: [392, 440, 523.25, 587.33, 659.25], step: 0.26 } },
         { freq: 96.7,  emoji: '\u{1F56F}', name: 'Prayer Hour',       show: 'Quiet time & prayer',                 pattern: { type: 'prayer', drone: 130.81, bellEvery: 4 } },
         { freq: 100.3, emoji: '\u{1F3B5}', name: 'Hymns & Praise',    show: 'Timeless hymns, gently played',       pattern: { type: 'arp',    notes: [523.25, 659.25, 783.99, 1046.5], step: 0.3 } },
-        { freq: 104.9, emoji: '\u{1F9D2}', name: "Kids' Bible Hour",  show: 'Bible adventures for little ears',    pattern: { type: 'kids',   notes: [523.25, 659.25, 783.99, 659.25, 880], step: 0.18 } }
+        { freq: 104.9, emoji: '\u{1F9D2}', name: "Kids' Bible Hour",  show: 'Bible adventures for little ears',    pattern: { type: 'kids',   notes: [523.25, 659.25, 783.99, 659.25, 880], step: 0.18 } },
+
+        // YouTube Audio Stations
+        { freq: 89.3,  emoji: '\u{1F4FA}', name: 'YouTube: Worship',  show: 'Live worship from YouTube',           pattern: { type: 'youtube', videoId: 'D2FfteQ7sXI', title: 'Worship Mix' } },
+        { freq: 93.7,  emoji: '\u{1F4FA}', name: 'YouTube: Sermons',  show: 'Biblical teaching from YouTube',      pattern: { type: 'youtube', videoId: 'jNQXAC9IVRw', title: 'Sermon Archive' } },
+        { freq: 98.1,  emoji: '\u{1F4FA}', name: 'YouTube: Hymns',    show: 'Classic hymns from YouTube',          pattern: { type: 'youtube', videoId: 'l9V_MDWfUkg', title: 'Hymn Collection' } },
+        { freq: 102.5, emoji: '\u{1F4FA}', name: 'YouTube: Prayer',   show: 'Guided prayer from YouTube',          pattern: { type: 'youtube', videoId: '881ddNnGCfs', title: 'Prayer Sessions' } },
+        { freq: 107.3, emoji: '\u{1F4FA}', name: 'YouTube: Kids',     show: 'Children\'s Bible content from YouTube', pattern: { type: 'youtube', videoId: 'dQw4w9WgXcQ', title: 'Kids Bible Songs' } }
     ];
 
     const state = {
         power: false,
         volume: 0.8,
         freq: 92.1,
-        locked: null
+        locked: null,
+        isYouTube: false
     };
 
     /* ---------- elements ---------- */
@@ -102,33 +110,61 @@
             'Sit back, take a breath, and enjoy the hour with us.';
     }
 
-    // Rough spoken duration (ms) at rate 0.9 — used as a safety net for the hymn.
+    // Rough spoken duration (ms) at rate 0.9 — used as a safety net for the track.
     function estimateSpeechMs(text) {
         const words = (text.trim().match(/\S+/g) || []).length;
         // ~2.2 words per second at a calm pace, plus a short lead-in.
         return Math.min(30000, Math.max(3000, (words / 2.2) * 1000 + 900));
     }
 
+    // At the end of the announcement, broadcast the music track:
+    // "Spirit Lead Me Where My Trust Is Without Borders" (Life Illustrated).
     function startHymnIfStillCurrent(seq) {
         if (seq !== utteranceSeq) return; // a newer announcement replaced this one
         if (!(state.power && state.locked)) return;
         if (hymnPlayedForSeq === seq) return; // already started
         hymnPlayedForSeq = seq;
         if (hymnTriggerTimer) { clearTimeout(hymnTriggerTimer); hymnTriggerTimer = null; }
-        RadioAudio.playHymn(90);
+        playSpiritTrack();
         // Visual confirmation on the radio screen so the broadcast is obvious.
         const prevShow = state.locked ? state.locked.show : '';
-        screenShow.textContent = 'Now playing: How Great Thou Art';
+        screenShow.textContent = 'Now playing: Spirit Lead Me';
+        // Restore the station line when the track finishes (or on error),
+        // with a safety net for browsers that never fire 'ended'.
         if (hymnRestoreTimer) { clearTimeout(hymnRestoreTimer); hymnRestoreTimer = null; }
-        hymnRestoreTimer = setTimeout(function () {
+        const restore = function () {
             hymnRestoreTimer = null;
             if (state.locked) screenShow.textContent = prevShow;
-        }, 90000);
+        };
+        spiritAudio.onended = restore;
+        spiritAudio.onerror = restore;
+        hymnRestoreTimer = setTimeout(restore, 100000); // ~92s track + margin
+    }
+
+    // Play the broadcast track from the top at the current volume.
+    function playSpiritTrack() {
+        try {
+            spiritAudio.pause();
+            spiritAudio.currentTime = 0;
+            spiritAudio.volume = Math.max(0.05, state.volume * 0.9);
+            const p = spiritAudio.play();
+            if (p && typeof p.catch === 'function') p.catch(function () { /* noop */ });
+        } catch (e) { /* ignore */ }
+    }
+
+    // Cut the broadcast track (new announcement, tuning away, power off).
+    function stopSpiritTrack() {
+        try {
+            spiritAudio.pause();
+            spiritAudio.onended = null;
+            spiritAudio.onerror = null;
+        } catch (e) { /* ignore */ }
     }
 
     function announce(text) {
         try {
             RadioAudio.stopHymn(); // never overlap an ongoing hymn
+            stopSpiritTrack(); // cut any broadcast track still playing
             if (hymnTriggerTimer) { clearTimeout(hymnTriggerTimer); hymnTriggerTimer = null; }
             // One voice on air: cut any welcome jingle still playing or pending.
             if (welcomeEndTimer) { clearTimeout(welcomeEndTimer); welcomeEndTimer = null; }
@@ -139,7 +175,10 @@
             const seq = ++utteranceSeq;
 
             // When the announcer is enabled AND speech synthesis is available,
-            // speak first, then start the hymn when speech finishes.
+            // speak first, then start the music track when speech finishes.
+            // Skip music track for YouTube stations (they have their own audio)
+            const isYouTubeStation = state.locked && state.locked.pattern && state.locked.pattern.type === 'youtube';
+            
             if (announcerToggle.checked && 'speechSynthesis' in window) {
                 // Cancel the previous announcement, then speak a tick later so
                 // Chrome has actually stopped the old voice before the new one
@@ -151,25 +190,29 @@
                 u.rate = 0.9;
                 u.pitch = 1.0;
                 u.volume = 0.85;
-                // Primary trigger: when the announcer finishes, broadcast the hymn (1 min 30 sec).
-                u.onend = function () { startHymnIfStillCurrent(seq); };
+                // Primary trigger: when the announcer finishes, broadcast the music track.
+                u.onend = function () { 
+                    if (!isYouTubeStation) startHymnIfStillCurrent(seq); 
+                };
                 setTimeout(function () {
                     if (seq === utteranceSeq) window.speechSynthesis.speak(u);
                 }, 50);
-                // Safety net: if onend never fires (known Chrome issue), the hymn still plays on schedule.
+                // Safety net: if onend never fires (known Chrome issue), the track still plays on schedule.
                 hymnTriggerTimer = setTimeout(function () {
                     hymnTriggerTimer = null;
-                    startHymnIfStillCurrent(seq);
+                    if (!isYouTubeStation) startHymnIfStillCurrent(seq);
                 }, estimateSpeechMs(text) + 100);
                 return;
             }
 
             // Announcer off (or unsupported): still feature the broadcast —
-            // the sax hymn begins after a short pause, no voice required.
-            hymnTriggerTimer = setTimeout(function () {
-                hymnTriggerTimer = null;
-                startHymnIfStillCurrent(seq);
-            }, 3500);
+            // the music track begins after a short pause, no voice required.
+            if (!isYouTubeStation) {
+                hymnTriggerTimer = setTimeout(function () {
+                    hymnTriggerTimer = null;
+                    startHymnIfStillCurrent(seq);
+                }, 3500);
+            }
         } catch (e) { /* ignore */ }
     }
 
@@ -225,8 +268,31 @@
         if (distance < lockThreshold()) {
             if (state.locked !== station) {
                 state.locked = station;
+                state.isYouTube = station.pattern && station.pattern.type === 'youtube';
+                
+                // Stop any existing audio
+                RadioAudio.stopStation();
+                RadioAudio.stopHymn();
+                RadioAudio.stopYouTube();
+                
                 RadioAudio.chime();
-                RadioAudio.startStation(station.pattern);
+                
+                if (state.isYouTube) {
+                    // Load and play YouTube video
+                    const videoId = station.pattern.videoId;
+                    screenShow.textContent = 'Loading: ' + station.pattern.title + '...';
+                    RadioAudio.loadYouTubeVideo(videoId).then(function() {
+                        if (state.power && state.locked === station) {
+                            RadioAudio.playYouTube();
+                            screenShow.textContent = 'Now playing: ' + station.pattern.title;
+                        }
+                    }).catch(function(err) {
+                        console.warn('YouTube load failed:', err);
+                        screenShow.textContent = 'YouTube unavailable - try another station';
+                    });
+                } else {
+                    RadioAudio.startStation(station.pattern);
+                }
             }
             if (opts.announce !== false) {
                 announce(stationLine(station));
@@ -234,8 +300,10 @@
         } else {
             if (state.locked) {
                 state.locked = null;
+                state.isYouTube = false;
                 RadioAudio.stopStation();
                 RadioAudio.stopHymn();
+                RadioAudio.stopYouTube();
             }
             RadioAudio.setStatic(signalLevel(state.freq) < 1 ? 1 : 0);
         }
@@ -247,6 +315,7 @@
 
     /* ---------- power ---------- */
     const welcomeAudio = new Audio('welcome.mp3?v=20260802e');
+    const spiritAudio = new Audio('spirit-lead-me.mp3?v=20260802f');
 
     // Play the pre-recorded welcome jingle, then run onEnded when it finishes.
     // A safety timer covers browsers where the jingle never fires 'ended'.
@@ -298,8 +367,11 @@
             if (hymnTriggerTimer) { clearTimeout(hymnTriggerTimer); hymnTriggerTimer = null; }
             if (hymnRestoreTimer) { clearTimeout(hymnRestoreTimer); hymnRestoreTimer = null; }
             RadioAudio.stopHymn();
+            RadioAudio.stopYouTube();
+            stopSpiritTrack();
             screenStatic.style.opacity = '0';
             state.locked = null;
+            state.isYouTube = false;
             renderScreen();
             renderDial();
         }
@@ -340,6 +412,7 @@
     attachKnob(volumeKnob, (dy) => {
         state.volume = Math.min(1, Math.max(0, state.volume + dy * 0.02));
         RadioAudio.setVolume(state.volume);
+        RadioAudio.setYouTubeVolume(state.volume);
         renderDial();
     });
 
