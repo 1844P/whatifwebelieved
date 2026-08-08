@@ -30,7 +30,7 @@
     const state = {
         power: false,
         volume: 0.8,
-        freq: 92.1,
+        freq: 89.3,
         locked: null,
         isYouTube: false,
         isYouTubeLive: false
