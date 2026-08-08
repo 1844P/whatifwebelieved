@@ -17,14 +17,22 @@
         { freq: 92.1,  emoji: '\u{1F4D6}', name: 'Bible Stories',     show: 'Stories of faith, told aloud',        pattern: { type: 'arp',    notes: [392, 440, 523.25, 587.33, 659.25], step: 0.26 } },
         { freq: 96.7,  emoji: '\u{1F56F}', name: 'Prayer Hour',       show: 'Quiet time & prayer',                 pattern: { type: 'prayer', drone: 130.81, bellEvery: 4 } },
         { freq: 100.3, emoji: '\u{1F3B5}', name: 'Hymns & Praise',    show: 'Timeless hymns, gently played',       pattern: { type: 'arp',    notes: [523.25, 659.25, 783.99, 1046.5], step: 0.3 } },
-        { freq: 104.9, emoji: '\u{1F9D2}', name: "Kids' Bible Hour",  show: 'Bible adventures for little ears',    pattern: { type: 'kids',   notes: [523.25, 659.25, 783.99, 659.25, 880], step: 0.18 } }
+        { freq: 104.9, emoji: '\u{1F9D2}', name: "Kids' Bible Hour",  show: 'Bible adventures for little ears',    pattern: { type: 'kids',   notes: [523.25, 659.25, 783.99, 659.25, 880], step: 0.18 } },
+
+        // YouTube Audio Stations
+        { freq: 89.3,  emoji: '\u{1F4FA}', name: 'YouTube: Worship',  show: 'Live worship from YouTube',           pattern: { type: 'youtube', videoId: 'D2FfteQ7sXI', title: 'Worship Mix' } },
+        { freq: 93.7,  emoji: '\u{1F4FA}', name: 'YouTube: Sermons',  show: 'Biblical teaching from YouTube',      pattern: { type: 'youtube', videoId: 'jNQXAC9IVRw', title: 'Sermon Archive' } },
+        { freq: 98.1,  emoji: '\u{1F4FA}', name: 'YouTube: Hymns',    show: 'Classic hymns from YouTube',          pattern: { type: 'youtube', videoId: 'l9V_MDWfUkg', title: 'Hymn Collection' } },
+        { freq: 102.5, emoji: '\u{1F4FA}', name: 'YouTube: Prayer',   show: 'Guided prayer from YouTube',          pattern: { type: 'youtube', videoId: '881ddNnGCfs', title: 'Prayer Sessions' } },
+        { freq: 107.3, emoji: '\u{1F4FA}', name: 'YouTube: Kids',     show: 'Children\'s Bible content from YouTube', pattern: { type: 'youtube', videoId: 'dQw4w9WgXcQ', title: 'Kids Bible Songs' } }
     ];
 
     const state = {
         power: false,
         volume: 0.8,
         freq: 92.1,
-        locked: null
+        locked: null,
+        isYouTube: false
     };
 
     /* ---------- elements ---------- */
@@ -168,6 +176,9 @@
 
             // When the announcer is enabled AND speech synthesis is available,
             // speak first, then start the music track when speech finishes.
+            // Skip music track for YouTube stations (they have their own audio)
+            const isYouTubeStation = state.locked && state.locked.pattern && state.locked.pattern.type === 'youtube';
+            
             if (announcerToggle.checked && 'speechSynthesis' in window) {
                 // Cancel the previous announcement, then speak a tick later so
                 // Chrome has actually stopped the old voice before the new one
@@ -180,24 +191,28 @@
                 u.pitch = 1.0;
                 u.volume = 0.85;
                 // Primary trigger: when the announcer finishes, broadcast the music track.
-                u.onend = function () { startHymnIfStillCurrent(seq); };
+                u.onend = function () { 
+                    if (!isYouTubeStation) startHymnIfStillCurrent(seq); 
+                };
                 setTimeout(function () {
                     if (seq === utteranceSeq) window.speechSynthesis.speak(u);
                 }, 50);
                 // Safety net: if onend never fires (known Chrome issue), the track still plays on schedule.
                 hymnTriggerTimer = setTimeout(function () {
                     hymnTriggerTimer = null;
-                    startHymnIfStillCurrent(seq);
+                    if (!isYouTubeStation) startHymnIfStillCurrent(seq);
                 }, estimateSpeechMs(text) + 100);
                 return;
             }
 
             // Announcer off (or unsupported): still feature the broadcast —
             // the music track begins after a short pause, no voice required.
-            hymnTriggerTimer = setTimeout(function () {
-                hymnTriggerTimer = null;
-                startHymnIfStillCurrent(seq);
-            }, 3500);
+            if (!isYouTubeStation) {
+                hymnTriggerTimer = setTimeout(function () {
+                    hymnTriggerTimer = null;
+                    startHymnIfStillCurrent(seq);
+                }, 3500);
+            }
         } catch (e) { /* ignore */ }
     }
 
@@ -253,8 +268,31 @@
         if (distance < lockThreshold()) {
             if (state.locked !== station) {
                 state.locked = station;
+                state.isYouTube = station.pattern && station.pattern.type === 'youtube';
+                
+                // Stop any existing audio
+                RadioAudio.stopStation();
+                RadioAudio.stopHymn();
+                RadioAudio.stopYouTube();
+                
                 RadioAudio.chime();
-                RadioAudio.startStation(station.pattern);
+                
+                if (state.isYouTube) {
+                    // Load and play YouTube video
+                    const videoId = station.pattern.videoId;
+                    screenShow.textContent = 'Loading: ' + station.pattern.title + '...';
+                    RadioAudio.loadYouTubeVideo(videoId).then(function() {
+                        if (state.power && state.locked === station) {
+                            RadioAudio.playYouTube();
+                            screenShow.textContent = 'Now playing: ' + station.pattern.title;
+                        }
+                    }).catch(function(err) {
+                        console.warn('YouTube load failed:', err);
+                        screenShow.textContent = 'YouTube unavailable - try another station';
+                    });
+                } else {
+                    RadioAudio.startStation(station.pattern);
+                }
             }
             if (opts.announce !== false) {
                 announce(stationLine(station));
@@ -262,9 +300,10 @@
         } else {
             if (state.locked) {
                 state.locked = null;
+                state.isYouTube = false;
                 RadioAudio.stopStation();
                 RadioAudio.stopHymn();
-                stopSpiritTrack();
+                RadioAudio.stopYouTube();
             }
             RadioAudio.setStatic(signalLevel(state.freq) < 1 ? 1 : 0);
         }
@@ -328,9 +367,11 @@
             if (hymnTriggerTimer) { clearTimeout(hymnTriggerTimer); hymnTriggerTimer = null; }
             if (hymnRestoreTimer) { clearTimeout(hymnRestoreTimer); hymnRestoreTimer = null; }
             RadioAudio.stopHymn();
+            RadioAudio.stopYouTube();
             stopSpiritTrack();
             screenStatic.style.opacity = '0';
             state.locked = null;
+            state.isYouTube = false;
             renderScreen();
             renderDial();
         }
@@ -371,6 +412,7 @@
     attachKnob(volumeKnob, (dy) => {
         state.volume = Math.min(1, Math.max(0, state.volume + dy * 0.02));
         RadioAudio.setVolume(state.volume);
+        RadioAudio.setYouTubeVolume(state.volume);
         renderDial();
     });
 

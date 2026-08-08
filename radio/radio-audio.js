@@ -23,7 +23,16 @@ const RadioAudio = (function () {
     let hymnNodes = [];
     let hymnEndTimer = null;
 
-    function ensure() {
+    // YouTube player state
+    let ytPlayer = null;
+    let ytPlayerReady = false;
+    let ytPlayerLoading = false;
+    let ytCurrentVideoId = null;
+    let ytPlayerContainer = null;
+    let ytApiLoaded = false;
+    let ytApiLoadPromise = null;
+
+function ensure() {
         if (ctx) return;
         const AC = window.AudioContext || window.webkitAudioContext;
         if (!AC) return;
@@ -69,11 +78,138 @@ const RadioAudio = (function () {
         hymnGain.connect(volGain);
     }
 
-    function buildNoise(seconds) {
-        const buffer = ctx.createBuffer(1, ctx.sampleRate * seconds, ctx.sampleRate);
-        const data = buffer.getChannelData(0);
-        for (let i = 0; i < data.length; i++) data[i] = Math.random() * 2 - 1;
-        return buffer;
+    /* ---------- YouTube Player API ---------- */
+
+    function loadYouTubeAPI() {
+        if (ytApiLoaded) return Promise.resolve();
+        if (ytApiLoadPromise) return ytApiLoadPromise;
+
+        ytApiLoadPromise = new Promise((resolve, reject) => {
+            window.onYouTubeIframeAPIReady = function () {
+                ytApiLoaded = true;
+                resolve();
+            };
+
+            const tag = document.createElement('script');
+            tag.src = 'https://www.youtube.com/iframe_api';
+            tag.onerror = () => {
+                ytApiLoadPromise = null;
+                reject(new Error('Failed to load YouTube API'));
+            };
+            document.head.appendChild(tag);
+        });
+
+        return ytApiLoadPromise;
+    }
+
+    function createYouTubePlayer(videoId) {
+        return loadYouTubeAPI().then(() => {
+            return new Promise((resolve, reject) => {
+                if (!ytPlayerContainer) {
+                    ytPlayerContainer = document.createElement('div');
+                    ytPlayerContainer.id = 'yt-player-container';
+                    ytPlayerContainer.style.cssText = 'position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;';
+                    document.body.appendChild(ytPlayerContainer);
+                }
+
+                ytPlayer = new YT.Player('yt-player-container', {
+                    width: '1',
+                    height: '1',
+                    videoId: videoId,
+                    playerVars: {
+                        autoplay: 0,
+                        controls: 0,
+                        disablekb: 1,
+                        enablejsapi: 1,
+                        fs: 0,
+                        iv_load_policy: 3,
+                        modestbranding: 1,
+                        playsinline: 1,
+                        rel: 0,
+                        showinfo: 0,
+                        origin: window.location.origin
+                    },
+                    events: {
+                        onReady: (e) => {
+                            ytPlayerReady = true;
+                            ytPlayerLoading = false;
+                            if (ytCurrentVideoId === videoId) {
+                                // Auto-play when ready if this is the current station
+                                playYouTube();
+                            }
+                            resolve(ytPlayer);
+                        },
+                        onStateChange: (e) => {
+                            if (e.data === YT.PlayerState.ENDED) {
+                                // Video ended - could loop or stop
+                                stopYouTube();
+                            } else if (e.data === YT.PlayerState.PLAYING) {
+                                ytPlayerReady = true;
+                            } else if (e.data === YT.PlayerState.BUFFERING) {
+                                // Buffering
+                            } else if (e.data === YT.PlayerState.CUED) {
+                                // Cued and ready
+                            }
+                        },
+                        onError: (e) => {
+                            ytPlayerLoading = false;
+                            console.warn('YouTube player error:', e.data);
+                        }
+                    }
+                });
+            });
+        });
+    }
+
+    function playYouTube() {
+        if (ytPlayer && ytPlayerReady) {
+            try {
+                ytPlayer.playVideo();
+                ytPlayer.setVolume(Math.round(80)); // YouTube volume 0-100
+            } catch (e) {
+                console.warn('YouTube play error:', e);
+            }
+        }
+    }
+
+    function pauseYouTube() {
+        if (ytPlayer && ytPlayerReady) {
+            try {
+                ytPlayer.pauseVideo();
+            } catch (e) { /* ignore */ }
+        }
+    }
+
+    function stopYouTube() {
+        if (ytPlayer) {
+            try {
+                ytPlayer.stopVideo();
+                ytPlayer.destroy();
+            } catch (e) { /* ignore */ }
+            ytPlayer = null;
+            ytPlayerReady = false;
+            ytCurrentVideoId = null;
+        }
+    }
+
+    function loadYouTubeVideo(videoId) {
+        if (ytCurrentVideoId === videoId && ytPlayer && ytPlayerReady) {
+            playYouTube();
+            return Promise.resolve();
+        }
+
+        ytCurrentVideoId = videoId;
+        ytPlayerLoading = true;
+        stopYouTube();
+        return createYouTubePlayer(videoId);
+    }
+
+    function setYouTubeVolume(volume) {
+        if (ytPlayer && ytPlayerReady) {
+            try {
+                ytPlayer.setVolume(Math.round(volume * 100));
+            } catch (e) { /* ignore */ }
+        }
     }
 
     /* ---------- public API ---------- */
@@ -362,6 +498,12 @@ const RadioAudio = (function () {
         startStation: startStation,
         stopStation: stopStation,
         playHymn: playHymn,
-        stopHymn: stopHymn
+        stopHymn: stopHymn,
+        // YouTube API
+        loadYouTubeVideo: loadYouTubeVideo,
+        playYouTube: playYouTube,
+        pauseYouTube: pauseYouTube,
+        stopYouTube: stopYouTube,
+        setYouTubeVolume: setYouTubeVolume
     };
 })();
