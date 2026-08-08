@@ -221,7 +221,11 @@ function ensure() {
         ytCurrentVideoId = videoId;
         ytPlayerLoading = true;
         stopYouTube();
-        return createYouTubePlayer(videoId);
+        return createYouTubePlayer(videoId).catch(err => {
+            console.warn('Specific stream failed, trying channel live URL:', err);
+            // Fallback: try channel's live URL
+            return loadYouTubeLive('UCnJMpsZg53Rl4FSuL7Ve58A');
+        });
     }
 
     // Load live stream directly from channel's live URL (auto-detects current stream)
