@@ -582,6 +582,37 @@ body {
     color: rgba(247, 239, 220, 0.7);
 }
 
+/* Go Live button styling */
+.config-row button.go-live {
+    background: #28a745;
+    color: white;
+    font-weight: bold;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1rem;
+}
+
+.config-row button.go-live:hover {
+    background: #218838;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.config-row button.go-live:active {
+    transform: translateY(0);
+}
+
+.config-row button.go-live:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.5);
+}
+
 .config-row button:last-child:hover {
     background: #7a5a1e;
 }

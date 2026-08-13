@@ -531,6 +531,34 @@
         }
     }
 
+    // Go Live button - automatically applies local WIWB Studio stream
+    const goLiveBtn = $('goLiveBtn');
+    goLiveBtn.addEventListener('click', () => {
+        // Select the local WIWB Studio option
+        externalAudioSourceSelect.value = 'http://127.0.0.1:8000/wiwb';
+        // Hide custom URL input
+        customUrlContainer.style.display = 'none';
+        externalAudioUrlInput.value = '';
+        
+        // Apply the stream
+        const url = externalAudioSourceSelect.value;
+        if (url) {
+            state.externalAudioUrl = url;
+            state.usingExternalAudio = true;
+            RadioAudio.setExternalAudio(url);
+            RadioAudio.setExternalAudioVolume(state.externalAudioVolume);
+            updateExternalAudioStatus();
+            
+            // Show success feedback
+            goLiveBtn.textContent = 'LIVE!';
+            goLiveBtn.style.backgroundColor = '#4CAF50';
+            setTimeout(() => {
+                goLiveBtn.textContent = '���� GO LIVE';
+                goLiveBtn.style.backgroundColor = ''; // Reset to default
+            }, 2000);
+        }
+    });
+
     // Handle dropdown selection
     externalAudioSourceSelect.addEventListener('change', () => {
         const selectedValue = externalAudioSourceSelect.value;
