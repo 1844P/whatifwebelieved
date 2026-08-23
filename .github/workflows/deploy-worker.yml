@@ -1,0 +1,30 @@
+# Auto-deploys the theology-agent Worker to Cloudflare whenever worker.js changes.
+#
+# One-time prerequisite (the ONLY secret needed):
+#   repo secret CLOUDFLARE_API_TOKEN — API token created at dash.cloudflare.com
+#   with the "Edit Cloudflare Workers" permission template.
+# The account ID lives in wrangler.toml, so no second secret is required.
+#
+# Coexists with deploy.yml (GitHub Pages site mirror); paths-filtered so it
+# only runs when Worker-related files change.
+
+name: Deploy Worker to Cloudflare
+
+on:
+  push:
+    branches: [ master ]
+    paths:
+      - "worker.js"
+      - "wrangler.toml"
+      - ".github/workflows/deploy-worker.yml"
+  workflow_dispatch:          # manual run button in the Actions tab
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}

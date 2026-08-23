@@ -50,7 +50,7 @@ const ESSAY_SUFFIX = `\n\n[ESSAY MODE — Produce a comprehensive scholarly essa
 const SERMON_SUFFIX_DEFAULT = `\n\n[SERMON MODE — Produce a full written sermon of at least 2500 words using the Monroe Motivated Sequence format (Attention → Need → Satisfaction → Visualization → Action). This must be a substantive, meaty sermon — not a surface-level outline.
 
 REQUIREMENTS FOR SUBSTANCE:
-- ATTENTION: Open with a vivid, concrete story,场景, or provocative question that hooks the audience within the first 60 seconds. Ground it in a real human experience. No generic openings.
+- ATTENTION: Open with a vivid, concrete story, scene, or provocative question that hooks the audience within the first 60 seconds. Ground it in a real human experience. No generic openings.
 - NEED: Establish the theological and existential problem with depth. Use at least 2-3 Scripture texts to diagnose the need. Show why this matters for the congregation's daily life, not just in abstract theology. Include historical or cultural context that makes the need feel urgent.
 - SATISFACTION: This is the theological core and must be the longest section. Develop at least 3 major theological points, each with: (a) the biblical text stated and quoted, (b) grammatical-historical exposition of the passage, (c) typological or sanctuary connection where relevant, (d) at least one Ellen White citation from a specific work, (e) at least one inference or synthesis clearly marked as such. Engage with Adventist scholarship by name (e.g., Froom, Knight, Davidson, Heppenstall, Holbrook, etc.). Show the theological logic — don't just state beliefs, demonstrate why they follow from the text.
 - VISUALIZATION: Paint a concrete, vivid picture of what life looks like when this truth is embraced. Use sensory language. Help the congregation see themselves in the vision. Connect to the great controversy narrative and the eschaton.
@@ -146,20 +146,208 @@ OUTPUT REQUIREMENTS:
 - Begin with the title as a # heading.
 - End with a horizontal rule (---) after "For Further Study."]`;
 
-async function callGemini(apiKey, body) {
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${apiKey}`;
+// ============================================================================
+// SELF-HEALING MODEL ROUTER (2026-08-22)
+//
+// Problem this solves: providers retire model slugs without notice (Groq killed
+// llama-3.3-70b-versatile on 2026-08-16; OpenRouter retired the :free llama-3.3
+// variant the same week). Hardcoded slug lists rot and take the agent down.
+//
+// Solution: instead of memorizing slugs, ASK each provider what is alive right
+// now, using its own public catalog endpoint:
+//   - Gemini:      generativelanguage.googleapis.com/v1beta/models
+//   - Groq:        api.groq.com/openai/v1/models
+//   - OpenRouter:  openrouter.ai/api/v1/models (public, no key needed)
+//
+// FALLBACK LADDER (each tier engages only if the one above fails):
+//   Tier 0  Fresh discovery       — live catalog query (5s timeout, 15min cache)
+//   Tier 1  Cached discovery      — result from the current TTL window
+//   Tier 2  STALE cache           — discovery endpoint down, serve last-known list
+//   Tier 3  Hardcoded SEED slugs  — last-known-good backups baked in below
+//   Tier 4  Cross-provider chain  — shared Gemini → user Gemini → Groq → OpenRouter
+//   Tier 5  Kill switch           — set secret DISABLE_DISCOVERY=1 to force seeds
+//
+// The response always names which tier served the request (`model_source`),
+// so degradation is observable, never silent.
+// ============================================================================
+
+const DISCOVERY_TTL_MS = 15 * 60 * 1000;   // how long a catalog fetch stays fresh
+const DISCOVERY_TIMEOUT_MS = 5000;          // never let a slow catalog delay users
+const MAX_MODELS_PER_PROVIDER = 4;          // cap attempts to bound worst-case latency
+
+// --- Tier 3: hardcoded backup seeds (verified live 2026-08-22) --------------
+const SEED_GEMINI_MODELS = ['gemini-3.6-flash', 'gemini-3.7-flash'];
+const SEED_GROQ_MODELS = ['openai/gpt-oss-120b', 'qwen/qwen3.6-27b'];
+const SEED_OPENROUTER_FREE_MODELS = [
+  'nvidia/nemotron-3-super-120b-a12b:free',
+  'z-ai/glm-5.2:free',
+  'google/gemma-4-31b-it:free',
+];
+
+// Module-scope cache: survives across requests on the same Worker isolate.
+const catalogCache = { gemini: null, groq: null, openrouter: null };
+
+// ---------------------------------------------------------------------------
+// Catalog fetching + ranking helpers
+// ---------------------------------------------------------------------------
+
+async function fetchJsonWithTimeout(url, headers) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), DISCOVERY_TIMEOUT_MS);
+  try {
+    const response = await fetch(url, { method: 'GET', headers: headers || {}, signal: controller.signal });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    return await response.json();
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+// Rank candidate model ids: known-good families first (PREFS order), then the
+// rest; within a tier, larger context window wins (proxy for capability).
+function rankAndCap(ids, prefs, excludeRegex, contextById) {
+  const seen = new Set();
+  const eligible = ids.filter((id) => {
+    if (!id || seen.has(id)) return false;
+    seen.add(id);
+    return !excludeRegex.test(id.toLowerCase());
+  });
+  const prefIndex = (id) => {
+    const lower = id.toLowerCase();
+    for (let i = 0; i < prefs.length; i++) {
+      if (lower.includes(prefs[i])) return i;
+    }
+    return prefs.length;
+  };
+  eligible.sort((a, b) => {
+    const pa = prefIndex(a);
+    const pb = prefIndex(b);
+    if (pa !== pb) return pa - pb;
+    return ((contextById && contextById[b]) || 0) - ((contextById && contextById[a]) || 0);
+  });
+  return eligible.slice(0, MAX_MODELS_PER_PROVIDER);
+}
+
+// ---------------------------------------------------------------------------
+// Per-provider discovery — each returns an ordered candidate list, or throws.
+// ---------------------------------------------------------------------------
+
+async function discoverOpenRouter() {
+  const json = await fetchJsonWithTimeout('https://openrouter.ai/api/v1/models');
+  const rows = (json.data || []).filter(
+    (m) => typeof m.id === 'string' &&
+      (m.id.endsWith(':free') ||
+        (m.pricing && String(m.pricing.prompt) === '0' && String(m.pricing.completion) === '0'))
+  );
+  const contextById = {};
+  rows.forEach((m) => { contextById[m.id] = m.context_length || 0; });
+  return rankAndCap(
+    rows.map((m) => m.id),
+    ['nemotron', 'glm', 'gemma', 'qwen', 'deepseek', 'llama', 'mistral', 'phi'],
+    /(embed|rerank|guard|moderation|vision|-vl|whisper|tts)/,
+    contextById
+  );
+}
+
+async function discoverGroq(apiKey) {
+  const json = await fetchJsonWithTimeout('https://api.groq.com/openai/v1/models', {
+    Authorization: `Bearer ${apiKey}`,
+  });
+  const ids = (json.data || []).map((m) => m.id);
+  return rankAndCap(
+    ids,
+    ['gpt-oss', 'llama-4', 'qwen', 'moonshot', 'kimi', 'llama-3.3', 'gemma', 'mistral'],
+    /(whisper|tts|playai|guard|distil|embed)/,
+    {}
+  );
+}
+
+async function discoverGemini(apiKey) {
+  const json = await fetchJsonWithTimeout(
+    `https://generativelanguage.googleapis.com/v1beta/models?key=${encodeURIComponent(apiKey)}`
+  );
+  const ids = [];
+  for (const m of json.models || []) {
+    // Field name has varied across API versions — accept both spellings.
+    const methods = m.supportedGenerationMethods || m.supportedActions || [];
+    if (!methods.includes('generateContent')) continue;
+    let name = m.name || '';
+    if (name.startsWith('models/')) name = name.slice('models/'.length);
+    if (!name.startsWith('gemini')) continue;
+    ids.push(name);
+  }
+  // Prefer the flash tier (highest free-tier rate limits); context length
+  // breaks ties, which also favors newer generations.
+  return rankAndCap(ids, ['flash'], /(embed|aqa|imagen|veo|tts|audio|live|native|image)/, {});
+}
+
+// ---------------------------------------------------------------------------
+// Resolution ladder — never throws; always returns { models, source }.
+// ---------------------------------------------------------------------------
+
+const DISCOVERERS = {
+  gemini: (env) => discoverGemini(env.GEMINI_API_KEY),
+  groq: (env) => discoverGroq(env.GROQ_API_KEY),
+  openrouter: (env) => discoverOpenRouter(),
+};
+
+const SEEDS = {
+  gemini: SEED_GEMINI_MODELS,
+  groq: SEED_GROQ_MODELS,
+  openrouter: SEED_OPENROUTER_FREE_MODELS,
+};
+
+async function resolveCandidates(name, env) {
+  const seeds = SEEDS[name];
+
+  // Tier 5: manual kill switch — operator forces hardcoded seeds.
+  if (!env || String(env.DISABLE_DISCOVERY) === '1' || String(env.DISABLE_DISCOVERY) === 'true') {
+    return { models: seeds, source: 'seed list (discovery disabled by operator)' };
+  }
+
+  // Tier 1: fresh cache inside the TTL window — zero added latency.
+  const entry = catalogCache[name];
+  const now = Date.now();
+  if (entry && now - entry.ts < DISCOVERY_TTL_MS) {
+    return { models: entry.models, source: 'live catalog (cached)' };
+  }
+
+  // Tier 0: attempt fresh discovery.
+  try {
+    const models = await DISCOVERERS[name](env);
+    if (models && models.length) {
+      catalogCache[name] = { models, ts: now };
+      return { models, source: 'live catalog (fresh)' };
+    }
+    throw new Error('catalog listed no eligible chat models');
+  } catch (err) {
+    // Tier 2: stale cache beats nothing.
+    if (entry) {
+      return { models: entry.models, source: `STALE catalog cache (discovery failed: ${err.message})` };
+    }
+    // Tier 3: hardcoded seeds.
+    return { models: seeds, source: `SEED BACKUP (discovery failed: ${err.message})` };
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Provider callers — unchanged contract from the previous version.
+// ---------------------------------------------------------------------------
+
+async function callGemini(apiKey, body, model) {
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
   const response = await fetch(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body),
   });
-  const data = await response.json();
+  const data = await response.json().catch(() => ({}));
   if (!response.ok) return { ok: false, status: response.status, error: data };
   const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
   return { ok: true, text: text || 'No response generated.' };
 }
 
-async function callGroq(apiKey, systemPrompt, messages) {
+async function callGroq(apiKey, systemPrompt, messages, model) {
   const groqMessages = [{ role: 'system', content: systemPrompt }, ...messages];
   const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
     method: 'POST',
@@ -168,18 +356,18 @@ async function callGroq(apiKey, systemPrompt, messages) {
       'Authorization': `Bearer ${apiKey}`,
     },
     body: JSON.stringify({
-      model: 'llama-3.3-70b-versatile',
+      model: model,
       messages: groqMessages,
       temperature: 0.7,
     }),
   });
-  const data = await response.json();
+  const data = await response.json().catch(() => ({}));
   if (!response.ok) return { ok: false, status: response.status, error: data };
   const text = data.choices?.[0]?.message?.content;
   return { ok: true, text: text || 'No response generated.' };
 }
 
-async function callOpenRouter(apiKey, systemPrompt, messages) {
+async function callOpenRouter(apiKey, systemPrompt, messages, model) {
   const orMessages = [{ role: 'system', content: systemPrompt }, ...messages];
   const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
     method: 'POST',
@@ -190,12 +378,12 @@ async function callOpenRouter(apiKey, systemPrompt, messages) {
       'X-Title': 'WhatIfWeBelieved Theology Agent',
     },
     body: JSON.stringify({
-      model: 'meta-llama/llama-3.3-70b-instruct:free',
+      model: model,
       messages: orMessages,
       temperature: 0.7,
     }),
   });
-  const data = await response.json();
+  const data = await response.json().catch(() => ({}));
   if (!response.ok) return { ok: false, status: response.status, error: data };
   const text = data.choices?.[0]?.message?.content;
   return { ok: true, text: text || 'No response generated.' };
@@ -278,11 +466,11 @@ export default {
       }
 
       let userText = message || '';
-      
+
       // Detect if fileContent is an image data URL
       let fileParts = [];
       const isImageDataUrl = fileContent && typeof fileContent === 'string' && fileContent.startsWith('data:image/');
-      
+
       if (fileContent && fileName) {
         if (isImageDataUrl) {
           // Parse data URL for inlineData
@@ -337,33 +525,69 @@ export default {
 
       let result = null;
       let provider = 'gemini';
+      let modelSource = null; // which fallback tier served the winning request
+      const failures = []; // aggregate EVERY provider/model attempt for diagnosability
 
-      // 1) Try shared Gemini key
+      // Helper: walk a provider's resolved candidate list. Continues to the
+      // next model only on 400/404 (bad/retired slug); auth/quota errors won't
+      // differ across models, so bail out early on those.
+      // Returns { result, model, source } — model is the slug that succeeded.
+      async function tryProviderChain(providerName, caller) {
+        const { models, source } = await resolveCandidates(providerName, env);
+        let lastResult = null;
+        for (const m of models) {
+          // Network-level failures (unreachable host, timeout, TLS) are
+          // converted into ordinary failed attempts so the remaining models —
+          // and the remaining providers — still get their chance.
+          try {
+            lastResult = await caller(m);
+          } catch (err) {
+            lastResult = { ok: false, status: 0, error: { message: String((err && err.message) || err) } };
+          }
+          if (lastResult && lastResult.ok) { modelSource = source; return { result: lastResult, model: m, source }; }
+          failures.push({ provider: `${providerName}/${m}`, status: lastResult ? lastResult.status : 0, error: lastResult ? lastResult.error : 'no response', model_source: source });
+          if (!lastResult || ![400, 404].includes(lastResult.status)) break;
+        }
+        // Even on failure, remember where the attempts came from (diagnostics).
+        if (!modelSource && models.length) modelSource = source;
+        return { result: lastResult, model: null, source };
+      }
+
+      // 1) Shared Gemini key across its resolved model chain
       if (env.GEMINI_API_KEY) {
-        result = await callGemini(env.GEMINI_API_KEY, geminiBody);
+        const attempt = await tryProviderChain('gemini', (m) =>
+          callGemini(env.GEMINI_API_KEY, geminiBody, m));
+        if (attempt.result && attempt.result.ok) { result = attempt.result; provider = `gemini (${attempt.model})`; }
       }
 
-      // 2) Try user's Gemini key if shared failed
+      // 2) User's Gemini key if the shared one failed
       if ((!result || !result.ok) && userApiKey && userApiKey !== env.GEMINI_API_KEY) {
-        result = await callGemini(userApiKey, geminiBody);
+        const attempt = await tryProviderChain('gemini', (m) =>
+          callGemini(userApiKey, geminiBody, m));
+        if (attempt.result && attempt.result.ok) { result = attempt.result; provider = `gemini-user-key (${attempt.model})`; }
       }
 
-      // 3) Fallback to Groq
+      // 3) Groq across its resolved model chain
       if ((!result || !result.ok) && env.GROQ_API_KEY) {
-        provider = 'groq';
-        result = await callGroq(env.GROQ_API_KEY, SYSTEM_PROMPT, messages);
+        const attempt = await tryProviderChain('groq', (m) =>
+          callGroq(env.GROQ_API_KEY, SYSTEM_PROMPT, messages, m));
+        if (attempt.result && attempt.result.ok) { result = attempt.result; provider = `groq (${attempt.model})`; }
       }
 
-      // 4) Fallback to OpenRouter
+      // 4) OpenRouter free-model chain
       if ((!result || !result.ok) && env.OPENROUTER_API_KEY) {
-        provider = 'openrouter';
-        result = await callOpenRouter(env.OPENROUTER_API_KEY, SYSTEM_PROMPT, messages);
+        const attempt = await tryProviderChain('openrouter', (m) =>
+          callOpenRouter(env.OPENROUTER_API_KEY, SYSTEM_PROMPT, messages, m));
+        if (attempt.result && attempt.result.ok) { result = attempt.result; provider = `openrouter (${attempt.model})`; }
       }
 
-      // All failed
+      // All failed — report every attempt so the cause is visible in one glance
       if (!result || !result.ok) {
-        const errText = result ? JSON.stringify(result.error) : 'No providers available';
-        return new Response(JSON.stringify({ error: `All providers failed: ${errText}` }), {
+        return new Response(JSON.stringify({
+          error: 'All providers failed',
+          model_source: modelSource,
+          detail: failures.length ? failures : [{ provider: 'none', status: 0, error: 'No provider API keys configured in Worker secrets' }],
+        }), {
           status: 502,
           headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
         });
@@ -376,12 +600,12 @@ export default {
         const lines = rawText.split('\n');
         const summaryEnd = Math.min(lines.length, 15);
         const summary = lines.slice(0, summaryEnd).join('\n').trim() + `\n\n---\n**The full ${label} is ready. Use the download bar below to save it as a Word document.**`;
-        return new Response(JSON.stringify({ text: summary, essay: rawText, provider }), {
+        return new Response(JSON.stringify({ text: summary, essay: rawText, provider, model_source: modelSource }), {
           headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
         });
       }
 
-      return new Response(JSON.stringify({ text: rawText, provider }), {
+      return new Response(JSON.stringify({ text: rawText, provider, model_source: modelSource }), {
         headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
       });
     } catch (e) {
