@@ -276,6 +276,32 @@
             height: 15px;
             color: white;
         }
+        .download-bar-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+        .download-bar-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            width: auto;
+            padding: 0 8px;
+        }
+        .download-bar-btn-label {
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+        }
+        .download-bar-btn-md {
+            background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+            box-shadow: 0 2px 6px rgba(37, 99, 235, 0.35);
+        }
+        .download-bar.crimson .download-bar-btn-md {
+            background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+            box-shadow: 0 2px 6px rgba(37, 99, 235, 0.35);
+        }
 
         /* API SELECTOR */
         .api-section {
@@ -1537,9 +1563,16 @@
         <div id="downloadBar" class="download-bar" style="display:none;">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
             <span id="downloadBarLabel" class="download-bar-label">Sermon ready</span>
-            <button id="downloadBtn" class="download-bar-btn" onclick="downloadAsDoc()" title="Download as .doc">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-            </button>
+            <span class="download-bar-actions">
+                <button id="downloadMdBtn" class="download-bar-btn download-bar-btn-md" onclick="downloadAsMarkdown()" title="Download as Markdown (.md)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    <span class="download-bar-btn-label">.md</span>
+                </button>
+                <button id="downloadBtn" class="download-bar-btn" onclick="downloadAsDoc()" title="Download as Word (.doc)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    <span class="download-bar-btn-label">Word</span>
+                </button>
+            </span>
         </div>
 
         <div class="input-section">
@@ -1891,7 +1924,7 @@ Reasoning rules:
             }
             contents.push({ role: 'user', parts: parts });
 
-            const models = ['gemini-3.6-flash', 'gemini-2.0-flash', 'gemini-2.0-flash-lite', 'gemini-1.5-flash', 'gemini-1.5-flash-8b'];
+            const models = ['gemini-2.0-flash', 'gemini-2.0-flash-lite', 'gemini-1.5-flash', 'gemini-1.5-flash-8b'];
             let lastError = null;
 
             for (const model of models) {
@@ -2152,12 +2185,60 @@ Reasoning rules:
             a.click();
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
-            const btn = document.getElementById('downloadBtn');
+            flashDownloadBtn('downloadBtn');
+        }
+        window.downloadAsDoc = downloadAsDoc;
+
+        // Flash the clicked download button with a checkmark for visual feedback
+        function flashDownloadBtn(btnId) {
+            const btn = document.getElementById(btnId);
+            if (!btn) return;
             const origHtml = btn.innerHTML;
             btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>';
             setTimeout(function() { btn.innerHTML = origHtml; }, 2000);
         }
-        window.downloadAsDoc = downloadAsDoc;
+
+        // Download the raw text as a Markdown (.md) file.
+        // Always works since it is a simple text file with a UTF-8 BOM for Word compatibility.
+        function downloadAsMarkdown() {
+            let content = null;
+            let defaultTitle = 'Document';
+            if (sermonMode && lastSermonContent) {
+                content = lastSermonContent;
+                defaultTitle = 'Sermon';
+            } else if (essayMode && lastEssayContent) {
+                content = lastEssayContent;
+                defaultTitle = 'Essay';
+            } else if (bibleStudyMode && lastBibleStudyContent) {
+                content = lastBibleStudyContent;
+                defaultTitle = 'Bible Study';
+            } else if (lastSermonContent) {
+                content = lastSermonContent;
+                defaultTitle = 'Sermon';
+            } else if (lastEssayContent) {
+                content = lastEssayContent;
+                defaultTitle = 'Essay';
+            } else if (lastBibleStudyContent) {
+                content = lastBibleStudyContent;
+                defaultTitle = 'Bible Study';
+            }
+            if (!content) return alert('No content to download');
+            const titleMatch = content.match(/^#\s+(.+)/m);
+            const docTitle = titleMatch ? titleMatch[1] : defaultTitle;
+            const filename = titleMatch ? titleMatch[1].replace(/[^a-zA-Z0-9\s-]/g, '').replace(/\s+/g, '-').toLowerCase() : (sermonMode ? 'sermon' : essayMode ? 'essay' : 'bible-study');
+
+            const blob = new Blob(['\uFEFF' + content], { type: 'text/markdown;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename + '-' + new Date().toISOString().slice(0,10) + '.md';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            flashDownloadBtn('downloadMdBtn');
+        }
+        window.downloadAsMarkdown = downloadAsMarkdown;
 
         function addMessage(content, type, essayMarkdown) {
             // Delegate to enhanced version with typewriter effect if available

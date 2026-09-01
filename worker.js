@@ -334,6 +334,32 @@ async function resolveCandidates(name, env) {
 // Provider callers — unchanged contract from the previous version.
 // ---------------------------------------------------------------------------
 
+// A hardened anti-fabrication clamp appended for fallback models (Groq/OpenRouter),
+// because prompt-based grounding alone is insufficient for Llama-family fallbacks.
+const FABRICATION_CLAMP = `
+
+[ABSOLUTE GROUNDING DIRECTIVE - applies to every response]
+1. NEVER invent a page number, volume number, edition, chapter title, or verbatim quotation.
+2. If you cannot recall an EXACT verbatim quote, paraphrase instead and clearly mark it as a paraphrase -- never present a paraphrase as a direct quotation with quotation marks.
+3. The Desire of Ages is a SINGLE volume. The Great Controversy citation conventions follow the standard chapter-based system (e.g., "Great Controversy, ch. 24"). Do not invent multi-volume references that do not exist.
+4. A response that cites a page number, volume, or verbatim quote that you cannot verify exceeds the risk threshold and MUST be refused.
+5. If asked for "the exact page number" or "a verbatim quote," and you are not certain of it, reply: "I do not have a verified page number / verbatim citation for that. I can give a page range or a clearly-marked paraphrase instead." Do NOT guess a number or quote.
+6. Never state "Exact page: X" or hand the user a single precise page number unless you are genuinely certain. Prefer "pages X-YY in standard editions" with the caveat that pagination varies by edition.
+`;
+
+// Code-level guardrail: detect fabricated / unverifiable citation claims in fallback output.
+// If flagged, we return a refusal instead of handing possibly-fabricated citations to the user.
+function hasUnverifiableCitation(output) {
+  if (!output) return false;
+  // Pattern matches confident assertions of exact pages/volumes/verbatim quotes that often indicate fabrication.
+  const suspicious = /(?:exact\s+page|page\s+number|verbatim\s*(?:quote|quotation)|vol\.?\s*\d|volume\s+\d|\bp\.\s?\d+|\bpp\.\s?\d+|\bpage\s+\d+\b)/i;
+  // If the model itself hedges, it's acceptable; otherwise a confident bare citation is suspect.
+  const hedges = /(i do not (?:have|know)|cannot (?:verify|confirm)|not certain|i'm not sure|i am not sure|paraphrase|varies by edition|different pagination|may not match|cannot give|don't have|around pages|pages \d+-\d+ in standard)/i;
+  if (!suspicious.test(output)) return false;
+  if (hedges.test(output)) return false;
+  return true;
+}
+
 async function callGemini(apiKey, body, model) {
   const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
   const response = await fetch(url, {
@@ -348,7 +374,7 @@ async function callGemini(apiKey, body, model) {
 }
 
 async function callGroq(apiKey, systemPrompt, messages, model) {
-  const groqMessages = [{ role: 'system', content: systemPrompt }, ...messages];
+  const groqMessages = [{ role: 'system', content: systemPrompt + FABRICATION_CLAMP }, ...messages];
   const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
     method: 'POST',
     headers: {
@@ -358,7 +384,7 @@ async function callGroq(apiKey, systemPrompt, messages, model) {
     body: JSON.stringify({
       model: model,
       messages: groqMessages,
-      temperature: 0.7,
+      temperature: 0.2,
     }),
   });
   const data = await response.json().catch(() => ({}));
@@ -368,7 +394,7 @@ async function callGroq(apiKey, systemPrompt, messages, model) {
 }
 
 async function callOpenRouter(apiKey, systemPrompt, messages, model) {
-  const orMessages = [{ role: 'system', content: systemPrompt }, ...messages];
+  const orMessages = [{ role: 'system', content: systemPrompt + FABRICATION_CLAMP }, ...messages];
   const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
     method: 'POST',
     headers: {
@@ -380,7 +406,7 @@ async function callOpenRouter(apiKey, systemPrompt, messages, model) {
     body: JSON.stringify({
       model: model,
       messages: orMessages,
-      temperature: 0.7,
+      temperature: 0.2,
     }),
   });
   const data = await response.json().catch(() => ({}));
@@ -594,6 +620,22 @@ export default {
       }
 
       const rawText = result.text;
+
+      // Code-level hallucination guardrail for fallback providers (Groq/OpenRouter).
+      // If the output asserts unverifiable exact citations without hedging, refuse rather
+      // than hand possibly-fabricated page numbers/verbatim quotes to the user.
+      if ((provider === 'groq' || provider === 'openrouter' ||
+           provider.startsWith('groq ') || provider.startsWith('openrouter ')) && hasUnverifiableCitation(rawText)) {
+        const refuseText = "I'm sorry, but the response flagged potentially unverifiable citation details (such as an exact page number or verbatim quote that could not be confirmed). To avoid offering you a fabricated citation, I won't present it as exact. I can provide a clearly-marked paraphrase or a general reference instead. Please ask me for that.";
+        if (essayMode || sermonMode || bibleStudyMode) {
+          return new Response(JSON.stringify({ text: refuseText, essay: refuseText, provider, model_source: modelSource, flagged: true }), {
+            headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
+          });
+        }
+        return new Response(JSON.stringify({ text: refuseText, provider, model_source: modelSource, flagged: true }), {
+          headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
+        });
+      }
 
       if (essayMode || sermonMode || bibleStudyMode) {
         const label = sermonMode ? 'sermon' : essayMode ? 'essay' : 'bible-study';
