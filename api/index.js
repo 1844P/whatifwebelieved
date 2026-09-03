@@ -146,36 +146,32 @@ OUTPUT REQUIREMENTS:
 - Begin with the title as a # heading.
 - End with a horizontal rule (---) after "For Further Study."]`;
 
-// ============================================================================
-// SELF-HEALING MODEL ROUTER (2026-08-22)
-//
-// Problem this solves: providers retire model slugs without notice (Groq killed
-// llama-3.3-70b-versatile on 2026-08-16; OpenRouter retired the :free llama-3.3
-// variant the same week). Hardcoded slug lists rot and take the agent down.
-//
-// Solution: instead of memorizing slugs, ASK each provider what is alive right
-// now, using its own public catalog endpoint:
-//   - Gemini:      generativelanguage.googleapis.com/v1beta/models
-//   - Groq:        api.groq.com/openai/v1/models
-//   - OpenRouter:  openrouter.ai/api/v1/models (public, no key needed)
-//
-// FALLBACK LADDER (each tier engages only if the one above fails):
-//   Tier 0  Fresh discovery       — live catalog query (5s timeout, 15min cache)
-//   Tier 1  Cached discovery      — result from the current TTL window
-//   Tier 2  STALE cache           — discovery endpoint down, serve last-known list
-//   Tier 3  Hardcoded SEED slugs  — last-known-good backups baked in below
-//   Tier 4  Cross-provider chain  — shared Gemini → user Gemini → Groq → OpenRouter
-//   Tier 5  Kill switch           — set secret DISABLE_DISCOVERY=1 to force seeds
-//
-// The response always names which tier served the request (`model_source`),
-// so degradation is observable, never silent.
-// ============================================================================
+const FABRICATION_CLAMP = `
 
-const DISCOVERY_TTL_MS = 15 * 60 * 1000;   // how long a catalog fetch stays fresh
-const DISCOVERY_TIMEOUT_MS = 5000;          // never let a slow catalog delay users
-const MAX_MODELS_PER_PROVIDER = 4;          // cap attempts to bound worst-case latency
+[ABSOLUTE GROUNDING DIRECTIVE - applies to every response]
+1. NEVER invent a page number, volume number, edition, chapter title, or verbatim quotation.
+2. If you cannot recall an EXACT verbatim quote, paraphrase instead and clearly mark it as a paraphrase -- never present a paraphrase as a direct quotation with quotation marks.
+3. The Desire of Ages is a SINGLE volume. The Great Controversy citation conventions follow the standard chapter-based system (e.g., "Great Controversy, ch. 24"). Do not invent multi-volume references that do not exist.
+4. A response that cites a page number, volume, or verbatim quote that you cannot verify exceeds the risk threshold and MUST be refused.
+5. If asked for "the exact page number" or "a verbatim quote," and you are not certain of it, reply: "I do not have a verified page number / verbatim citation for that. I can give a page range or a clearly-marked paraphrase instead." Do NOT guess a number or quote.
+6. Never state "Exact page: X" or hand the user a single precise page number unless you are genuinely certain. Prefer "pages X-YY in standard editions" with the caveat that pagination varies by edition.
+`;
 
-// --- Tier 3: hardcoded backup seeds (verified live 2026-08-22) --------------
+function hasUnverifiableCitation(output) {
+  if (!output) return false;
+  const suspicious = /(?:exact\s+page|page\s+number|verbatim\s*(?:quote|quotation)|vol\.?\s*\d|volume\s+\d|\bp\.\s?\d+|\bpp\.\s?\d+|\bpage\s+\d+\b)/i;
+  const hedges = /(i do not (?:have|know)|cannot (?:verify|confirm)|not certain|i'm not sure|i am not sure|paraphrase|varies by edition|different pagination|may not match|cannot give|don't have|around pages|pages \d+-\d+ in standard)/i;
+  if (!suspicious.test(output)) return false;
+  if (hedges.test(output)) return false;
+  return true;
+}
+
+// --- Model Discovery (Gemini + OpenRouter only) ---
+
+const DISCOVERY_TTL_MS = 15 * 60 * 1000;
+const DISCOVERY_TIMEOUT_MS = 5000;
+const MAX_MODELS_PER_PROVIDER = 4;
+
 const SEED_GEMINI_MODELS = ['gemini-3.6-flash', 'gemini-3.7-flash'];
 const SEED_OPENROUTER_FREE_MODELS = [
   'nvidia/nemotron-3-super-120b-a12b:free',
@@ -183,12 +179,7 @@ const SEED_OPENROUTER_FREE_MODELS = [
   'google/gemma-4-31b-it:free',
 ];
 
-// Module-scope cache: survives across requests on the same Worker isolate.
 const catalogCache = { gemini: null, openrouter: null };
-
-// ---------------------------------------------------------------------------
-// Catalog fetching + ranking helpers
-// ---------------------------------------------------------------------------
 
 async function fetchJsonWithTimeout(url, headers) {
   const controller = new AbortController();
@@ -202,8 +193,6 @@ async function fetchJsonWithTimeout(url, headers) {
   }
 }
 
-// Rank candidate model ids: known-good families first (PREFS order), then the
-// rest; within a tier, larger context window wins (proxy for capability).
 function rankAndCap(ids, prefs, excludeRegex, contextById) {
   const seen = new Set();
   const eligible = ids.filter((id) => {
@@ -227,10 +216,6 @@ function rankAndCap(ids, prefs, excludeRegex, contextById) {
   return eligible.slice(0, MAX_MODELS_PER_PROVIDER);
 }
 
-// ---------------------------------------------------------------------------
-// Per-provider discovery — each returns an ordered candidate list, or throws.
-// ---------------------------------------------------------------------------
-
 async function discoverOpenRouter() {
   const json = await fetchJsonWithTimeout('https://openrouter.ai/api/v1/models');
   const rows = (json.data || []).filter(
@@ -248,26 +233,12 @@ async function discoverOpenRouter() {
   );
 }
 
-async function discoverGroq(apiKey) {
-  const json = await fetchJsonWithTimeout('https://api.groq.com/openai/v1/models', {
-    Authorization: `Bearer ${apiKey}`,
-  });
-  const ids = (json.data || []).map((m) => m.id);
-  return rankAndCap(
-    ids,
-    ['gpt-oss', 'llama-4', 'qwen', 'moonshot', 'kimi', 'llama-3.3', 'gemma', 'mistral'],
-    /(whisper|tts|playai|guard|distil|embed)/,
-    {}
-  );
-}
-
 async function discoverGemini(apiKey) {
   const json = await fetchJsonWithTimeout(
     `https://generativelanguage.googleapis.com/v1beta/models?key=${encodeURIComponent(apiKey)}`
   );
   const ids = [];
   for (const m of json.models || []) {
-    // Field name has varied across API versions — accept both spellings.
     const methods = m.supportedGenerationMethods || m.supportedActions || [];
     if (!methods.includes('generateContent')) continue;
     let name = m.name || '';
@@ -275,89 +246,42 @@ async function discoverGemini(apiKey) {
     if (!name.startsWith('gemini')) continue;
     ids.push(name);
   }
-  // Prefer the flash tier (highest free-tier rate limits); context length
-  // breaks ties, which also favors newer generations.
   return rankAndCap(ids, ['flash'], /(embed|aqa|imagen|veo|tts|audio|live|native|image)/, {});
 }
 
-// ---------------------------------------------------------------------------
-// Resolution ladder — never throws; always returns { models, source }.
-// ---------------------------------------------------------------------------
-
 const DISCOVERERS = {
-  gemini: (env) => discoverGemini(env.GEMINI_API_KEY),
-  groq: (env) => discoverGroq(env.GROQ_API_KEY),
-  openrouter: (env) => discoverOpenRouter(),
+  gemini: (apiKey) => discoverGemini(apiKey),
+  openrouter: () => discoverOpenRouter(),
 };
 
 const SEEDS = {
   gemini: SEED_GEMINI_MODELS,
-  groq: SEED_GROQ_MODELS,
   openrouter: SEED_OPENROUTER_FREE_MODELS,
 };
 
-async function resolveCandidates(name, env) {
+async function resolveCandidates(name, apiKey) {
   const seeds = SEEDS[name];
-
-  // Tier 5: manual kill switch — operator forces hardcoded seeds.
-  if (!env || String(env.DISABLE_DISCOVERY) === '1' || String(env.DISABLE_DISCOVERY) === 'true') {
-    return { models: seeds, source: 'seed list (discovery disabled by operator)' };
-  }
-
-  // Tier 1: fresh cache inside the TTL window — zero added latency.
   const entry = catalogCache[name];
   const now = Date.now();
   if (entry && now - entry.ts < DISCOVERY_TTL_MS) {
     return { models: entry.models, source: 'live catalog (cached)' };
   }
-
-  // Tier 0: attempt fresh discovery.
   try {
-    const models = await DISCOVERERS[name](env);
+    const models = await DISCOVERERS[name](apiKey);
     if (models && models.length) {
       catalogCache[name] = { models, ts: now };
       return { models, source: 'live catalog (fresh)' };
     }
     throw new Error('catalog listed no eligible chat models');
   } catch (err) {
-    // Tier 2: stale cache beats nothing.
     if (entry) {
       return { models: entry.models, source: `STALE catalog cache (discovery failed: ${err.message})` };
     }
-    // Tier 3: hardcoded seeds.
     return { models: seeds, source: `SEED BACKUP (discovery failed: ${err.message})` };
   }
 }
 
-// ---------------------------------------------------------------------------
-// Provider callers — unchanged contract from the previous version.
-// ---------------------------------------------------------------------------
-
-// A hardened anti-fabrication clamp appended for fallback models (Groq/OpenRouter),
-// because prompt-based grounding alone is insufficient for Llama-family fallbacks.
-const FABRICATION_CLAMP = `
-
-[ABSOLUTE GROUNDING DIRECTIVE - applies to every response]
-1. NEVER invent a page number, volume number, edition, chapter title, or verbatim quotation.
-2. If you cannot recall an EXACT verbatim quote, paraphrase instead and clearly mark it as a paraphrase -- never present a paraphrase as a direct quotation with quotation marks.
-3. The Desire of Ages is a SINGLE volume. The Great Controversy citation conventions follow the standard chapter-based system (e.g., "Great Controversy, ch. 24"). Do not invent multi-volume references that do not exist.
-4. A response that cites a page number, volume, or verbatim quote that you cannot verify exceeds the risk threshold and MUST be refused.
-5. If asked for "the exact page number" or "a verbatim quote," and you are not certain of it, reply: "I do not have a verified page number / verbatim citation for that. I can give a page range or a clearly-marked paraphrase instead." Do NOT guess a number or quote.
-6. Never state "Exact page: X" or hand the user a single precise page number unless you are genuinely certain. Prefer "pages X-YY in standard editions" with the caveat that pagination varies by edition.
-`;
-
-// Code-level guardrail: detect fabricated / unverifiable citation claims in fallback output.
-// If flagged, we return a refusal instead of handing possibly-fabricated citations to the user.
-function hasUnverifiableCitation(output) {
-  if (!output) return false;
-  // Pattern matches confident assertions of exact pages/volumes/verbatim quotes that often indicate fabrication.
-  const suspicious = /(?:exact\s+page|page\s+number|verbatim\s*(?:quote|quotation)|vol\.?\s*\d|volume\s+\d|\bp\.\s?\d+|\bpp\.\s?\d+|\bpage\s+\d+\b)/i;
-  // If the model itself hedges, it's acceptable; otherwise a confident bare citation is suspect.
-  const hedges = /(i do not (?:have|know)|cannot (?:verify|confirm)|not certain|i'm not sure|i am not sure|paraphrase|varies by edition|different pagination|may not match|cannot give|don't have|around pages|pages \d+-\d+ in standard)/i;
-  if (!suspicious.test(output)) return false;
-  if (hedges.test(output)) return false;
-  return true;
-}
+// --- Provider callers ---
 
 async function callGemini(apiKey, body, model) {
   const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
@@ -369,26 +293,6 @@ async function callGemini(apiKey, body, model) {
   const data = await response.json().catch(() => ({}));
   if (!response.ok) return { ok: false, status: response.status, error: data };
   const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
-  return { ok: true, text: text || 'No response generated.' };
-}
-
-async function callGroq(apiKey, systemPrompt, messages, model) {
-  const groqMessages = [{ role: 'system', content: systemPrompt + FABRICATION_CLAMP }, ...messages];
-  const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${apiKey}`,
-    },
-    body: JSON.stringify({
-      model: model,
-      messages: groqMessages,
-      temperature: 0.2,
-    }),
-  });
-  const data = await response.json().catch(() => ({}));
-  if (!response.ok) return { ok: false, status: response.status, error: data };
-  const text = data.choices?.[0]?.message?.content;
   return { ok: true, text: text || 'No response generated.' };
 }
 
@@ -414,15 +318,14 @@ async function callOpenRouter(apiKey, systemPrompt, messages, model) {
   return { ok: true, text: text || 'No response generated.' };
 }
 
+// --- Static proxy for GitHub Pages ---
+
 const GITHUB_PAGES_ORIGIN = 'https://1844p.github.io';
 const GITHUB_PAGES_BASE = `${GITHUB_PAGES_ORIGIN}/whatifwebelieved`;
 
-// Cache-busting proxy for static assets — serves GitHub Pages content with no-cache headers
 async function serveStatic(request) {
   const url = new URL(request.url);
-  const path = url.pathname; // e.g. /agent/ or /agent/index.html or /agent/wallpaper-pitons.svg
-
-  // Fetch from GitHub Pages with cache buster to bypass Fastly CDN cache
+  const path = url.pathname;
   const cacheBuster = `_cb=${Date.now()}`;
   const separator = path.includes('?') ? '&' : '?';
   const originUrl = `${GITHUB_PAGES_BASE}${path}${separator}${cacheBuster}`;
@@ -430,7 +333,6 @@ async function serveStatic(request) {
     method: 'GET',
     headers: { 'Cache-Control': 'no-cache', 'Pragma': 'no-cache' },
   });
-
   if (!originResponse.ok) {
     return new Response(originResponse.body, {
       status: originResponse.status,
@@ -442,14 +344,11 @@ async function serveStatic(request) {
       },
     });
   }
-
-  // Pass through the body with overridden cache headers
   const responseHeaders = new Headers(originResponse.headers);
   responseHeaders.set('Cache-Control', 'no-cache, no-store, must-revalidate');
   responseHeaders.set('Pragma', 'no-cache');
   responseHeaders.set('Expires', '0');
   responseHeaders.set('Access-Control-Allow-Origin', '*');
-
   return new Response(originResponse.body, {
     status: originResponse.status,
     statusText: originResponse.statusText,
@@ -457,203 +356,175 @@ async function serveStatic(request) {
   });
 }
 
-export default {
-  async fetch(request, env) {
-    // Handle CORS preflight
-    if (request.method === 'OPTIONS') {
-      return new Response(null, {
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-          'Access-Control-Allow-Headers': 'Content-Type',
-        },
+// --- Vercel Edge handler ---
+
+export const config = { runtime: 'edge' };
+
+export default async function handler(request) {
+  if (request.method === 'OPTIONS') {
+    return new Response(null, {
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type',
+      },
+    });
+  }
+
+  if (request.method === 'GET') {
+    return serveStatic(request);
+  }
+
+  if (request.method !== 'POST') {
+    return new Response('Method not allowed', { status: 405 });
+  }
+
+  const env = {
+    GEMINI_API_KEY: process.env.GEMINI_API_KEY,
+    OPENROUTER_API_KEY: process.env.OPENROUTER_API_KEY,
+  };
+
+  try {
+    const { message, history = [], fileContent, fileName, userApiKey, essayMode, sermonMode, sermonFormat, bibleStudyMode } = await request.json();
+
+    if (!message && !fileContent) {
+      return new Response(JSON.stringify({ error: 'No message provided' }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' },
       });
     }
 
-    // GET requests — serve static files from GitHub Pages with no-cache headers
-    if (request.method === 'GET') {
-      return serveStatic(request);
+    let userText = message || '';
+    let fileParts = [];
+    const isImageDataUrl = fileContent && typeof fileContent === 'string' && fileContent.startsWith('data:image/');
+
+    if (fileContent && fileName) {
+      if (isImageDataUrl) {
+        const matches = fileContent.match(/^data:(image\/\w+);base64,(.+)$/);
+        if (matches) {
+          const mimeType = matches[1];
+          const base64Data = matches[2];
+          fileParts.push({ inlineData: { mimeType, data: base64Data } });
+          userText = userText || `Please describe this image (${fileName}) and relate it to Adventist theology or Christian philosophy.`;
+        }
+      } else {
+        userText = userText
+          ? `${userText}\n\n--- File Content (${fileName}) ---\n${fileContent}`
+          : `Please analyze the following file (${fileName}):\n\n${fileContent}`;
+      }
     }
 
-    // Only POST beyond this point
-    if (request.method !== 'POST') {
-      return new Response('Method not allowed', { status: 405 });
+    if (essayMode) {
+      userText += ESSAY_SUFFIX;
+    } else if (sermonMode) {
+      userText += SERMON_FORMATS[sermonFormat] || SERMON_SUFFIX_DEFAULT;
+    } else if (bibleStudyMode) {
+      userText += BIBLE_STUDY_SUFFIX;
     }
 
-    try {
-      const { message, history = [], fileContent, fileName, userApiKey, essayMode, sermonMode, sermonFormat, bibleStudyMode } = await request.json();
+    const geminiContents = [];
+    for (const h of history) {
+      if (h.user) geminiContents.push({ role: 'user', parts: [{ text: h.user }] });
+      if (h.assistant) geminiContents.push({ role: 'model', parts: [{ text: h.assistant }] });
+    }
+    const userParts = [{ text: userText }].concat(fileParts);
+    geminiContents.push({ role: 'user', parts: userParts });
 
-      if (!message && !fileContent) {
-        return new Response(JSON.stringify({ error: 'No message provided' }), {
-          status: 400,
-          headers: { 'Content-Type': 'application/json' },
-        });
-      }
+    const geminiBody = {
+      systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
+      contents: geminiContents,
+      generationConfig: { temperature: 0.7 },
+    };
 
-      let userText = message || '';
+    const messages = [];
+    for (const h of history) {
+      if (h.user) messages.push({ role: 'user', content: h.user });
+      if (h.assistant) messages.push({ role: 'assistant', content: h.assistant });
+    }
+    messages.push({ role: 'user', content: userText });
 
-      // Detect if fileContent is an image data URL
-      let fileParts = [];
-      const isImageDataUrl = fileContent && typeof fileContent === 'string' && fileContent.startsWith('data:image/');
+    let result = null;
+    let provider = 'gemini';
+    let modelSource = null;
+    const failures = [];
 
-      if (fileContent && fileName) {
-        if (isImageDataUrl) {
-          // Parse data URL for inlineData
-          const matches = fileContent.match(/^data:(image\/\w+);base64,(.+)$/);
-          if (matches) {
-            const mimeType = matches[1];
-            const base64Data = matches[2];
-            fileParts.push({
-              inlineData: { mimeType, data: base64Data }
-            });
-            userText = userText || `Please describe this image (${fileName}) and relate it to Adventist theology or Christian philosophy.`;
-          }
-        } else {
-          // Text content — embed in message
-          userText = userText
-            ? `${userText}\n\n--- File Content (${fileName}) ---\n${fileContent}`
-            : `Please analyze the following file (${fileName}):\n\n${fileContent}`;
+    async function tryProviderChain(providerName, apiKey, caller) {
+      const { models, source } = await resolveCandidates(providerName, apiKey);
+      let lastResult = null;
+      for (const m of models) {
+        try {
+          lastResult = await caller(m);
+        } catch (err) {
+          lastResult = { ok: false, status: 0, error: { message: String((err && err.message) || err) } };
         }
+        if (lastResult && lastResult.ok) { modelSource = source; return { result: lastResult, model: m, source }; }
+        failures.push({ provider: `${providerName}/${m}`, status: lastResult ? lastResult.status : 0, error: lastResult ? lastResult.error : 'no response', model_source: source });
+        if (!lastResult || ![400, 404].includes(lastResult.status)) break;
       }
+      if (!modelSource && models.length) modelSource = source;
+      return { result: lastResult, model: null, source };
+    }
 
-      if (essayMode) {
-        userText += ESSAY_SUFFIX;
-      } else if (sermonMode) {
-        userText += SERMON_FORMATS[sermonFormat] || SERMON_SUFFIX_DEFAULT;
-      } else if (bibleStudyMode) {
-        userText += BIBLE_STUDY_SUFFIX;
-      }
+    if (env.GEMINI_API_KEY) {
+      const attempt = await tryProviderChain('gemini', env.GEMINI_API_KEY, (m) =>
+        callGemini(env.GEMINI_API_KEY, geminiBody, m));
+      if (attempt.result && attempt.result.ok) { result = attempt.result; provider = `gemini (${attempt.model})`; }
+    }
 
-      // Build Gemini format
-      const geminiContents = [];
-      for (const h of history) {
-        if (h.user) geminiContents.push({ role: 'user', parts: [{ text: h.user }] });
-        if (h.assistant) geminiContents.push({ role: 'model', parts: [{ text: h.assistant }] });
-      }
-      // Combine text parts with any file parts (e.g. image inlineData)
-      const userParts = [{ text: userText }].concat(fileParts);
-      geminiContents.push({ role: 'user', parts: userParts });
+    if ((!result || !result.ok) && userApiKey && userApiKey !== env.GEMINI_API_KEY) {
+      const attempt = await tryProviderChain('gemini', userApiKey, (m) =>
+        callGemini(userApiKey, geminiBody, m));
+      if (attempt.result && attempt.result.ok) { result = attempt.result; provider = `gemini-user-key (${attempt.model})`; }
+    }
 
-      const geminiBody = {
-        systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
-        contents: geminiContents,
-        generationConfig: { temperature: 0.7 },
-      };
+    if ((!result || !result.ok) && env.OPENROUTER_API_KEY) {
+      const attempt = await tryProviderChain('openrouter', env.OPENROUTER_API_KEY, (m) =>
+        callOpenRouter(env.OPENROUTER_API_KEY, SYSTEM_PROMPT, messages, m));
+      if (attempt.result && attempt.result.ok) { result = attempt.result; provider = `openrouter (${attempt.model})`; }
+    }
 
-      // Build OpenAI/Groq/OpenRouter format
-      const messages = [];
-      for (const h of history) {
-        if (h.user) messages.push({ role: 'user', content: h.user });
-        if (h.assistant) messages.push({ role: 'assistant', content: h.assistant });
-      }
-      messages.push({ role: 'user', content: userText });
+    if (!result || !result.ok) {
+      return new Response(JSON.stringify({
+        error: 'All providers failed',
+        model_source: modelSource,
+        detail: failures.length ? failures : [{ provider: 'none', status: 0, error: 'No provider API keys configured' }],
+      }), {
+        status: 502,
+        headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
+      });
+    }
 
-      let result = null;
-      let provider = 'gemini';
-      let modelSource = null; // which fallback tier served the winning request
-      const failures = []; // aggregate EVERY provider/model attempt for diagnosability
+    const rawText = result.text;
 
-      // Helper: walk a provider's resolved candidate list. Continues to the
-      // next model only on 400/404 (bad/retired slug); auth/quota errors won't
-      // differ across models, so bail out early on those.
-      // Returns { result, model, source } — model is the slug that succeeded.
-      async function tryProviderChain(providerName, caller) {
-        const { models, source } = await resolveCandidates(providerName, env);
-        let lastResult = null;
-        for (const m of models) {
-          // Network-level failures (unreachable host, timeout, TLS) are
-          // converted into ordinary failed attempts so the remaining models —
-          // and the remaining providers — still get their chance.
-          try {
-            lastResult = await caller(m);
-          } catch (err) {
-            lastResult = { ok: false, status: 0, error: { message: String((err && err.message) || err) } };
-          }
-          if (lastResult && lastResult.ok) { modelSource = source; return { result: lastResult, model: m, source }; }
-          failures.push({ provider: `${providerName}/${m}`, status: lastResult ? lastResult.status : 0, error: lastResult ? lastResult.error : 'no response', model_source: source });
-          if (!lastResult || ![400, 404].includes(lastResult.status)) break;
-        }
-        // Even on failure, remember where the attempts came from (diagnostics).
-        if (!modelSource && models.length) modelSource = source;
-        return { result: lastResult, model: null, source };
-      }
-
-      // 1) Shared Gemini key across its resolved model chain
-      if (env.GEMINI_API_KEY) {
-        const attempt = await tryProviderChain('gemini', (m) =>
-          callGemini(env.GEMINI_API_KEY, geminiBody, m));
-        if (attempt.result && attempt.result.ok) { result = attempt.result; provider = `gemini (${attempt.model})`; }
-      }
-
-      // 2) User's Gemini key if the shared one failed
-      if ((!result || !result.ok) && userApiKey && userApiKey !== env.GEMINI_API_KEY) {
-        const attempt = await tryProviderChain('gemini', (m) =>
-          callGemini(userApiKey, geminiBody, m));
-        if (attempt.result && attempt.result.ok) { result = attempt.result; provider = `gemini-user-key (${attempt.model})`; }
-      }
-
-      // 3) Groq across its resolved model chain
-      if ((!result || !result.ok) && env.GROQ_API_KEY) {
-        const attempt = await tryProviderChain('groq', (m) =>
-          callGroq(env.GROQ_API_KEY, SYSTEM_PROMPT, messages, m));
-        if (attempt.result && attempt.result.ok) { result = attempt.result; provider = `groq (${attempt.model})`; }
-      }
-
-      // 4) OpenRouter free-model chain
-      if ((!result || !result.ok) && env.OPENROUTER_API_KEY) {
-        const attempt = await tryProviderChain('openrouter', (m) =>
-          callOpenRouter(env.OPENROUTER_API_KEY, SYSTEM_PROMPT, messages, m));
-        if (attempt.result && attempt.result.ok) { result = attempt.result; provider = `openrouter (${attempt.model})`; }
-      }
-
-      // All failed — report every attempt so the cause is visible in one glance
-      if (!result || !result.ok) {
-        return new Response(JSON.stringify({
-          error: 'All providers failed',
-          model_source: modelSource,
-          detail: failures.length ? failures : [{ provider: 'none', status: 0, error: 'No provider API keys configured in Worker secrets' }],
-        }), {
-          status: 502,
-          headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
-        });
-      }
-
-      const rawText = result.text;
-
-      // Code-level hallucination guardrail for fallback providers (Groq/OpenRouter).
-      // If the output asserts unverifiable exact citations without hedging, refuse rather
-      // than hand possibly-fabricated page numbers/verbatim quotes to the user.
-      if ((provider === 'groq' || provider === 'openrouter' ||
-           provider.startsWith('groq ') || provider.startsWith('openrouter ')) && hasUnverifiableCitation(rawText)) {
-        const refuseText = "I'm sorry, but the response flagged potentially unverifiable citation details (such as an exact page number or verbatim quote that could not be confirmed). To avoid offering you a fabricated citation, I won't present it as exact. I can provide a clearly-marked paraphrase or a general reference instead. Please ask me for that.";
-        if (essayMode || sermonMode || bibleStudyMode) {
-          return new Response(JSON.stringify({ text: refuseText, essay: refuseText, provider, model_source: modelSource, flagged: true }), {
-            headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
-          });
-        }
-        return new Response(JSON.stringify({ text: refuseText, provider, model_source: modelSource, flagged: true }), {
-          headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
-        });
-      }
-
+    if ((provider.startsWith('openrouter') || provider.startsWith('openrouter ')) && hasUnverifiableCitation(rawText)) {
+      const refuseText = "I'm sorry, but the response flagged potentially unverifiable citation details (such as an exact page number or verbatim quote that could not be confirmed). To avoid offering you a fabricated citation, I won't present it as exact. I can provide a clearly-marked paraphrase or a general reference instead. Please ask me for that.";
       if (essayMode || sermonMode || bibleStudyMode) {
-        const label = sermonMode ? 'sermon' : essayMode ? 'essay' : 'bible-study';
-        const lines = rawText.split('\n');
-        const summaryEnd = Math.min(lines.length, 15);
-        const summary = lines.slice(0, summaryEnd).join('\n').trim() + `\n\n---\n**The full ${label} is ready. Use the download bar below to save it as a Word document.**`;
-        return new Response(JSON.stringify({ text: summary, essay: rawText, provider, model_source: modelSource }), {
+        return new Response(JSON.stringify({ text: refuseText, essay: refuseText, provider, model_source: modelSource, flagged: true }), {
           headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
         });
       }
-
-      return new Response(JSON.stringify({ text: rawText, provider, model_source: modelSource }), {
-        headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
-      });
-    } catch (e) {
-      return new Response(JSON.stringify({ error: e.message }), {
-        status: 500,
+      return new Response(JSON.stringify({ text: refuseText, provider, model_source: modelSource, flagged: true }), {
         headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
       });
     }
-  },
-};
+
+    if (essayMode || sermonMode || bibleStudyMode) {
+      const label = sermonMode ? 'sermon' : essayMode ? 'essay' : 'bible-study';
+      const lines = rawText.split('\n');
+      const summaryEnd = Math.min(lines.length, 15);
+      const summary = lines.slice(0, summaryEnd).join('\n').trim() + `\n\n---\n**The full ${label} is ready. Use the download bar below to save it as a Word document.**`;
+      return new Response(JSON.stringify({ text: summary, essay: rawText, provider, model_source: modelSource }), {
+        headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
+      });
+    }
+
+    return new Response(JSON.stringify({ text: rawText, provider, model_source: modelSource }), {
+      headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
+    });
+  } catch (e) {
+    return new Response(JSON.stringify({ error: e.message }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
+    });
+  }
+}
