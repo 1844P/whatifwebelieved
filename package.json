@@ -1,13 +1,4 @@
 {
-  "name": "bible-prophecy-adult-game",
-  "version": "0.1.0",
-  "private": true,
-  "description": "An adult Bible quiz on Daniel and Revelation.",
-  "main": "main.js",
-  "scripts": {
-    "start": "electron ."
-  },
-  "devDependencies": {
-    "electron": "^37.0.0"
-  }
+  "name": "whatifwebelieved",
+  "private": true
 }

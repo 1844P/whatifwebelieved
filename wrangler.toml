@@ -2,7 +2,7 @@
 # Deployed automatically by GitHub Actions on every push to master that
 # touches worker.js (see .github/workflows/deploy-worker.yml).
 
-name = "weathered-bar-381f"
+name = "whatifwebelieved"
 main = "worker.js"
 compatibility_date = "2024-09-01"
 account_id = "dfc00627ddb4042784a9042c8ee9d11d"
