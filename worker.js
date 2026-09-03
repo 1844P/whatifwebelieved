@@ -149,14 +149,13 @@ OUTPUT REQUIREMENTS:
 // ============================================================================
 // SELF-HEALING MODEL ROUTER (2026-08-22)
 //
-// Problem this solves: providers retire model slugs without notice (Groq killed
-// llama-3.3-70b-versatile on 2026-08-16; OpenRouter retired the :free llama-3.3
-// variant the same week). Hardcoded slug lists rot and take the agent down.
+// Problem this solves: providers retire model slugs without notice (a provider
+// killed llama-3.3-70b-versatile on 2026-08-16; OpenRouter retired the :free
+// llama-3.3 variant the same week). Hardcoded slug lists rot and take the agent down.
 //
 // Solution: instead of memorizing slugs, ASK each provider what is alive right
 // now, using its own public catalog endpoint:
 //   - Gemini:      generativelanguage.googleapis.com/v1beta/models
-//   - Groq:        api.groq.com/openai/v1/models
 //   - OpenRouter:  openrouter.ai/api/v1/models (public, no key needed)
 //
 // FALLBACK LADDER (each tier engages only if the one above fails):
@@ -164,7 +163,7 @@ OUTPUT REQUIREMENTS:
 //   Tier 1  Cached discovery      — result from the current TTL window
 //   Tier 2  STALE cache           — discovery endpoint down, serve last-known list
 //   Tier 3  Hardcoded SEED slugs  — last-known-good backups baked in below
-//   Tier 4  Cross-provider chain  — shared Gemini → user Gemini → Groq → OpenRouter
+//   Tier 4  Cross-provider chain  — shared Gemini → user Gemini → OpenRouter
 //   Tier 5  Kill switch           — set secret DISABLE_DISCOVERY=1 to force seeds
 //
 // The response always names which tier served the request (`model_source`),
@@ -248,19 +247,6 @@ async function discoverOpenRouter() {
   );
 }
 
-async function discoverGroq(apiKey) {
-  const json = await fetchJsonWithTimeout('https://api.groq.com/openai/v1/models', {
-    Authorization: `Bearer ${apiKey}`,
-  });
-  const ids = (json.data || []).map((m) => m.id);
-  return rankAndCap(
-    ids,
-    ['gpt-oss', 'llama-4', 'qwen', 'moonshot', 'kimi', 'llama-3.3', 'gemma', 'mistral'],
-    /(whisper|tts|playai|guard|distil|embed)/,
-    {}
-  );
-}
-
 async function discoverGemini(apiKey) {
   const json = await fetchJsonWithTimeout(
     `https://generativelanguage.googleapis.com/v1beta/models?key=${encodeURIComponent(apiKey)}`
@@ -286,13 +272,11 @@ async function discoverGemini(apiKey) {
 
 const DISCOVERERS = {
   gemini: (env) => discoverGemini(env.GEMINI_API_KEY),
-  groq: (env) => discoverGroq(env.GROQ_API_KEY),
   openrouter: (env) => discoverOpenRouter(),
 };
 
 const SEEDS = {
   gemini: SEED_GEMINI_MODELS,
-  groq: SEED_GROQ_MODELS,
   openrouter: SEED_OPENROUTER_FREE_MODELS,
 };
 
@@ -333,7 +317,7 @@ async function resolveCandidates(name, env) {
 // Provider callers — unchanged contract from the previous version.
 // ---------------------------------------------------------------------------
 
-// A hardened anti-fabrication clamp appended for fallback models (Groq/OpenRouter),
+// A hardened anti-fabrication clamp appended for fallback models (OpenRouter),
 // because prompt-based grounding alone is insufficient for Llama-family fallbacks.
 const FABRICATION_CLAMP = `
 
@@ -369,26 +353,6 @@ async function callGemini(apiKey, body, model) {
   const data = await response.json().catch(() => ({}));
   if (!response.ok) return { ok: false, status: response.status, error: data };
   const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
-  return { ok: true, text: text || 'No response generated.' };
-}
-
-async function callGroq(apiKey, systemPrompt, messages, model) {
-  const groqMessages = [{ role: 'system', content: systemPrompt + FABRICATION_CLAMP }, ...messages];
-  const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${apiKey}`,
-    },
-    body: JSON.stringify({
-      model: model,
-      messages: groqMessages,
-      temperature: 0.2,
-    }),
-  });
-  const data = await response.json().catch(() => ({}));
-  if (!response.ok) return { ok: false, status: response.status, error: data };
-  const text = data.choices?.[0]?.message?.content;
   return { ok: true, text: text || 'No response generated.' };
 }
 
@@ -540,7 +504,7 @@ export default {
         generationConfig: { temperature: 0.7 },
       };
 
-      // Build OpenAI/Groq/OpenRouter format
+      // Build OpenAI/OpenRouter format
       const messages = [];
       for (const h of history) {
         if (h.user) messages.push({ role: 'user', content: h.user });
@@ -592,14 +556,7 @@ export default {
         if (attempt.result && attempt.result.ok) { result = attempt.result; provider = `gemini-user-key (${attempt.model})`; }
       }
 
-      // 3) Groq across its resolved model chain
-      if ((!result || !result.ok) && env.GROQ_API_KEY) {
-        const attempt = await tryProviderChain('groq', (m) =>
-          callGroq(env.GROQ_API_KEY, SYSTEM_PROMPT, messages, m));
-        if (attempt.result && attempt.result.ok) { result = attempt.result; provider = `groq (${attempt.model})`; }
-      }
-
-      // 4) OpenRouter free-model chain
+      // 3) OpenRouter free-model chain
       if ((!result || !result.ok) && env.OPENROUTER_API_KEY) {
         const attempt = await tryProviderChain('openrouter', (m) =>
           callOpenRouter(env.OPENROUTER_API_KEY, SYSTEM_PROMPT, messages, m));
@@ -620,11 +577,10 @@ export default {
 
       const rawText = result.text;
 
-      // Code-level hallucination guardrail for fallback providers (Groq/OpenRouter).
+      // Code-level hallucination guardrail for fallback providers (OpenRouter).
       // If the output asserts unverifiable exact citations without hedging, refuse rather
       // than hand possibly-fabricated page numbers/verbatim quotes to the user.
-      if ((provider === 'groq' || provider === 'openrouter' ||
-           provider.startsWith('groq ') || provider.startsWith('openrouter ')) && hasUnverifiableCitation(rawText)) {
+      if (provider === 'openrouter' || provider.startsWith('openrouter ') && hasUnverifiableCitation(rawText)) {
         const refuseText = "I'm sorry, but the response flagged potentially unverifiable citation details (such as an exact page number or verbatim quote that could not be confirmed). To avoid offering you a fabricated citation, I won't present it as exact. I can provide a clearly-marked paraphrase or a general reference instead. Please ask me for that.";
         if (essayMode || sermonMode || bibleStudyMode) {
           return new Response(JSON.stringify({ text: refuseText, essay: refuseText, provider, model_source: modelSource, flagged: true }), {
