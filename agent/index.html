@@ -1,0 +1,2873 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <meta name="version" content="2026-07-29-v3">
+    <title>Adventist Theology & Christian Philosophy Agent</title>
+    <meta name="description" content="An AI research agent trained on Adventist doctrines, Ellen G. White's writings, Christian philosophy, and Scripture. Get scholarly, cited answers on the Sabbath, sanctuary, investigative judgment, Great Controversy, and more.">
+    <link rel="canonical" href="https://whatifwebelieved.vercel.app/agent/">
+    <meta name="robots" content="index, follow">
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="WhatIfWeBelieved">
+    <meta property="og:title" content="Adventist Theology & Christian Philosophy Agent | WhatIfWeBelieved">
+    <meta property="og:description" content="An AI research agent trained on Adventist doctrines, Ellen G. White's writings, Christian philosophy, and Scripture. Get scholarly, cited answers.">
+    <meta property="og:url" content="https://whatifwebelieved.vercel.app/agent/">
+    <meta property="og:image" content="https://whatifwebelieved.vercel.app/bg-1.jpg">
+    <meta property="og:locale" content="en_US">
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Adventist Theology & Christian Philosophy Agent | WhatIfWeBelieved">
+    <meta name="twitter:description" content="An AI research agent trained on Adventist doctrines, Ellen G. White's writings, Christian philosophy, and Scripture. Get scholarly, cited answers.">
+    <meta name="twitter:image" content="https://whatifwebelieved.vercel.app/bg-1.jpg">
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "@id": "https://whatifwebelieved.vercel.app/agent/#webapp",
+        "name": "WhatIfWeBelieved Theology AI Agent",
+        "url": "https://whatifwebelieved.vercel.app/agent/",
+        "description": "An AI research agent trained on Adventist doctrines, Ellen G. White's writings, Christian philosophy, and Scripture, providing scholarly, cited answers.",
+        "applicationCategory": "EducationalApplication",
+        "operatingSystem": "Any",
+        "inLanguage": "en",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "publisher": {
+            "@type": "Organization",
+            "name": "WhatIfWeBelieved",
+            "url": "https://whatifwebelieved.vercel.app/"
+        }
+    }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&family=Merriweather:wght@300;400;700&display=swap" rel="stylesheet">
+    <!-- Vercel Web Analytics -->
+    <script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments)};</script>
+    <script defer src="/_vercel/insights/script.js"></script>
+    <!-- Google Analytics - Replace G-9ZM6VF3FZY with your actual GA4 measurement ID -->
+    <script>
+        (function() {
+            var id = 'G-9ZM6VF3FZY'; // <-- SET YOUR GA4 MEASUREMENT ID HERE
+            if (id && id !== 'G-9ZM6VF3FZY' && id.startsWith('G-')) {
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', id);
+                var s = document.createElement('script');
+                s.src = 'https://www.googletagmanager.com/gtag/js?id=' + id;
+                s.async = true;
+                document.head.appendChild(s);
+            }
+        })();
+    </script>
+    <style>
+        :root {
+            --cream: #faf8f4;
+            --warm-white: #f5f0e8;
+            --parchment: #f2ece0;
+            --gold: #9a7520;
+            --gold-light: #e8d5a0;
+            --gold-bg: #f9f3e3;
+            --amber: #b8860b;
+            --amber-light: #d4a030;
+            --crimson: #7a1a2e;
+            --crimson-light: #a52a43;
+            --crimson-bg: #fdf0f2;
+            --text: #2c1810;
+            --text-secondary: #6b5b4f;
+            --text-muted: #9a8b7d;
+            --border: #e2d9c8;
+            --shadow: rgba(44, 24, 16, 0.08);
+            --shadow-lg: rgba(44, 24, 16, 0.15);
+            --shadow-xl: rgba(44, 24, 16, 0.2);
+            --warm-glow: rgba(184, 134, 11, 0.12);
+            --green: #2d6a4f;
+            --green-light: #40916c;
+            --green-bg: #edf7f0;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #1f1410;
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-image: 
+                url('wallpaper-pitons.svg'),
+                radial-gradient(ellipse at 10% 0%, rgba(200, 162, 78, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 90% 20%, rgba(200, 162, 78, 0.04) 0%, transparent 40%),
+                radial-gradient(ellipse at 50% 80%, rgba(122, 26, 46, 0.06) 0%, transparent 45%),
+                radial-gradient(ellipse at 30% 100%, var(--warm-glow) 0%, transparent 50%);
+            background-position: center bottom;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+
+        /* HEADER */
+        .header {
+            background: linear-gradient(135deg, #2c1810 0%, #4a2018 25%, #5a2a1e 50%, #3d1a12 75%, #2c1810 100%);
+            background-size: 400% 400%;
+            padding: 28px 32px 24px;
+            border-bottom: 1px solid rgba(184, 134, 11, 0.3);
+            box-shadow: 0 4px 30px rgba(30, 18, 10, 0.3), inset 0 1px 0 rgba(255,255,255,0.06);
+            animation: gradientShift 14s ease infinite;
+            position: relative;
+            overflow: hidden;
+        }
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -60%;
+            right: -10%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(200, 162, 78, 0.08) 0%, transparent 65%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--gold-light), var(--amber), var(--gold-light));
+            background-size: 200% 100%;
+            animation: shimmer 4s linear infinite;
+            box-shadow: 0 -2px 16px rgba(184, 134, 11, 0.15);
+        }
+        .header-inner {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            position: relative;
+            z-index: 1;
+        }
+        .header-mark {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--gold-light), var(--amber));
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #2c1810;
+            box-shadow: 0 4px 16px rgba(184, 134, 11, 0.25);
+            text-decoration: none;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .header-mark:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 24px rgba(184, 134, 11, 0.35);
+        }
+
+        .header-text h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            line-height: 1.25;
+            background: linear-gradient(135deg, #f5e6d0 0%, var(--gold-light) 40%, var(--amber) 70%, var(--gold) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .header-text p {
+            font-size: 0.85rem;
+            color: rgba(245, 230, 208, 0.75);
+            margin-top: 4px;
+            line-height: 1.5;
+        }
+
+        /* DOWNLOAD BAR */
+        .download-bar {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 18px;
+            background: linear-gradient(135deg, var(--gold-bg) 0%, #fffcf0 100%);
+            border: 1px solid var(--gold-light);
+            border-radius: 14px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 12px rgba(154,117,32,0.1);
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .download-bar::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            background-size: 200% 100%;
+            animation: shimmer 3s linear infinite;
+            pointer-events: none;
+        }
+        .download-bar.crimson::after {
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+            background-size: 200% 100%;
+        }
+        .download-bar.crimson {
+            background: var(--crimson-bg);
+            border-color: var(--crimson-light);
+        }
+        .download-bar svg {
+            width: 16px;
+            height: 16px;
+            color: var(--gold);
+            flex-shrink: 0;
+        }
+        .download-bar.crimson svg {
+            color: var(--crimson);
+        }
+        .download-bar-label {
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--gold);
+            flex: 1;
+        }
+        .download-bar.crimson .download-bar-label {
+            color: var(--crimson);
+        }
+        .download-bar-btn {
+            width: 30px;
+            height: 30px;
+            padding: 0;
+            background: linear-gradient(135deg, var(--gold) 0%, #7a5c10 100%);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: all 0.2s;
+            box-shadow: 0 2px 6px rgba(154, 117, 32, 0.35);
+        }
+        .download-bar.crimson .download-bar-btn {
+            background: linear-gradient(135deg, var(--crimson) 0%, #5a1020 100%);
+            box-shadow: 0 2px 6px rgba(122, 26, 46, 0.35);
+        }
+        .download-bar-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(154, 117, 32, 0.5);
+        }
+        .download-bar.crimson .download-bar-btn:hover {
+            box-shadow: 0 4px 12px rgba(122, 26, 46, 0.5);
+        }
+        .download-bar-btn svg {
+            width: 15px;
+            height: 15px;
+            color: white;
+        }
+        .download-bar-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+        .download-bar-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            width: auto;
+            padding: 0 8px;
+        }
+        .download-bar-btn-label {
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+        }
+        .download-bar-btn-md {
+            background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+            box-shadow: 0 2px 6px rgba(37, 99, 235, 0.35);
+        }
+        .download-bar.crimson .download-bar-btn-md {
+            background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+            box-shadow: 0 2px 6px rgba(37, 99, 235, 0.35);
+        }
+
+        /* API SELECTOR */
+        .api-section {
+            background: linear-gradient(135deg, #fffcf5 0%, #fdf6e8 100%);
+            backdrop-filter: blur(8px);
+            padding: 14px 32px;
+            border: 1.5px solid rgba(184, 134, 11, 0.2);
+            border-radius: 14px;
+            margin: 16px 32px 0;
+            box-shadow: 0 2px 16px var(--shadow), 0 0 0 1px rgba(184, 134, 11, 0.06);
+        }
+        .api-inner {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .api-section label {
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            white-space: nowrap;
+        }
+        .api-section select {
+            padding: 7px 12px;
+            border: 1.5px solid rgba(184, 134, 11, 0.2);
+            border-radius: 10px;
+            font-size: 0.85rem;
+            background: white;
+            color: var(--text);
+            cursor: pointer;
+            min-width: 155px;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .api-section select:focus {
+            outline: none;
+            border-color: var(--amber);
+            box-shadow: 0 0 0 3px var(--warm-glow);
+        }
+        #geminiStatus {
+            font-size: 0.78rem;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        #geminiStatus:not(:empty) {
+            animation: fadeInScale 0.3s ease;
+        }
+        .api-section small {
+            width: 100%;
+            color: var(--text-muted);
+            font-size: 0.78rem;
+            margin-top: 2px;
+            line-height: 1.5;
+        }
+        .api-section small a {
+            color: var(--gold);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .api-section small a:hover { text-decoration: underline; }
+        .btn-gemini {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            background: linear-gradient(135deg, #4285f4 0%, #34a853 100%);
+            color: white;
+            border-radius: 6px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s;
+            white-space: nowrap;
+            box-shadow: 0 2px 6px rgba(66, 133, 244, 0.3);
+        }
+        .btn-gemini:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(66, 133, 244, 0.4);
+        }
+        .btn-gemini svg { width: 14px; height: 14px; }
+
+        /* CHAT CONTAINER */
+        .chat-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            max-width: 900px;
+            width: 100%;
+            margin: 20px auto 16px;
+            padding: 0 32px;
+        }
+
+        .chat-container::after {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            pointer-events: none;
+            z-index: -1;
+            background: radial-gradient(ellipse at 50% 30%, rgba(184, 134, 11, 0.03) 0%, transparent 60%);
+        }
+
+        /* Ambient warm glow animation */
+        .ambient-glow {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            pointer-events: none;
+            z-index: -1;
+            background:
+                radial-gradient(ellipse at 20% 20%, rgba(184, 134, 11, 0.06) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 40%, rgba(200, 162, 78, 0.04) 0%, transparent 45%),
+                radial-gradient(ellipse at 40% 80%, rgba(122, 26, 46, 0.03) 0%, transparent 45%);
+            animation: ambientDrift 20s ease-in-out infinite alternate;
+        }
+        @keyframes ambientDrift {
+            0% { transform: scale(1) rotate(0deg); opacity: 0.6; }
+            50% { transform: scale(1.05) rotate(1deg); opacity: 1; }
+            100% { transform: scale(0.98) rotate(-1deg); opacity: 0.7; }
+        }
+
+        /* Warm vignette overlay */
+        .vignette-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            pointer-events: none;
+            z-index: 0;
+            background: radial-gradient(ellipse at 50% 50%, transparent 60%, rgba(30, 18, 10, 0.15) 100%);
+        }
+
+        /* Scroll-to-bottom button */
+        .scroll-bottom-btn {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: white;
+            border: 1.5px solid var(--gold-light);
+            color: var(--amber);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 16px var(--shadow-lg), 0 0 0 1px rgba(184, 134, 11, 0.08);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            opacity: 0;
+            pointer-events: none;
+            z-index: 10;
+        }
+        .scroll-bottom-btn.visible {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateX(-50%) translateY(0);
+        }
+        .scroll-bottom-btn:hover {
+            background: linear-gradient(135deg, var(--gold-bg), white);
+            border-color: var(--amber);
+            box-shadow: 0 6px 24px var(--shadow-xl), 0 0 0 2px var(--warm-glow);
+            transform: translateX(-50%) translateY(-2px);
+        }
+        .scroll-bottom-btn svg {
+            width: 18px;
+            height: 18px;
+            transition: transform 0.3s ease;
+        }
+        .scroll-bottom-btn:hover svg {
+            transform: translateY(2px);
+        }
+
+        .messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 12px 20px 60px;
+            background: rgba(250, 248, 244, 0.92);
+            border: 1.5px solid rgba(184, 134, 11, 0.2);
+            border-radius: 20px;
+            box-shadow: 0 8px 40px rgba(0,0,0,0.15), 0 0 0 1px rgba(184, 134, 11, 0.06);
+            backdrop-filter: blur(8px);
+            position: relative;
+            scroll-behavior: smooth;
+        }
+
+        /* MESSAGES */
+        .message {
+            margin-bottom: 20px;
+            padding: 18px 22px;
+            border-radius: 16px;
+            max-width: 92%;
+            position: relative;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .message.user {
+            background: linear-gradient(135deg, var(--crimson) 0%, #6e1627 50%, var(--crimson-light) 100%);
+            background-size: 200% 200%;
+            color: white;
+            margin-left: auto;
+            border-bottom-right-radius: 6px;
+            box-shadow: 0 6px 20px rgba(122, 26, 46, 0.25), 0 2px 6px rgba(122, 26, 46, 0.15);
+            animation: slideInRight 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .message.user:hover {
+            box-shadow: 0 8px 28px rgba(122, 26, 46, 0.35);
+            transform: translateY(-1px);
+        }
+        .message.assistant {
+            background: white;
+            border: 1px solid var(--gold-light);
+            border-left: 4px solid var(--amber);
+            margin-right: auto;
+            border-bottom-left-radius: 6px;
+            box-shadow: 0 4px 16px var(--shadow), 0 1px 3px rgba(44,24,16,0.04);
+            animation: slideInLeft 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .message.assistant::before {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            border-radius: 18px;
+            border-bottom-left-radius: 8px;
+            background: linear-gradient(135deg, var(--gold-light) 0%, transparent 40%, var(--crimson-bg) 100%);
+            z-index: -1;
+            opacity: 0.3;
+            transition: opacity 0.5s ease;
+        }
+        .message.assistant:hover {
+            box-shadow: 0 8px 28px var(--shadow-lg), 0 1px 3px rgba(44,24,16,0.08), 0 0 30px var(--warm-glow);
+            transform: translateY(-2px);
+            border-color: var(--amber-light);
+        }
+        .message.assistant:hover::before {
+            opacity: 0.7;
+        }
+        .message.error {
+            background: #fff5f5;
+            border: 1px solid #fecaca;
+            color: #b91c1c;
+            animation: fadeInScale 0.3s ease;
+        }
+        .message.error {
+            background: #fff5f5;
+            border: 1px solid #fecaca;
+            color: #b91c1c;
+        }
+        .message-label {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .message.user .message-label { color: rgba(255,255,255,0.7); }
+        .message.assistant .message-label { color: var(--gold); }
+        .message.error .message-label { color: #b91c1c; }
+        .message-label svg { width: 14px; height: 14px; }
+        .message-content {
+            line-height: 1.7;
+            font-size: 0.95rem;
+        }
+        .message.user .message-content { color: white; }
+        .message.assistant .message-content { color: var(--text); }
+        .message.assistant .message-content p, .message.assistant .message-content li {
+            font-family: 'Merriweather', Georgia, 'Times New Roman', serif;
+            font-size: 1.1rem;
+            font-weight: 400;
+            line-height: 1.85;
+            letter-spacing: 0.01em;
+            color: #1a1410;
+            margin-bottom: 14px;
+            max-width: 68ch;
+        }
+        .message.assistant .message-content strong { color: var(--crimson); font-weight: 700; }
+        .message.assistant .message-content em { color: var(--text-secondary); }
+        .message.assistant .message-content ul, 
+        .message.assistant .message-content ol {
+            padding-left: 1.5em;
+            margin-bottom: 14px;
+        }
+        .message.assistant .message-content li {
+            margin-bottom: 6px;
+        }
+        .message.assistant .message-content a {
+            color: var(--amber);
+            text-decoration: underline;
+            text-underline-offset: 2px;
+            text-decoration-thickness: 1px;
+            transition: color 0.2s;
+        }
+        .message.assistant .message-content a:hover {
+            color: var(--crimson);
+        }
+        .message.assistant .message-content blockquote {
+            border-left: 3px solid var(--gold-light);
+            padding: 8px 16px;
+            margin: 14px 0;
+            color: var(--text-secondary);
+            font-style: italic;
+            background: rgba(184, 134, 11, 0.04);
+            border-radius: 0 8px 8px 0;
+        }
+        .message.assistant .message-content code {
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            font-size: 0.9rem;
+            background: var(--cream);
+            padding: 1px 5px;
+            border-radius: 4px;
+            color: var(--crimson);
+        }
+
+        /* COPY BUTTON */
+        .copy-btn {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            padding: 6px 10px;
+            background: var(--cream);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            transition: all 0.2s;
+            opacity: 0;
+        }
+        .message.assistant:hover .copy-btn { opacity: 1; }
+        .message.assistant .btn-container .copy-btn { opacity: 1; }
+        .copy-btn:hover {
+            background: var(--gold-bg);
+            border-color: var(--gold);
+            color: var(--gold);
+        }
+        .copy-btn.copied {
+            background: #d1fae5;
+            border-color: #34d399;
+            color: #059669;
+        }
+        .copy-btn svg { width: 12px; height: 12px; }
+
+        /* INPUT */
+        .input-section {
+            padding: 20px 0 0;
+            border-top: 1.5px solid rgba(184, 134, 11, 0.15);
+            margin-top: 4px;
+            position: relative;
+        }
+        .input-section::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--amber), transparent);
+            border-radius: 2px;
+            opacity: 0.5;
+        }
+        .input-wrapper {
+            display: flex;
+            gap: 12px;
+            align-items: flex-end;
+            background: white;
+            border: 1.5px solid var(--border);
+            border-radius: 16px;
+            padding: 6px 6px 6px 18px;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 2px 10px var(--shadow);
+        }
+        .input-wrapper:focus-within {
+            border-color: var(--amber);
+            box-shadow: 0 0 0 4px var(--warm-glow), 0 4px 24px var(--shadow-lg);
+        }
+        .input-wrapper textarea {
+            flex: 1;
+            padding: 10px 4px;
+            border: none;
+            background: transparent;
+            color: var(--text);
+            font-family: inherit;
+            font-size: 0.95rem;
+            resize: none;
+            min-height: 44px;
+            max-height: 150px;
+            line-height: 1.5;
+            outline: none;
+        }
+        .input-wrapper textarea::placeholder { color: var(--text-muted); }
+        .input-wrapper textarea:focus {
+            outline: none;
+            box-shadow: none;
+            animation: none;
+        }
+        .btn {
+            padding: 12px 22px;
+            border: none;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+        }
+
+        /* FILE UPLOAD */
+        .file-upload-area {
+            border: 2px dashed var(--border);
+            border-radius: 14px;
+            padding: 18px;
+            text-align: center;
+            background: var(--cream);
+            transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+            cursor: pointer;
+            margin-bottom: 14px;
+            position: relative;
+        }
+        .file-upload-area:hover,
+        .file-upload-area.dragover {
+            border-color: var(--gold);
+            background: linear-gradient(135deg, var(--gold-bg) 0%, #fffcf0 100%);
+            box-shadow: 0 4px 20px rgba(154,117,32,0.12);
+            transform: translateY(-1px);
+        }
+        .file-upload-area svg {
+            width: 28px;
+            height: 28px;
+            color: var(--gold);
+            margin-bottom: 8px;
+            transition: transform 0.3s ease;
+        }
+        .file-upload-area:hover svg {
+            transform: translateY(-2px);
+        }
+        .file-upload-area p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin: 0;
+        }
+        .file-upload-area .browse-text {
+            color: var(--gold);
+            font-weight: 600;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+        .file-preview {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            background: linear-gradient(135deg, var(--gold-bg) 0%, #fffcf0 100%);
+            border: 1px solid var(--gold);
+            border-radius: 12px;
+            margin-bottom: 14px;
+            box-shadow: 0 2px 8px rgba(154,117,32,0.08);
+        }
+        .file-preview .file-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--crimson);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .file-preview .file-icon svg {
+            width: 16px;
+            height: 16px;
+            color: white;
+        }
+        .file-preview .file-info {
+            flex: 1;
+            overflow: hidden;
+        }
+        .file-preview .file-name {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .file-preview .file-size {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+        .file-preview .remove-file {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 4px;
+            transition: background 0.2s;
+        }
+        .file-preview .remove-file:hover {
+            background: rgba(185, 28, 28, 0.1);
+        }
+        .file-preview .remove-file svg {
+            width: 16px;
+            height: 16px;
+            color: #b91c1c;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--crimson) 0%, #5a1020 100%);
+            color: white;
+            box-shadow: 0 4px 14px rgba(122, 26, 46, 0.3);
+            min-height: 44px;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 8px 24px rgba(122, 26, 46, 0.4);
+        }
+        .btn-primary:active { transform: translateY(0) scale(0.98); }
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        .btn-secondary {
+            background: white;
+            border: 1.5px solid var(--border);
+            color: var(--text-secondary);
+            box-shadow: 0 1px 4px rgba(44,24,16,0.04);
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-secondary:hover {
+            border-color: var(--gold);
+            color: var(--gold);
+            background: var(--gold-bg);
+            box-shadow: 0 4px 14px rgba(154,117,32,0.15);
+            transform: translateY(-1px);
+        }
+        .btn-secondary:active {
+            transform: translateY(0);
+        }
+        .actions {
+            margin-top: 14px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .btn svg { width: 16px; height: 16px; }
+        /* Send btn inside input wrapper — make it fill height */
+        .input-wrapper .btn-primary {
+            border-radius: 10px;
+            padding: 10px 20px;
+            min-height: 44px;
+        }
+        .input-wrapper .btn-primary svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        /* FOOTER */
+        .footer {
+            padding: 18px 32px;
+            text-align: center;
+            color: rgba(245, 230, 208, 0.5);
+            font-size: 0.8rem;
+            border-top: 1px solid rgba(184, 134, 11, 0.12);
+            background: rgba(31, 20, 16, 0.8);
+            backdrop-filter: blur(4px);
+        }
+        .footer a {
+            color: var(--gold-light);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.2s ease;
+        }
+        .footer a:hover {
+            color: var(--amber);
+            text-decoration: underline;
+        }
+
+        /* WELCOME */
+        .welcome {
+            text-align: center;
+            padding: 40px 24px 32px;
+            animation: fadeInUp 0.6s ease both;
+        }
+        .welcome-icon {
+            position: relative;
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--gold-bg) 0%, white 100%);
+            border: 2px solid var(--gold-light);
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            box-shadow: 0 4px 16px rgba(154,117,32,0.12);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .welcome-icon:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 24px rgba(154,117,32,0.2);
+        }
+        .welcome-icon::before {
+            content: '';
+            position: absolute;
+            inset: -3px;
+            border-radius: 27px;
+            background: linear-gradient(135deg, var(--gold-light), transparent, var(--crimson-bg));
+            z-index: -1;
+            opacity: 0.4;
+            animation: borderGlow 3s ease-in-out infinite;
+        }
+        .welcome-icon svg { width: 38px; height: 38px; }
+        .welcome h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            background: linear-gradient(135deg, var(--crimson) 0%, var(--amber) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+            letter-spacing: -0.3px;
+        }
+        .welcome > p {
+            max-width: 520px;
+            margin: 0 auto;
+            line-height: 1.7;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+        .welcome .scope {
+            margin-top: 28px;
+            padding: 22px 26px;
+            background: white;
+            border: 1px solid rgba(184, 134, 11, 0.15);
+            border-radius: 16px;
+            text-align: left;
+            max-width: 440px;
+            margin-left: auto;
+            margin-right: auto;
+            box-shadow: 0 4px 16px var(--shadow), 0 0 0 1px rgba(184, 134, 11, 0.04);
+            transition: box-shadow 0.3s ease, transform 0.3s ease;
+        }
+        .welcome .scope:hover {
+            box-shadow: 0 8px 28px var(--shadow-lg), 0 0 0 1px rgba(184, 134, 11, 0.08);
+            transform: translateY(-2px);
+        }
+        .welcome .scope h4 {
+            color: var(--gold);
+            margin-bottom: 12px;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 700;
+        }
+        .welcome .scope ul { list-style: none; }
+        .welcome .scope li {
+            padding: 5px 0;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .welcome .scope li svg { width: 16px; height: 16px; color: var(--gold); flex-shrink: 0; }
+        .suggested-questions {
+            margin-top: 28px;
+            max-width: 560px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .suggested-questions h4 {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--text-muted);
+            font-weight: 600;
+            margin-bottom: 14px;
+        }
+        .question-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+        .chip {
+            padding: 10px 20px;
+            background: white;
+            border: 1.5px solid var(--border);
+            border-radius: 24px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 1px 4px rgba(44,24,16,0.04);
+        }
+        .chip:hover {
+            border-color: var(--amber);
+            color: var(--amber);
+            background: linear-gradient(135deg, var(--gold-bg) 0%, #fffcf5 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 14px var(--warm-glow);
+        }
+
+        /* LOADING */
+        .loading {
+            display: none;
+            padding: 14px 20px;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            border-bottom-left-radius: 6px;
+            margin-bottom: 20px;
+            max-width: 220px;
+            box-shadow: 0 4px 16px var(--shadow);
+        }
+        .loading.active { 
+            display: flex; 
+            align-items: center; 
+            gap: 14px; 
+            animation: fadeInScale 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .loading-dots { display: flex; gap: 6px; }
+        .loading-dots span {
+            width: 10px;
+            height: 10px;
+            background: linear-gradient(135deg, var(--gold) 0%, var(--amber) 100%);
+            border-radius: 50%;
+            animation: bounce 1.4s infinite ease-in-out;
+            box-shadow: 0 1px 6px var(--warm-glow);
+        }
+        .loading-dots span:nth-child(1) { animation-delay: -0.32s; }
+        .loading-dots span:nth-child(2) { animation-delay: -0.16s; }
+        #loadingText {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--gold);
+        }
+        @keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        /* === ANIMATED ENHANCEMENTS === */
+        @keyframes breathe {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.85; }
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-6px); }
+        }
+        @keyframes floatSlow {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-4px) rotate(1deg); }
+            66% { transform: translateY(2px) rotate(-1deg); }
+        }
+        @keyframes shimmer {
+            0% { background-position: -200% center; }
+            100% { background-position: 200% center; }
+        }
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 2px 8px rgba(122, 26, 46, 0.25); }
+            50% { box-shadow: 0 2px 20px rgba(122, 26, 46, 0.45), 0 0 30px rgba(154, 117, 32, 0.15); }
+        }
+        @keyframes pulseGold {
+            0%, 100% { box-shadow: 0 2px 6px rgba(154, 117, 32, 0.35); }
+            50% { box-shadow: 0 2px 16px rgba(154, 117, 32, 0.55), 0 0 24px var(--warm-glow); }
+        }
+        @keyframes ripple {
+            from { transform: scale(0); opacity: 0.6; }
+            to { transform: scale(4); opacity: 0; }
+        }
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(30px) scale(0.97); }
+            to { opacity: 1; transform: translateX(0) scale(1); }
+        }
+        @keyframes slideInLeft {
+            from { opacity: 0; transform: translateX(-30px) scale(0.97); }
+            to { opacity: 1; transform: translateX(0) scale(1); }
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeInScale {
+            from { opacity: 0; transform: scale(0.92); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        @keyframes typingDot {
+            0%, 80%, 100% { transform: scale(0.4); opacity: 0.3; }
+            40% { transform: scale(1); opacity: 1; }
+        }
+        @keyframes glowPulse {
+            0%, 100% { filter: drop-shadow(0 0 4px var(--warm-glow)); }
+            50% { filter: drop-shadow(0 0 12px rgba(184, 134, 11, 0.4)); }
+        }
+        @keyframes borderGlow {
+            0%, 100% { border-color: var(--gold-light); box-shadow: 0 0 0 rgba(154, 117, 32, 0); }
+            50% { border-color: var(--amber); box-shadow: 0 0 12px rgba(184, 134, 11, 0.25); }
+        }
+        @keyframes sweepGradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        /* Pulse ring for status indicator */
+        @keyframes ringPulse {
+            0% { box-shadow: 0 0 0 0 rgba(6, 95, 70, 0.5); }
+            100% { box-shadow: 0 0 0 6px rgba(6, 95, 70, 0); }
+        }
+        @keyframes ringPulseAmber {
+            0% { box-shadow: 0 0 0 0 rgba(146, 64, 14, 0.5); }
+            100% { box-shadow: 0 0 0 6px rgba(146, 64, 14, 0); }
+        }
+        @keyframes ringPulseBlue {
+            0% { box-shadow: 0 0 0 0 rgba(30, 64, 175, 0.4); }
+            100% { box-shadow: 0 0 0 6px rgba(30, 64, 175, 0); }
+        }
+        .animate-breathe { animation: breathe 3s ease-in-out infinite; }
+        .animate-float { animation: float 4s ease-in-out infinite; }
+        .animate-float-slow { animation: floatSlow 6s ease-in-out infinite; }
+        .animate-shimmer {
+            background-size: 200% auto;
+            animation: shimmer 3s linear infinite;
+        }
+        .animate-pulse-glow { animation: pulseGlow 2s ease-in-out infinite; }
+        .animate-pulse-gold { animation: pulseGold 2.5s ease-in-out infinite; }
+        .animate-border-glow { animation: borderGlow 2s ease-in-out infinite; }
+        .animate-glow-pulse { animation: glowPulse 2.5s ease-in-out infinite; }
+        .animate-ring-pulse { animation: ringPulse 2s ease-in-out infinite; }
+        .animate-ring-pulse-amber { animation: ringPulseAmber 2s ease-in-out infinite; }
+        .animate-ring-pulse-blue { animation: ringPulseBlue 2s ease-in-out infinite; }
+
+        /* Message entrance animation overrides - applied directly in .message.user and .message.assistant */
+
+        /* Stagger entrance for welcome section children */
+        .welcome .welcome-icon { animation: fadeInScale 0.6s ease 0.1s both; }
+        .welcome h2 { animation: fadeInUp 0.5s ease 0.2s both; }
+        .welcome > p { animation: fadeInUp 0.5s ease 0.3s both; }
+        .welcome .scope { animation: fadeInUp 0.5s ease 0.4s both; }
+        .welcome .suggested-questions { animation: fadeInUp 0.5s ease 0.5s both; }
+
+        /* Chip enhancements */
+        .chip {
+            position: relative;
+            overflow: hidden;
+        }
+        .chip::after {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            border-radius: 22px;
+            background: linear-gradient(135deg, var(--gold), var(--crimson), var(--gold));
+            background-size: 300% 300%;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            animation: sweepGradient 3s ease infinite;
+        }
+        .chip:hover::after {
+            opacity: 1;
+        }
+
+        /* Ripple container for buttons */
+        .ripple-btn {
+            position: relative;
+            overflow: hidden;
+        }
+        .ripple-effect {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.4);
+            transform: scale(0);
+            animation: ripple 0.6s ease-out;
+            pointer-events: none;
+        }
+
+        /* Floating particles canvas */
+        #particleCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* Ensure content sits above canvas */
+        .header, .api-section, #personalKeySection, .chat-container, .footer {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* PERSONAL KEY SECTION - integrated card style */
+        #personalKeySection {
+            background: linear-gradient(135deg, #fffcf5 0%, #fdf6e8 100%);
+            backdrop-filter: blur(6px);
+            border: 1.5px solid rgba(184, 134, 11, 0.2);
+            border-radius: 14px;
+            margin: 10px 32px 0;
+            padding: 10px 18px 14px;
+            box-shadow: 0 2px 16px var(--shadow);
+        }
+        #personalKeySection input {
+            padding: 8px 12px;
+            border: 1.5px solid var(--border);
+            border-radius: 10px;
+            background: white;
+            color: var(--text);
+            font-size: 0.85rem;
+            font-family: monospace;
+            transition: border-color 0.25s ease, box-shadow 0.25s ease;
+        }
+        #personalKeySection input:focus {
+            outline: none;
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(200, 162, 78, 0.12);
+        }
+        #personalKeySection button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 10px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        #personalKeySection button:first-of-type {
+            background: linear-gradient(135deg, var(--gold) 0%, #7a5c10 100%);
+            color: white;
+            box-shadow: 0 2px 8px rgba(154,117,32,0.25);
+        }
+        #personalKeySection button:first-of-type:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 16px rgba(154,117,32,0.35);
+        }
+        #personalKeySection button:last-of-type {
+            background: white;
+            border: 1.5px solid var(--border);
+            color: var(--text-muted);
+        }
+        #personalKeySection button:last-of-type:hover {
+            border-color: #b91c1c;
+            color: #b91c1c;
+            background: #fff5f5;
+        }
+
+        /* Typewriter cursor blink */
+        .typewriter-cursor::after {
+            content: '|';
+            animation: blink 0.8s step-end infinite;
+            color: var(--gold);
+            font-weight: 300;
+        }
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        /* Send button enhanced */
+        #sendBtn:not(:disabled) {
+            animation: pulseGlow 3s ease-in-out infinite;
+            background: linear-gradient(135deg, var(--crimson) 0%, #5a1020 25%, #8a1e36 50%, var(--crimson) 75%, #5a1020 100%);
+            background-size: 300% 300%;
+            animation: pulseGlow 3s ease-in-out infinite, shimmer 4s linear infinite;
+        }
+        #sendBtn:not(:disabled):hover {
+            animation: shimmer 2s linear infinite !important;
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 6px 24px rgba(122, 26, 46, 0.45), 0 0 40px rgba(154, 117, 32, 0.15), 0 0 60px var(--warm-glow);
+        }
+        #sendBtn:not(:disabled):active {
+            transform: translateY(0) scale(0.97);
+        }
+
+        /* File upload area glow on drag */
+        .file-upload-area.dragover {
+            animation: borderGlow 0.6s ease-in-out infinite;
+        }
+
+        /* Loading indicator enhancement */
+        .loading.active {
+            animation: fadeInScale 0.3s ease;
+        }
+        .loading-dots span {
+            animation: typingDot 1.4s infinite ease-in-out;
+        }
+
+        /* SCROLLBAR */
+        .messages::-webkit-scrollbar { width: 6px; }
+        .messages::-webkit-scrollbar-track { background: transparent; }
+        .messages::-webkit-scrollbar-thumb { background: var(--gold-light); border-radius: 3px; transition: background 0.2s; }
+        .messages::-webkit-scrollbar-thumb:hover { background: var(--amber); }
+
+        /* Mode exit indicator — elegant × on active mode */
+        .mode-exit {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 18px;
+            height: 18px;
+            margin-left: 6px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            font-size: 14px;
+            font-weight: 600;
+            line-height: 1;
+            transition: background 0.2s ease, transform 0.2s ease;
+            cursor: pointer;
+            vertical-align: middle;
+        }
+        .mode-exit:hover {
+            background: rgba(255,255,255,0.4);
+            transform: scale(1.15);
+        }
+
+        /* Mode toggle buttons - base hover */
+        #essayToggle:hover,
+        #sermonToggle:hover,
+        #bibleStudyToggle:hover {
+            transform: translateY(-1px);
+        }
+        #essayToggle:hover {
+            box-shadow: 0 3px 14px var(--shadow-lg), 0 0 0 2px var(--warm-glow);
+            transform: translateY(-1px);
+        }
+        #sermonToggle:hover {
+            box-shadow: 0 3px 14px var(--shadow-lg), 0 0 0 2px rgba(122,26,46,0.15);
+            transform: translateY(-1px);
+        }
+        #bibleStudyToggle:hover {
+            box-shadow: 0 3px 14px var(--shadow-lg), 0 0 0 2px rgba(45,106,79,0.15);
+            transform: translateY(-1px);
+        }
+        #essayToggle {
+            border-left: 4px solid var(--gold);
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            font-weight: 600;
+            background: linear-gradient(135deg, white, var(--cream));
+        }
+        #sermonToggle {
+            border-left: 4px solid var(--crimson);
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            font-weight: 600;
+            background: linear-gradient(135deg, white, var(--cream));
+        }
+        #bibleStudyToggle {
+            border-left: 4px solid var(--green);
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            font-weight: 600;
+            background: linear-gradient(135deg, white, var(--cream));
+        }
+
+        /* Mode section label */
+        .mode-toggle-label {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            font-weight: 700;
+            margin-top: 14px;
+            margin-bottom: 6px;
+            user-select: none;
+        }
+
+        /* Mode hint — elegant toggle instruction */
+        .mode-hint {
+            text-align: center;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            letter-spacing: 0.3px;
+            margin-top: 10px;
+            padding: 4px 0;
+            opacity: 0.6;
+            transition: opacity 0.4s ease, color 0.4s ease;
+            user-select: none;
+        }
+        .mode-hint.active {
+            opacity: 0.9;
+            color: var(--gold);
+            font-weight: 500;
+        }
+        .mode-hint.sermon-active {
+            color: var(--crimson);
+        }
+        .mode-hint.bible-active {
+            color: var(--green);
+        }
+
+        /* Clear history button subtle refinement */
+        .actions .btn-secondary:last-child:hover svg {
+            animation: float 1.5s ease-in-out infinite;
+        }
+
+        /* Key badge entrance */
+        #personalKeyBadge {
+            animation: fadeInScale 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* Home button glow on hover */
+        .header-inner > a[href="../index.html"]:hover svg {
+            animation: float 1.5s ease-in-out infinite;
+        }
+
+        /* Page entrance */
+        .header { animation: fadeInUp 0.5s ease both; }
+        .api-section { animation: fadeInUp 0.5s ease 0.1s both; }
+        #personalKeySection { animation: fadeInUp 0.5s ease 0.15s both; }
+        .chat-container { animation: fadeInUp 0.5s ease 0.2s both; }
+        .footer { animation: fadeInUp 0.5s ease 0.3s both; }
+
+        @media (max-width: 640px) {
+            .header { padding: 16px 20px; }
+            .api-section { padding: 12px 20px; }
+            .chat-container { padding: 16px 20px; }
+            .message { max-width: 92%; padding: 14px 16px; }
+            .welcome h2 { font-size: 1.3rem; }
+            .download-bar { padding: 6px 12px; }
+            .download-bar-btn { width: 26px; height: 26px; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Ambient warm glow background -->
+    <div class="ambient-glow" aria-hidden="true"></div>
+    <!-- Warm vignette overlay -->
+    <div class="vignette-overlay" aria-hidden="true"></div>
+    <!-- Animated particle canvas background -->
+    <canvas id="particleCanvas"></canvas>
+    <div class="header">
+        <div class="header-inner">
+            <a href="../index.html" class="header-mark" aria-label="Home">W</a>
+            <div class="header-text">
+                <h1>Adventist Theology &amp; Christian Philosophy</h1>
+                <p>Ask questions about Adventist doctrines, Ellen G. White, Christian philosophers, and philosophy of religion.</p>
+            </div>
+            <a href="../index.html" style="text-decoration:none;display:inline-flex;align-items:center;gap:6px;padding:7px 14px;background:rgba(255,255,255,0.08);color:rgba(245,230,208,0.85);border-radius:8px;font-size:0.8rem;font-weight:500;transition:all 0.25s;border:1px solid rgba(255,255,255,0.08);flex-shrink:0;white-space:nowrap;" onmouseover="this.style.background='rgba(255,255,255,0.15)';this.style.color='white'" onmouseout="this.style.background='rgba(255,255,255,0.08)';this.style.color='rgba(245,230,208,0.85)'">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+                Home
+            </a>
+        </div>
+    </div>
+
+    <div class="api-section">
+        <div class="api-inner">
+            <label for="modelProvider" style="font-size:0.85rem;font-weight:600;color:var(--text-secondary);white-space:nowrap;">Select Model:</label>
+            <select id="modelProvider" onchange="handleModelChange(this.value)">
+                <option value="gemini" selected>Gemini (Cloud Worker) — Primary</option>
+                <option value="gemini-direct">Gemini (Your Key) — Fallback</option>
+                <option value="ollama">Ollama (Local)</option>
+            </select>
+            <span id="geminiStatus">Ready</span>
+            <small id="apiHint" style="font-size:0.78rem;color:var(--text-muted);margin-left:4px;flex:1;">Primary API — Uses shared Cloudflare Worker with Gemini, Groq & OpenRouter fallbacks.</small>
+        </div>
+        <div id="ollamaControls" style="display:none;max-width:900px;margin:6px auto 0;padding:0 32px 4px;">
+            <span style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+                <label for="ollamaUrl" style="font-size:0.82rem;color:var(--text-secondary);">URL:</label>
+                <input type="text" id="ollamaUrl" placeholder="https://localhost:8443" value="https://localhost:8443" style="flex:1;min-width:160px;padding:7px 10px;border:1px solid var(--border);border-radius:6px;font-size:0.85rem;background:var(--cream);color:var(--text);" oninput="checkOllama()">
+                <label for="ollamaModel" style="font-size:0.82rem;color:var(--text-secondary);">Model:</label>
+                <select id="ollamaModel" style="min-width:150px;padding:7px 10px;border:1px solid var(--border);border-radius:6px;font-size:0.85rem;background:white;color:var(--text);cursor:pointer;">
+                    <option value="">Loading...</option>
+                </select>
+                <span id="ollamaStatus" style="font-size:0.78rem;padding:3px 8px;border-radius:10px;font-weight:600;"></span>
+            </span>
+        </div>
+    </div>
+
+    <div id="personalKeySection" style="background:white;border-bottom:1px solid var(--border);padding:10px 32px 16px;">
+        <div style="max-width:900px;margin:0 auto;">
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="var(--text-muted)" stroke-width="2" style="flex-shrink:0;"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                <span id="personalKeyLabel" style="font-size:0.82rem;color:var(--text-muted);font-weight:500;">Secondary API Key (Gemini)</span>
+                <span id="personalKeyBadge" style="display:none;font-size:0.7rem;padding:2px 8px;border-radius:8px;font-weight:600;background:#d1fae5;color:#065f46;">Active</span>
+                <div style="flex:1;min-width:200px;display:flex;gap:6px;">
+                    <input type="password" id="personalApiKey" placeholder="AIzaSy... or AQ..." style="flex:1;padding:7px 10px;border:1px solid var(--border);border-radius:6px;background:var(--cream);color:var(--text);font-size:0.82rem;font-family:monospace;transition:border-color 0.2s;" onfocus="this.style.borderColor='var(--gold)';this.style.boxShadow='0 0 0 3px rgba(200,162,78,0.15)'" onblur="this.style.borderColor='var(--border)';this.style.boxShadow='none'">
+                    <button onclick="savePersonalKey()" style="padding:7px 14px;background:linear-gradient(135deg,var(--gold) 0%,#7a5c10 100%);color:white;border:none;border-radius:6px;font-size:0.82rem;font-weight:600;cursor:pointer;white-space:nowrap;box-shadow:0 2px 6px rgba(154,117,32,0.3);transition:all 0.2s;">Save</button>
+                    <button onclick="clearPersonalKey()" style="padding:7px 10px;background:white;border:1px solid var(--border);border-radius:6px;font-size:0.82rem;color:var(--text-muted);cursor:pointer;transition:all 0.2s;">Clear</button>
+                </div>
+                <a href="https://aistudio.google.com/apikey" target="_blank" style="font-size:0.78rem;color:var(--gold);font-weight:600;text-decoration:none;white-space:nowrap;">Get free key &rarr;</a>
+            </div>
+            <p id="personalKeyMsg" style="font-size:0.75rem;margin:6px 0 0 22px;display:none;"></p>
+        </div>
+    </div>
+
+    <div class="chat-container">
+        <div class="messages" id="messages">
+            <button class="scroll-bottom-btn" id="scrollBottomBtn" onclick="scrollToBottom()" title="Scroll to bottom" aria-label="Scroll to bottom">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="4" x2="12" y2="20"/><polyline points="18 14 12 20 6 14"/></svg>
+            </button>
+            <div class="welcome" id="welcome">
+                <div class="welcome-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#7a1a2e" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+                        <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+                    </svg>
+                </div>
+                <h2>Welcome</h2>
+                <p>This agent specializes in Adventist theology and Christian philosophy. Ask questions about Ellen White, the investigative judgment, the sanctuary doctrine, Augustine, Aquinas, Kierkegaard, C.S. Lewis, or any topic in these domains.</p>
+                <div class="scope">
+                    <h4>In Scope</h4>
+                    <ul>
+                        <li>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                            Adventist theology &amp; doctrines
+                        </li>
+                        <li>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                            Ellen G. White's prophetic ministry
+                        </li>
+                        <li>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                            Christian philosophy &amp; philosophers
+                        </li>
+                        <li>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                            Philosophy of religion
+                        </li>
+                        <li>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                            Christian ethics &amp; apologetics
+                        </li>
+                    </ul>
+                </div>
+                <div class="suggested-questions">
+                    <h4>Try asking</h4>
+                    <div class="question-chips">
+                        <div class="chip" onclick="askQuestion(this)">What is the investigative judgment?</div>
+                        <div class="chip" onclick="askQuestion(this)">How did Augustine view original sin?</div>
+                        <div class="chip" onclick="askQuestion(this)">Does Aquinas's Five Ways still work?</div>
+                        <div class="chip" onclick="askQuestion(this)">What is the great controversy theme?</div>
+                        <div class="chip" onclick="askQuestion(this)">Kierkegaard on faith and reason</div>
+                        <div class="chip" onclick="askQuestion(this)">C.S. Lewis's argument from desire</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="loading" id="loading">
+                <div class="loading-dots">
+                    <span></span><span></span><span></span>
+                </div>
+                <span id="loadingText" style="color: var(--text-muted); font-size: 0.85rem;">Thinking...</span>
+            </div>
+        </div>
+
+        <div id="downloadBar" class="download-bar" style="display:none;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            <span id="downloadBarLabel" class="download-bar-label">Sermon ready</span>
+            <span class="download-bar-actions">
+                <button id="downloadMdBtn" class="download-bar-btn download-bar-btn-md" onclick="downloadAsMarkdown()" title="Download as Markdown (.md)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    <span class="download-bar-btn-label">.md</span>
+                </button>
+                <button id="downloadBtn" class="download-bar-btn" onclick="downloadAsDoc()" title="Download as Word (.doc)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    <span class="download-bar-btn-label">Word</span>
+                </button>
+            </span>
+        </div>
+
+        <div class="input-section">
+            <div class="file-upload-area" id="fileUploadArea">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="17 8 12 3 7 8"/>
+                    <line x1="12" y1="3" x2="12" y2="15"/>
+                </svg>
+                <p>Drag & drop a file here or <span class="browse-text" onclick="document.getElementById('fileInput').click()">browse</span></p>
+                <p style="font-size:0.75rem;margin-top:4px;">Supports: .txt, .md, .doc, .docx, .pdf, .jpg, .png, .gif</p>
+            </div>
+            <input type="file" id="fileInput" style="display:none" accept=".txt,.md,.doc,.docx,.pdf,.jpg,.jpeg,.png,.gif">
+            <div id="filePreview" class="file-preview" style="display:none;">
+                <div class="file-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                        <polyline points="14 2 14 8 20 8"/>
+                    </svg>
+                </div>
+                <div class="file-info">
+                    <div class="file-name" id="fileName">filename.txt</div>
+                    <div class="file-size" id="fileSize">0 KB</div>
+                </div>
+                <button class="remove-file" onclick="removeFile()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"/>
+                        <line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="input-wrapper">
+                <textarea id="userInput" placeholder="Ask about Adventist theology or Christian philosophy..." rows="2"></textarea>
+                <button class="btn btn-primary" id="sendBtn" onclick="sendMessage()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                    Send
+                </button>
+            </div>
+            <div class="mode-toggle-label">Toggle on &amp; off mode</div>
+            <div class="actions">
+                <button id="essayToggle" class="btn btn-secondary" onclick="toggleEssayMode()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                    Essay Mode
+                </button>
+                <button id="sermonToggle" class="btn btn-secondary" onclick="toggleSermonMode()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    Sermon Mode
+                </button>
+                <button id="bibleStudyToggle" class="btn btn-secondary" onclick="toggleBibleStudyMode()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/><line x1="12" y1="3" x2="12" y2="15"/><line x1="8" y1="15" x2="16" y2="15"/></svg>
+                    Bible Study
+                </button>
+                <button class="btn btn-secondary" onclick="clearChat()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+                    Clear History
+                </button>
+            </div>
+            <div class="mode-hint" id="modeHint">Click a mode to begin · Click again to clear</div>
+        </div>
+    </div>
+
+<div class="footer">
+        <p>Built by <a href="https://www.youtube.com/@paulos1844" target="_blank">WhatIfWeBelieved</a> · Primary: Gemini API · Fallbacks: Groq & OpenRouter</p>
+    </div>
+
+    <script type="module">
+        const WORKER_URL = 'https://weathered-bar-381f.wentlandwordsworth.workers.dev';
+
+        const SYSTEM_PROMPT = `You are a research agent specialized exclusively in Adventist theology and Christian philosophy (including philosophy of religion, Christian ethics, and the history of Christian thought).
+
+Scope rules:
+- Only engage with questions in Adventist theology and Christian philosophy. If asked about something outside this domain (coding, medicine, current events, pop culture, other religious traditions, etc.), decline briefly and say this agent is scoped to Adventist theology and Christian philosophy only.
+- Adventist theology includes: the investigative judgment, the sanctuary doctrine, the great controversy theme, Sabbath theology, the state of the dead, conditional immortality, the gifts of the Spirit, Ellen G. White's prophetic ministry, Seventh-day Adventist doctrines and beliefs.
+- Christian philosophy includes: Christian philosophers from the early church to modern era (e.g. Augustine, Aquinas, Kierkegaard, C.S. Lewis, Alvin Plantinga, William Lane Craig, Nicholas Wolterstorff), philosophy of religion, Christian epistemology, ethics and moral philosophy grounded in Christian tradition.
+
+File handling rules:
+- When users upload files (text, images, PDFs), analyze them within the context of Adventist theology and Christian philosophy.
+- For text files: Read and analyze the content, providing theological insights or philosophical commentary as appropriate.
+- For images: Describe what you see and relate it to theological or philosophical themes if possible.
+- For PDFs: Analyze the document content and provide relevant theological or philosophical analysis.
+- Always stay within your domain scope when analyzing uploaded files.
+
+Reasoning rules:
+- You are explicitly allowed to infer: synthesize positions across thinkers or traditions, extend an argument to a case its author didn't address, point out a tension a text implies but doesn't state, or offer your own reasoned judgment about which argument is stronger.
+- Clearly distinguish inference from established fact. Use plain signaling like "Ellen White argues X" or "Augustine writes Y" (textual claim) versus "it follows from this that Z" or "one could infer" or "my read is" (your inference).
+- Represent live scholarly and doctrinal disagreements fairly within Adventism and Christian philosophy.
+- Cite thinkers, texts, and traditions by name where relevant.
+- When discussing Adventist theology, engage with official Seventh-day Adventist doctrines (e.g. 28 Fundamental Beliefs) as well as historical and contemporary Adventist scholarship.`;
+
+        let chat = null;
+        let conversationHistory = [];
+        let isLoading = false;
+        let selectedFile = null;
+        let fileContent = null;
+        let currentProvider = 'gemini';
+        let personalKey = localStorage.getItem('wwb_personal_gemini_key') || '';
+        let essayMode = false;
+        let sermonMode = false;
+        let bibleStudyMode = false;
+        let lastSermonContent = null;
+        let lastEssayContent = null;
+        let lastBibleStudyContent = null;
+
+        // Helper to determine if a file should be treated as text
+        function isTextFile(file) {
+            return file.type.startsWith('text/') ||
+                   ['.txt', '.md'].some(ext => file.name.toLowerCase().endsWith(ext));
+        }
+
+        const messagesDiv = document.getElementById('messages');
+        const scrollBottomBtn = document.getElementById('scrollBottomBtn');
+        const userInput = document.getElementById('userInput');
+        const sendBtn = document.getElementById('sendBtn');
+        const loading = document.getElementById('loading');
+        const welcome = document.getElementById('welcome');
+        const fileInput = document.getElementById('fileInput');
+        const fileUploadArea = document.getElementById('fileUploadArea');
+        const filePreview = document.getElementById('filePreview');
+        const ollamaControls = document.getElementById('ollamaControls');
+        const ollamaStatus = document.getElementById('ollamaStatus');
+        const apiHint = document.getElementById('apiHint');
+
+        // Scroll-to-bottom logic
+        function scrollToBottom() {
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+        messagesDiv.addEventListener('scroll', function() {
+            const threshold = 150;
+            const isNearBottom = messagesDiv.scrollHeight - messagesDiv.scrollTop - messagesDiv.clientHeight < threshold;
+            scrollBottomBtn.classList.toggle('visible', !isNearBottom);
+        });
+
+        async function checkOllama() {
+            const baseUrl = document.getElementById('ollamaUrl').value.trim() || 'https://localhost:8443';
+            const modelSelect = document.getElementById('ollamaModel');
+            try {
+                const res = await fetch(baseUrl + '/api/tags', { method: 'GET' });
+                if (res.ok) {
+                    const data = await res.json();
+                    const models = data.models || [];
+                    modelSelect.innerHTML = '';
+                    models.forEach(function(m) {
+                        const opt = document.createElement('option');
+                        opt.value = m.name;
+                        const sizeGB = (m.size / (1024*1024*1024)).toFixed(1);
+                        opt.textContent = m.name + ' (' + sizeGB + ' GB)';
+                        modelSelect.appendChild(opt);
+                    });
+                    ollamaStatus.textContent = 'Connected (' + models.length + ' models)';
+                    ollamaStatus.style.background = '#d1fae5';
+                    ollamaStatus.style.color = '#065f46';
+                    return true;
+                }
+            } catch (e) {}
+            modelSelect.innerHTML = '<option value="">No models found</option>';
+            ollamaStatus.textContent = 'Not running';
+            ollamaStatus.style.background = '#fee2e2';
+            ollamaStatus.style.color = '#991b1b';
+            return false;
+        }
+
+        window.handleModelChange = function(provider) {
+            currentProvider = provider;
+            chat = null;
+            conversationHistory = [];
+            const status = document.getElementById('geminiStatus');
+
+
+            if (provider === 'gemini') {
+                ollamaControls.style.display = 'none';
+                status.style.display = '';
+                status.textContent = 'Worker';
+                status.style.background = '#dbeafe';
+                status.style.color = '#1e40af';
+                apiHint.textContent = 'Primary API — Uses shared Cloudflare Worker with Gemini, Groq & OpenRouter fallbacks.';
+            } else if (provider === 'gemini-direct') {
+                ollamaControls.style.display = 'none';
+                status.style.display = '';
+                if (personalKey) {
+                    status.textContent = 'Direct (your key)';
+                    status.style.background = '#d1fae5';
+                    status.style.color = '#065f46';
+                } else {
+                    status.textContent = 'Key required';
+                    status.style.background = '#fef3c7';
+                    status.style.color = '#92400e';
+                }
+                apiHint.textContent = 'Fallback API — Uses your own Gemini API key directly from the browser. No backend needed. Get a free key below.';
+            } else if (provider === 'ollama') {
+                ollamaControls.style.display = '';
+                status.style.display = 'none';
+                apiHint.textContent = 'Connects via CORS proxy (start-proxy.bat). For remote access, use a Cloudflare tunnel URL.';
+                checkOllama();
+            }
+        };
+
+        // File upload handling
+        fileUploadArea.addEventListener('click', function() {
+            fileInput.click();
+        });
+
+        fileUploadArea.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            this.classList.add('dragover');
+        });
+
+        fileUploadArea.addEventListener('dragleave', function(e) {
+            e.preventDefault();
+            this.classList.remove('dragover');
+        });
+
+        fileUploadArea.addEventListener('drop', function(e) {
+            e.preventDefault();
+            this.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                handleFile(files[0]);
+            }
+        });
+
+        fileInput.addEventListener('change', function() {
+            if (this.files.length > 0) {
+                handleFile(this.files[0]);
+            }
+        });
+
+        function handleFile(file) {
+            selectedFile = file;
+            const fileName = document.getElementById('fileName');
+            const fileSize = document.getElementById('fileSize');
+            
+            fileName.textContent = file.name;
+            fileSize.textContent = formatFileSize(file.size);
+            fileUploadArea.style.display = 'none';
+            filePreview.style.display = 'flex';
+
+            const reader = new FileReader();
+            if (isTextFile(file)) {
+                reader.readAsText(file);
+            } else {
+                reader.readAsDataURL(file);
+            }
+            reader.onload = function(e) {
+                fileContent = e.target.result;
+            };
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes < 1024) return bytes + ' B';
+            if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+            return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+        }
+
+        function removeFile() {
+            selectedFile = null;
+            fileContent = null;
+            fileInput.value = '';
+            fileUploadArea.style.display = 'block';
+            filePreview.style.display = 'none';
+        }
+
+        async function callWorker(message, history) {
+            const body = {
+                message: message,
+                history: history
+            };
+            if (selectedFile && fileContent) {
+                body.fileContent = fileContent;
+                body.fileName = selectedFile.name;
+            }
+            if (personalKey) body.userApiKey = personalKey;
+            if (essayMode) body.essayMode = true;
+            if (sermonMode) body.sermonMode = true;
+            if (bibleStudyMode) body.bibleStudyMode = true;
+
+            const res = await fetch(WORKER_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+            });
+            if (!res.ok) {
+                let errorMsg = 'Worker error (HTTP ' + res.status + ')';
+                try {
+                    const err = await res.json();
+                    errorMsg = err.error || err.details || errorMsg;
+                } catch (e) {}
+                throw new Error(errorMsg);
+            }
+            return res;
+        }
+
+        async function callOllama(message, history) {
+            const baseUrl = document.getElementById('ollamaUrl').value.trim() || 'https://localhost:8443';
+            const modelName = document.getElementById('ollamaModel').value;
+            const messages = [
+                { role: 'system', content: SYSTEM_PROMPT },
+                ...history.map(h => [
+                    { role: 'user', content: h.user },
+                    { role: 'assistant', content: h.assistant }
+                ]).flat(),
+                { role: 'user', content: message }
+            ];
+
+            const response = await fetch(baseUrl + '/v1/chat/completions', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    model: modelName,
+                    messages: messages,
+                    stream: false
+                })
+            });
+
+            if (!response.ok) {
+                let errorMsg = 'Ollama error (HTTP ' + response.status + ')';
+                try {
+                    const errText = await response.text();
+                    try {
+                        const err = JSON.parse(errText);
+                        errorMsg = err.error?.message || err.error || errText || errorMsg;
+                    } catch (e) {
+                        errorMsg = errText || errorMsg;
+                    }
+                } catch (e) {}
+                throw new Error(errorMsg);
+            }
+
+            const data = await response.json();
+            return data.choices[0].message.content;
+        }
+
+        async function callGeminiDirect(message, history, fileInfo) {
+            const key = personalKey;
+            if (!key) throw new Error('No personal API key set');
+
+            const contents = [];
+            for (const h of history) {
+                contents.push({ role: 'user', parts: [{ text: h.user }] });
+                contents.push({ role: 'model', parts: [{ text: h.assistant }] });
+            }
+            const parts = [{ text: message }];
+            if (fileInfo) {
+                parts.push({
+                    inlineData: {
+                        mimeType: fileInfo.mimeType,
+                        data: fileInfo.data
+                    }
+                });
+            }
+            contents.push({ role: 'user', parts: parts });
+
+            const models = ['gemini-2.0-flash', 'gemini-2.0-flash-lite', 'gemini-1.5-flash', 'gemini-1.5-flash-8b'];
+            let lastError = null;
+
+            for (const model of models) {
+                const url = 'https://generativelanguage.googleapis.com/v1beta/models/' + model + ':generateContent?key=' + encodeURIComponent(key);
+                try {
+                    const res = await fetch(url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            systemInstruction: {
+                                role: 'user',
+                                parts: [{ text: SYSTEM_PROMPT }]
+                            },
+                            contents: contents,
+                            generationConfig: {
+                                temperature: 0.7,
+                                maxOutputTokens: essayMode || sermonMode || bibleStudyMode ? 8192 : 4096,
+                                topK: 40,
+                                topP: 0.95
+                            },
+                            safetySettings: [
+                                { category: 'HARM_CATEGORY_HARASSMENT', threshold: 'BLOCK_NONE' },
+                                { category: 'HARM_CATEGORY_HATE_SPEECH', threshold: 'BLOCK_NONE' },
+                                { category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT', threshold: 'BLOCK_NONE' },
+                                { category: 'HARM_CATEGORY_DANGEROUS_CONTENT', threshold: 'BLOCK_NONE' }
+                            ]
+                        })
+                    });
+
+                    if (res.ok) {
+                        const data = await res.json();
+                        const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+                        if (!text) throw new Error('Empty response from Gemini');
+                        return { text: text, provider: 'gemini' };
+                    }
+
+                    const errBody = await res.text();
+                    let errMsg = 'Gemini API error (HTTP ' + res.status + ')';
+                    try {
+                        const err = JSON.parse(errBody);
+                        errMsg = err.error?.message || errMsg;
+                    } catch (e) { errMsg = errBody || errMsg; }
+
+                    if (res.status === 404 || (errMsg && errMsg.includes('not found'))) {
+                        lastError = new Error(errMsg);
+                        continue;
+                    }
+                    throw new Error(errMsg);
+                } catch (e) {
+                    lastError = e;
+                    if (e.message && (e.message.includes('Failed to fetch') || e.message.includes('NetworkError'))) {
+                        throw e;
+                    }
+                }
+            }
+            throw lastError || new Error('All Gemini models failed');
+        }
+
+        userInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        userInput.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = Math.min(this.scrollHeight, 150) + 'px';
+        });
+
+        function askQuestion(chip) {
+            userInput.value = chip.textContent;
+            userInput.focus();
+            sendMessage();
+        }
+
+        async function sendMessage() {
+            const message = userInput.value.trim();
+
+            if ((!message && !selectedFile) || isLoading) return;
+
+            if (currentProvider === 'gemini' && WORKER_URL === 'https://YOUR-WORKER-NAME.workers.dev') {
+                addMessage('The Cloudflare Worker is not deployed. Switch to "Gemini (Your Key)" and add your own API key below, or deploy the worker and update WORKER_URL.', 'error');
+                return;
+            }
+            if (currentProvider === 'gemini-direct' && !personalKey) {
+                addMessage('Please add your Gemini API key in the "Use your own API key" section below the model selector. Get a free key at <a href="https://aistudio.google.com/apikey" target="_blank" style="color:var(--gold);font-weight:600;">Google AI Studio</a>.', 'error');
+                return;
+            }
+
+            if (welcome) welcome.style.display = 'none';
+
+            let fullMessage = message;
+            const isBinaryFile = selectedFile && !isTextFile(selectedFile);
+            
+            if (selectedFile && fileContent) {
+                if (!isBinaryFile) {
+                    fullMessage = message ? `${message}\n\n--- File Content (${selectedFile.name}) ---\n${fileContent}` : `Please analyze the following file (${selectedFile.name}):\n\n${fileContent}`;
+                } else {
+                    const fileType = selectedFile.type.startsWith('image/') ? 'image' : selectedFile.type === 'application/pdf' ? 'PDF document' : 'document';
+                    fullMessage = message || `Please analyze this ${fileType}.`;
+                }
+            }
+
+            const displayMessage = message || (selectedFile ? `[File: ${selectedFile.name}]` : '');
+            addMessage(displayMessage, 'user');
+            userInput.value = '';
+            userInput.style.height = 'auto';
+
+            isLoading = true;
+            sendBtn.disabled = true;
+            loading.classList.add('active');
+            document.getElementById('loadingText').textContent = essayMode ? 'Writing essay...' : sermonMode ? 'Writing sermon...' : bibleStudyMode ? 'Preparing Bible study...' : 'Thinking...';
+
+            try {
+                let responseText;
+                let essayMarkdown = null;
+                
+                if (currentProvider === 'gemini-direct') {
+                    let fileInfo = null;
+                    if (selectedFile && fileContent && (selectedFile.type.startsWith('image/') || selectedFile.type === 'application/pdf')) {
+                        const dataParts = fileContent.split(',');
+                        fileInfo = { mimeType: selectedFile.type, data: dataParts[1] };
+                    }
+                    const directResult = await callGeminiDirect(fullMessage, conversationHistory, fileInfo);
+                    responseText = directResult.text;
+                } else if (currentProvider === 'gemini') {
+                    const res = await callWorker(fullMessage, conversationHistory);
+                    const data = await res.json();
+                    responseText = data.text;
+                    essayMarkdown = data.essay || null;
+                    if (data.provider && data.provider !== 'gemini') {
+                        responseText = '> *Powered by ' + data.provider.charAt(0).toUpperCase() + data.provider.slice(1) + '*\n\n' + responseText;
+                    }
+                } else if (currentProvider === 'ollama') {
+                    responseText = await callOllama(fullMessage, conversationHistory);
+                }
+
+                if (sermonMode) {
+                    lastSermonContent = essayMarkdown || responseText;
+                    showDownloadBar('Sermon ready', true);
+                } else if (essayMode && essayMarkdown) {
+                    lastEssayContent = essayMarkdown;
+                    showDownloadBar('Essay ready', false);
+                } else if (essayMode) {
+                    lastEssayContent = responseText;
+                    showDownloadBar('Essay ready', false);
+                } else if (bibleStudyMode && essayMarkdown) {
+                    lastBibleStudyContent = essayMarkdown;
+                    showDownloadBar('Bible study ready', false);
+                } else if (bibleStudyMode) {
+                    lastBibleStudyContent = responseText;
+                    showDownloadBar('Bible study ready', false);
+                }
+
+                addMessage(responseText, 'assistant', essayMarkdown);
+                conversationHistory.push({ user: fullMessage, assistant: responseText });
+            } catch (error) {
+                const msg = error.message || '';
+                if (currentProvider === 'gemini-direct') {
+                    if (msg.includes('quota') || msg.includes('429') || msg.includes('RESOURCE_EXHAUSTED')) {
+                        addMessage('Your API key hit its rate limit. Switch to "Gemini (Cloud Worker)" for shared quota, or try again later.', 'error');
+                    } else if (msg.includes('API key not valid')) {
+                        addMessage('Your personal API key is invalid. Please check it in the "Use your own API key" section and make sure you copied it correctly from <a href="https://aistudio.google.com/apikey" target="_blank" style="color:var(--gold);font-weight:600;">Google AI Studio</a>.', 'error');
+                    } else if (msg.includes('API key expired')) {
+                        addMessage('Your personal API key has expired. Please create a new one at <a href="https://aistudio.google.com/apikey" target="_blank" style="color:var(--gold);font-weight:600;">Google AI Studio</a>.', 'error');
+                    } else {
+                        addMessage('Direct Gemini error: ' + msg, 'error');
+                    }
+                } else if (currentProvider === 'gemini') {
+                    if (msg.includes('quota') || msg.includes('429') || msg.includes('RESOURCE_EXHAUSTED')) {
+                        addMessage('Cloud Worker hit rate limits. Switch to "Gemini (Your Key)" to use your own API key and bypass shared limits.', 'error');
+                    } else {
+                        addMessage('Worker error: ' + msg, 'error');
+                    }
+                } else if (currentProvider === 'ollama' && (msg.includes('Failed to fetch') || msg.includes('NetworkError') || msg.includes('ECONNREFUSED') || msg.includes('self-signed'))) {
+                    addMessage('Cannot connect to Ollama. Make sure: (1) Ollama is running — ollama serve, (2) Proxy is running — start-proxy.bat, (3) The URL field matches your setup (https://localhost:8443 for local, or Cloudflare tunnel URL for remote).', 'error');
+                } else if (currentProvider === 'ollama') {
+                    addMessage('Ollama error: ' + msg, 'error');
+                } else {
+                    addMessage('Error: ' + msg, 'error');
+                }
+            } finally {
+                isLoading = false;
+                sendBtn.disabled = false;
+                loading.classList.remove('active');
+                userInput.focus();
+            }
+        }
+
+        function showDownloadBar(label, isSermon) {
+            const bar = document.getElementById('downloadBar');
+            const labelEl = document.getElementById('downloadBarLabel');
+            labelEl.textContent = label;
+            bar.className = 'download-bar' + (isSermon ? ' crimson' : '');
+            bar.style.display = 'flex';
+        }
+
+        function downloadAsDoc() {
+            let content = null;
+            let defaultTitle = 'Document';
+            if (sermonMode && lastSermonContent) {
+                content = lastSermonContent;
+                defaultTitle = 'Sermon';
+            } else if (essayMode && lastEssayContent) {
+                content = lastEssayContent;
+                defaultTitle = 'Essay';
+            } else if (bibleStudyMode && lastBibleStudyContent) {
+                content = lastBibleStudyContent;
+                defaultTitle = 'Bible Study';
+            } else if (lastSermonContent) {
+                content = lastSermonContent;
+                defaultTitle = 'Sermon';
+            } else if (lastEssayContent) {
+                content = lastEssayContent;
+                defaultTitle = 'Essay';
+            } else if (lastBibleStudyContent) {
+                content = lastBibleStudyContent;
+                defaultTitle = 'Bible Study';
+            }
+            const titleMatch = content.match(/^#\s+(.+)/m);
+            const docTitle = titleMatch ? titleMatch[1] : defaultTitle;
+            const filename = titleMatch ? titleMatch[1].replace(/[^a-zA-Z0-9\s-]/g, '').replace(/\s+/g, '-').toLowerCase() : (sermonMode ? 'sermon' : 'essay');
+
+            const bodyHtml = content
+                .replace(/^### (.+)$/gm, '<h3 style="font-family:Georgia,serif;color:#333;font-size:12pt;margin-top:16px;">$1</h3>')
+                .replace(/^## (.+)$/gm, '<h2 style="font-family:Georgia,serif;color:#7a1a2e;font-size:14pt;margin-top:20px;border-bottom:1px solid #ddd;padding-bottom:4px;">$1</h2>')
+                .replace(/^# (.+)$/gm, '<h1 style="font-family:Georgia,serif;color:#7a1a2e;font-size:20pt;margin-bottom:8px;">$1</h1>')
+                .replace(/\*\*(.+?)\*\*/g, '<strong style="color:#7a1a2e;">$1</strong>')
+                .replace(/\*(.+?)\*/g, '<em style="color:#5a4038;">$1</em>')
+                .replace(/^---$/gm, '<hr style="border:none;border-top:1px solid #ddd;margin:20px 0;">')
+                .replace(/^> (.+)$/gm, '<blockquote style="border-left:3px solid #9a7520;padding-left:16px;margin:12px 0;color:#555;font-style:italic;">$1</blockquote>')
+                .replace(/`([^`]+)`/g, '<code style="background:#f5f0eb;padding:2px 6px;border-radius:3px;font-family:Consolas,monospace;font-size:10pt;">$1</code>')
+                .replace(/\n\n/g, '</p><p style="margin:8px 0;">')
+                .replace(/^/, '<p style="margin:8px 0;">')
+                .replace(/$/, '</p>');
+
+            const htmlPart = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">' +
+                '<head><meta charset="utf-8"><meta name="ProgId" content="Word.Document"><meta name="Generator" content="Microsoft Word 11"><title>' + docTitle + '</title>' +
+                '<!--[if gte mso 9]><xml><w:WordDocument><w:View>Print</w:View><w:Zoom>100</w:Zoom><w:DoNotOptimizeForBrowser/></w:WordDocument></xml><![endif]-->' +
+                '<style>' +
+                'body{font-family:Calibri,sans-serif;font-size:11pt;line-height:1.6;color:#1a0f18;margin:40px;}' +
+                'p{margin:8px 0;}' +
+                '</style></head><body>' + bodyHtml + '</body></html>';
+
+            const mhtml = 'MIME-Version: 1.0\r\n' +
+                'Content-Location: file:///' + filename + '.doc\r\n' +
+                'Content-Transfer-Encoding: quoted-printable\r\n\r\n' +
+                '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">\r\n' +
+                htmlPart;
+
+            const blob = new Blob([mhtml], { type: 'application/msword' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename + '-' + new Date().toISOString().slice(0,10) + '.doc';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            flashDownloadBtn('downloadBtn');
+        }
+        window.downloadAsDoc = downloadAsDoc;
+
+        // Flash the clicked download button with a checkmark for visual feedback
+        function flashDownloadBtn(btnId) {
+            const btn = document.getElementById(btnId);
+            if (!btn) return;
+            const origHtml = btn.innerHTML;
+            btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>';
+            setTimeout(function() { btn.innerHTML = origHtml; }, 2000);
+        }
+
+        // Download the raw text as a Markdown (.md) file.
+        // Always works since it is a simple text file with a UTF-8 BOM for Word compatibility.
+        function downloadAsMarkdown() {
+            let content = null;
+            let defaultTitle = 'Document';
+            if (sermonMode && lastSermonContent) {
+                content = lastSermonContent;
+                defaultTitle = 'Sermon';
+            } else if (essayMode && lastEssayContent) {
+                content = lastEssayContent;
+                defaultTitle = 'Essay';
+            } else if (bibleStudyMode && lastBibleStudyContent) {
+                content = lastBibleStudyContent;
+                defaultTitle = 'Bible Study';
+            } else if (lastSermonContent) {
+                content = lastSermonContent;
+                defaultTitle = 'Sermon';
+            } else if (lastEssayContent) {
+                content = lastEssayContent;
+                defaultTitle = 'Essay';
+            } else if (lastBibleStudyContent) {
+                content = lastBibleStudyContent;
+                defaultTitle = 'Bible Study';
+            }
+            if (!content) return alert('No content to download');
+            const titleMatch = content.match(/^#\s+(.+)/m);
+            const docTitle = titleMatch ? titleMatch[1] : defaultTitle;
+            const filename = titleMatch ? titleMatch[1].replace(/[^a-zA-Z0-9\s-]/g, '').replace(/\s+/g, '-').toLowerCase() : (sermonMode ? 'sermon' : essayMode ? 'essay' : 'bible-study');
+
+            const blob = new Blob(['\uFEFF' + content], { type: 'text/markdown;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename + '-' + new Date().toISOString().slice(0,10) + '.md';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            flashDownloadBtn('downloadMdBtn');
+        }
+        window.downloadAsMarkdown = downloadAsMarkdown;
+
+        function addMessage(content, type, essayMarkdown) {
+            // Delegate to enhanced version with typewriter effect if available
+            if (window.enhancedAddMessage) {
+                window.enhancedAddMessage(content, type, essayMarkdown);
+                return;
+            }
+            // Fallback original implementation
+            const div = document.createElement('div');
+            div.className = 'message ' + type;
+
+            const label = document.createElement('div');
+            label.className = 'message-label';
+
+            const icons = {
+                user: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>',
+                assistant: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>',
+                error: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>'
+            };
+
+            label.innerHTML = icons[type] + (type === 'user' ? 'You' : type === 'assistant' ? 'Agent' : 'Error');
+
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'message-content';
+            contentDiv.innerHTML = renderMarkdown(content);
+
+            div.appendChild(label);
+            div.appendChild(contentDiv);
+
+            if (type === 'assistant') {
+                const btnContainer = document.createElement('div');
+                btnContainer.className = 'btn-container';
+                btnContainer.style.cssText = 'display:flex;justify-content:space-between;align-items:center;margin-top:12px;flex-wrap:wrap;gap:8px;';
+
+                const leftGroup = document.createElement('div');
+                leftGroup.style.cssText = 'display:flex;gap:8px;align-items:center;flex-wrap:wrap;';
+
+                const rightGroup = document.createElement('div');
+                rightGroup.style.cssText = 'display:flex;gap:8px;align-items:center;flex-wrap:wrap;';
+
+                if (essayMarkdown) {
+                    const essayBtn = document.createElement('button');
+                    essayBtn.className = 'copy-btn';
+                    essayBtn.style.cssText = 'opacity:1;background:linear-gradient(135deg,var(--gold-bg) 0%,white 100%);border-color:var(--gold);color:var(--gold);font-weight:600;';
+                    essayBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy Full Essay';
+                    essayBtn.onclick = function() {
+                        navigator.clipboard.writeText(essayMarkdown).then(function() {
+                            essayBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+                            setTimeout(() => {
+                                essayBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy Full Essay';
+                            }, 2000);
+                        });
+                    };
+                    leftGroup.appendChild(essayBtn);
+
+                    const copyBtn = document.createElement('button');
+                    copyBtn.className = 'copy-btn';
+                    copyBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy';
+                    copyBtn.onclick = function() {
+                        navigator.clipboard.writeText(content).then(function() {
+                            copyBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+                            copyBtn.classList.add('copied');
+                            setTimeout(function() {
+                                copyBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy';
+                                copyBtn.classList.remove('copied');
+                            }, 2000);
+                        });
+                    };
+                    leftGroup.appendChild(copyBtn);
+
+                } else {
+
+                    const copyBtn = document.createElement('button');
+                    copyBtn.className = 'copy-btn';
+                    copyBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy';
+                    copyBtn.onclick = function() {
+                        navigator.clipboard.writeText(content).then(function() {
+                            copyBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+                            copyBtn.classList.add('copied');
+                            setTimeout(function() {
+                                copyBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy';
+                                copyBtn.classList.remove('copied');
+                            }, 2000);
+                        });
+                    };
+                    rightGroup.appendChild(copyBtn);
+                }
+
+                btnContainer.appendChild(leftGroup);
+                btnContainer.appendChild(rightGroup);
+                div.appendChild(btnContainer);
+            }
+
+            messagesDiv.appendChild(div);
+            if (welcome && welcome.style.display !== 'none') welcome.style.display = 'none';
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        function clearChat() {
+            resetMessageState();
+            chat = null;
+            conversationHistory = [];
+            lastSermonContent = null;
+            lastEssayContent = null;
+            lastBibleStudyContent = null;
+            messagesDiv.innerHTML = '';
+            document.getElementById('downloadBar').style.display = 'none';
+            removeFile();
+            if (welcome) {
+                messagesDiv.appendChild(welcome);
+                welcome.style.display = 'block';
+            }
+            messagesDiv.appendChild(loading);
+            scrollBottomBtn.classList.remove('visible');
+        }
+
+        window.askQuestion = askQuestion;
+        window.sendMessage = sendMessage;
+        window.clearChat = clearChat;
+        window.scrollToBottom = scrollToBottom;
+        window.checkOllama = checkOllama;
+        window.toggleEssayMode = toggleEssayMode;
+        window.toggleSermonMode = toggleSermonMode;
+        window.toggleBibleStudyMode = toggleBibleStudyMode;
+        // Defensive reset for loading/spinner state — prevents stuck "sending" state when switching modes
+        function resetMessageState() {
+            isLoading = false;
+            if (sendBtn) sendBtn.disabled = false;
+            if (loading) loading.classList.remove('active');
+            document.getElementById('loadingText').textContent = 'Thinking...';
+        }
+
+        // Centralized mode manager - ensures clean transitions between all modes
+        function setMode(mode) {
+            // Always reset all mode flags first
+            essayMode = false;
+            sermonMode = false;
+            bibleStudyMode = false;
+            resetMessageState();
+
+            const essayBtn = document.getElementById('essayToggle');
+            const sermonBtn = document.getElementById('sermonToggle');
+            const bibleBtn = document.getElementById('bibleStudyToggle');
+            const textarea = document.getElementById('userInput');
+            const downloadBar = document.getElementById('downloadBar');
+            const modeHint = document.getElementById('modeHint');
+
+            // Store original button content on first call
+            if (!essayBtn._origHtml) {
+                essayBtn._origHtml = essayBtn.innerHTML;
+                sermonBtn._origHtml = sermonBtn.innerHTML;
+                bibleBtn._origHtml = bibleBtn.innerHTML;
+            }
+
+            function resetBtn(btn) {
+                btn.removeAttribute('style');
+                btn.innerHTML = btn._origHtml;
+                btn.title = 'Click to activate';
+            }
+            resetBtn(essayBtn);
+            resetBtn(sermonBtn);
+            resetBtn(bibleBtn);
+            modeHint.className = 'mode-hint';
+            modeHint.textContent = 'Click a mode to begin \u00b7 Click again to clear';
+
+            function activateBtn(btn, bg, textColor, border, shadow, hintClass, hintText) {
+                btn.style.background = bg;
+                btn.style.color = textColor;
+                btn.style.borderColor = border;
+                btn.style.boxShadow = shadow;
+                btn.style.position = 'relative';
+                btn.innerHTML = btn._origHtml + '<span class="mode-exit" aria-label="Exit mode">&times;</span>';
+                btn.title = 'Click to deactivate';
+                modeHint.className = 'mode-hint active' + (hintClass ? ' ' + hintClass : '');
+                modeHint.textContent = hintText;
+            }
+
+            switch (mode) {
+                case 'essay':
+                    essayMode = true;
+                    activateBtn(essayBtn, 'linear-gradient(135deg, var(--gold) 0%, var(--amber) 50%, #7a5c10 100%)', 'white', 'var(--amber)', '0 2px 10px rgba(154,117,32,0.3), 0 0 20px var(--warm-glow)', '', 'Essay Mode active \u00b7 Click the button or \u00d7 to clear');
+                    textarea.placeholder = 'Describe your essay topic... (e.g. "Write an essay on the investigative judgment and its biblical basis")';
+                    if (lastEssayContent) showDownloadBar('Essay ready', false);
+                    else downloadBar.style.display = 'none';
+                    break;
+                case 'sermon':
+                    sermonMode = true;
+                    activateBtn(sermonBtn, 'linear-gradient(135deg, #7a1a2e 0%, #9a2a3e 50%, #b83a4e 100%)', 'white', 'var(--crimson)', '0 2px 10px rgba(122,26,46,0.3), 0 0 20px rgba(122,26,46,0.12)', 'sermon-active', 'Sermon Mode active \u00b7 Click the button or \u00d7 to clear');
+                    textarea.placeholder = 'Describe your sermon topic... (e.g. "Write a sermon on the sanctuary and the hope of the believer")';
+                    if (lastSermonContent) showDownloadBar('Sermon ready', true);
+                    else downloadBar.style.display = 'none';
+                    break;
+                case 'bible':
+                    bibleStudyMode = true;
+                    activateBtn(bibleBtn, 'linear-gradient(135deg, #2d6a4f 0%, #1b4d32 50%, #3d8a5f 100%)', 'white', '#2d6a4f', '0 2px 10px rgba(45,106,79,0.3), 0 0 20px rgba(45,106,79,0.12)', 'bible-active', 'Bible Study active \u00b7 Click the button or \u00d7 to clear');
+                    textarea.placeholder = "Describe your Bible study topic... (e.g. \"Prepare a study on John 3:16 and God's love\")";
+                    if (lastBibleStudyContent) showDownloadBar('Bible study ready', false);
+                    else downloadBar.style.display = 'none';
+                    break;
+                default: // 'chat'
+                    textarea.placeholder = 'Ask about Adventist theology or Christian philosophy...';
+                    downloadBar.style.display = 'none';
+                    break;
+            }
+        }
+
+        function toggleEssayMode() {
+            setMode(essayMode ? 'chat' : 'essay');
+        }
+
+        function toggleSermonMode() {
+            setMode(sermonMode ? 'chat' : 'sermon');
+        }
+
+        function toggleBibleStudyMode() {
+            setMode(bibleStudyMode ? 'chat' : 'bible');
+        }
+
+
+        
+
+        // Personal API key management
+        function savePersonalKey() {
+            const input = document.getElementById('personalApiKey');
+            const msg = document.getElementById('personalKeyMsg');
+            const val = input.value.trim();
+            if (!val) {
+                msg.textContent = 'Please paste a valid API key.';
+                msg.style.color = '#b91c1c';
+                msg.style.display = 'block';
+                return;
+            }
+            if (!val.startsWith('AIzaSy') && !val.startsWith('AQ.')) {
+                msg.textContent = 'Key should start with AIzaSy or AQ. Please check you copied the full key.';
+                msg.style.color = '#b91c1c';
+                msg.style.display = 'block';
+                return;
+            }
+            personalKey = val;
+            localStorage.setItem('wwb_personal_gemini_key', val);
+            msg.textContent = 'Key saved! Switch to "Gemini (Your Key)" in the model dropdown to use it directly.';
+            msg.style.color = '#065f46';
+            msg.style.display = 'block';
+            updatePersonalKeyBadge();
+        }
+        window.savePersonalKey = savePersonalKey;
+
+        function clearPersonalKey() {
+            personalKey = '';
+            localStorage.removeItem('wwb_personal_gemini_key');
+            document.getElementById('personalApiKey').value = '';
+            const msg = document.getElementById('personalKeyMsg');
+            msg.textContent = 'Key removed.';
+            msg.style.color = 'var(--text-muted)';
+            msg.style.display = 'block';
+            updatePersonalKeyBadge();
+        }
+        window.clearPersonalKey = clearPersonalKey;
+
+        function updatePersonalKeyBadge() {
+            const badge = document.getElementById('personalKeyBadge');
+            const label = document.getElementById('personalKeyLabel');
+            const status = document.getElementById('geminiStatus');
+            if (personalKey) {
+                badge.style.display = 'inline';
+                label.textContent = 'Secondary API Key (Gemini) — Active';
+                if (currentProvider === 'gemini-direct') {
+                    status.textContent = 'Direct (your key)';
+                    status.style.background = '#d1fae5';
+                    status.style.color = '#065f46';
+                } else {
+                    status.textContent = 'Worker';
+                    status.style.background = '#dbeafe';
+                    status.style.color = '#1e40af';
+                }
+            } else {
+                badge.style.display = 'none';
+                label.textContent = 'Secondary API Key (Gemini)';
+                if (currentProvider === 'gemini-direct') {
+                    status.textContent = 'Key required';
+                    status.style.background = '#fef3c7';
+                    status.style.color = '#92400e';
+                } else if (currentProvider === 'gemini') {
+                    status.textContent = 'Worker';
+                    status.style.background = '#dbeafe';
+                    status.style.color = '#1e40af';
+                }
+            }
+        }
+        // Set initial state for Gemini Cloud Worker (Primary API)
+        currentProvider = 'gemini';
+        window.handleModelChange('gemini');
+        document.getElementById('modelProvider').value = 'gemini';
+
+        // Handle query parameter for pre-populating questions
+        const urlParams = new URLSearchParams(window.location.search);
+        const questionParam = urlParams.get('q');
+        if (questionParam) {
+            try {
+                // Decode the parameter (it might be URL-encoded)
+                const decodedQuestion = decodeURIComponent(questionParam);
+                if (userInput) {
+                    // Set the value
+                    userInput.value = decodedQuestion;
+                    // Adjust textarea height based on content
+                    userInput.style.height = 'auto';
+                    userInput.style.height = Math.min(userInput.scrollHeight, 150) + 'px';
+                    // Focus the textarea
+                    userInput.focus();
+                } else {
+                    console.error('userInput element not found');
+                }
+            } catch (e) {
+                console.error('Error processing question parameter:', e);
+            }
+        }
+
+        // ============================================================
+        // PARTICLE SYSTEM — "Truth Sparks" floating golden background
+        // ============================================================
+        (function initParticles() {
+            const canvas = document.getElementById('particleCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            let particles = [];
+            let animId = null;
+
+            function resizeCanvas() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+            window.addEventListener('resize', resizeCanvas);
+            resizeCanvas();
+
+            // Create particles - fewer on mobile for perf
+            const isMobile = window.innerWidth < 640;
+            const count = isMobile ? 25 : 55;
+
+            for (let i = 0; i < count; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    size: 1.5 + Math.random() * 3,
+                    speedX: (Math.random() - 0.5) * 0.3,
+                    speedY: -(0.15 + Math.random() * 0.35),
+                    opacity: 0.1 + Math.random() * 0.5,
+                    opacitySpeed: 0.003 + Math.random() * 0.008,
+                    phase: Math.random() * Math.PI * 2,
+                    wobble: Math.random() * 0.5,
+                    hue: 38 + Math.random() * 15, // gold-amber range
+                });
+            }
+
+            function drawParticle(p) {
+                const gradient = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.size * 3);
+                gradient.addColorStop(0, 'rgba(255, 215, 140, ' + (p.opacity * 0.8) + ')');
+                gradient.addColorStop(0.4, 'rgba(200, 162, 78, ' + (p.opacity * 0.3) + ')');
+                gradient.addColorStop(1, 'rgba(200, 162, 78, 0)');
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size * 3, 0, Math.PI * 2);
+                ctx.fillStyle = gradient;
+                ctx.fill();
+
+                // Core dot
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size * 0.6, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(255, 235, 200, ' + (p.opacity * 0.9) + ')';
+                ctx.fill();
+            }
+
+            function connectParticles() {
+                const maxDist = 120;
+                for (let i = 0; i < particles.length; i++) {
+                    for (let j = i + 1; j < particles.length; j++) {
+                        const dx = particles[i].x - particles[j].x;
+                        const dy = particles[i].y - particles[j].y;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+                        if (dist < maxDist) {
+                            const opacity = (1 - dist / maxDist) * 0.12;
+                            ctx.beginPath();
+                            ctx.moveTo(particles[i].x, particles[i].y);
+                            ctx.lineTo(particles[j].x, particles[j].y);
+                            ctx.strokeStyle = 'rgba(200, 162, 78, ' + opacity + ')';
+                            ctx.lineWidth = 0.6;
+                            ctx.stroke();
+                        }
+                    }
+                }
+            }
+
+            function animateParticles() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                for (const p of particles) {
+                    // Movement
+                    p.x += p.speedX + Math.sin(p.phase) * p.wobble * 0.2;
+                    p.y += p.speedY;
+
+                    // Opacity oscillation
+                    p.opacity += p.opacitySpeed;
+                    if (p.opacity > 0.7 || p.opacity < 0.08) p.opacitySpeed *= -1;
+
+                    // Phase
+                    p.phase += 0.01;
+
+                    // Wrap around
+                    if (p.y < -10) { p.y = canvas.height + 10; p.x = Math.random() * canvas.width; }
+                    if (p.x < -10) p.x = canvas.width + 10;
+                    if (p.x > canvas.width + 10) p.x = -10;
+
+                    drawParticle(p);
+                }
+                connectParticles();
+
+                animId = requestAnimationFrame(animateParticles);
+            }
+
+            // Stop animation when tab is hidden (performance)
+            document.addEventListener('visibilitychange', function() {
+                if (document.hidden && animId) {
+                    cancelAnimationFrame(animId);
+                    animId = null;
+                } else if (!document.hidden && !animId) {
+                    animateParticles();
+                }
+            });
+
+            animateParticles();
+        })();
+
+        // ============================================================
+        // TYPEWRITER EFFECT for assistant messages
+        // ============================================================
+        let typewriterEnabled = true;
+        let typewriterSpeed = 18; // ms per character
+        let typewriterId = 0;
+
+        // Lightweight markdown renderer — converts ** * ` []() to HTML
+        function renderMarkdown(text) {
+            // Escape HTML special chars first, then apply markdown
+            let html = text
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;');
+            // ***bold italic***
+            html = html.replace(/\*\*\*(.+?)\*\*\*/g, '<strong><em>$1</em></strong>');
+            // **bold**
+            html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+            // *italic*
+            html = html.replace(/\*(.+?)\*/g, '<em>$1</em>');
+            // `inline code`
+            html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+            // [text](url)
+            html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+            // Double line-break → paragraph
+            html = html.replace(/\n\n/g, '</p><p>');
+            // Single line-break → <br>
+            html = html.replace(/\n/g, '<br>');
+            // Wrap in <p> if paragraphs exist
+            if (html.indexOf('</p>') > -1) {
+                html = '<p>' + html + '</p>';
+            }
+            return html;
+        }
+        function typewriterDisplay(element, text, callback) {
+            if (!typewriterEnabled || text.length > 4000) {
+                element.textContent = text;
+                if (callback) callback();
+                return;
+            }
+            const thisId = ++typewriterId;
+            let index = 0;
+            element.textContent = '';
+            element.classList.add('typewriter-cursor');
+
+            function typeChar() {
+                // Stop if another typewriter started or element detached
+                if (thisId !== typewriterId || !document.contains(element)) {
+                    element.classList.remove('typewriter-cursor');
+                    if (!document.contains(element) && callback) callback();
+                    return;
+                }
+                if (index >= text.length) {
+                    element.classList.remove('typewriter-cursor');
+                    if (callback) callback();
+                    return;
+                }
+                const batchSize = text.length > 1000 ? 3 : 1;
+                const chunk = text.slice(index, index + batchSize);
+                element.textContent += chunk;
+                index += batchSize;
+                // Scroll to bottom, but only if user isn't scrolled up
+                const distFromBottom = messagesDiv.scrollHeight - messagesDiv.scrollTop - messagesDiv.clientHeight;
+                if (distFromBottom < 80) {
+                    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+                }
+
+                const adaptiveDelay = text.length > 2000 ? Math.min(typewriterSpeed * 0.6, 6) : typewriterSpeed;
+                setTimeout(typeChar, adaptiveDelay);
+            }
+            typeChar();
+        }
+
+        // ============================================================
+        // RIPPLE EFFECT for all .btn elements
+        // ============================================================
+        function addRippleEffect() {
+            document.querySelectorAll('.btn, .download-bar-btn, .chip, .btn-gemini, .header-inner > a[href]').forEach(function(el) {
+                if (el.classList.contains('ripple-btn')) return; // already initialized
+                el.classList.add('ripple-btn');
+                el.addEventListener('click', function(e) {
+                    const rect = this.getBoundingClientRect();
+                    const size = Math.max(rect.width, rect.height);
+                    const x = e.clientX - rect.left - size / 2;
+                    const y = e.clientY - rect.top - size / 2;
+                    const ripple = document.createElement('span');
+                    ripple.className = 'ripple-effect';
+                    ripple.style.width = ripple.style.height = size + 'px';
+                    ripple.style.left = x + 'px';
+                    ripple.style.top = y + 'px';
+                    this.appendChild(ripple);
+                    ripple.addEventListener('animationend', function() { ripple.remove(); });
+                });
+            });
+        }
+        // Initialize once; observe for dynamically added buttons (process only new ones)
+        addRippleEffect();
+        const rippleObserver = new MutationObserver(function() { addRippleEffect(); });
+        rippleObserver.observe(document.body, { childList: true, subtree: true });
+
+        // ============================================================
+        // ENHANCED addMessage with typewriter animation
+        // ============================================================
+        function enhancedAddMessage(content, type, essayMarkdown) {
+            const div = document.createElement('div');
+            div.className = 'message ' + type;
+
+            const label = document.createElement('div');
+            label.className = 'message-label';
+
+            const icons = {
+                user: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>',
+                assistant: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>',
+                error: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>'
+            };
+
+            label.innerHTML = icons[type] + (type === 'user' ? 'You' : type === 'assistant' ? 'Agent' : 'Error');
+
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'message-content';
+            const renderedHTML = renderMarkdown(content);
+            if (type === 'assistant' && typewriterEnabled && content.length <= 4000) {
+                contentDiv.textContent = '';
+            } else {
+                contentDiv.innerHTML = renderedHTML;
+            }
+
+            div.appendChild(label);
+            div.appendChild(contentDiv);
+
+            if (type === 'assistant') {
+                const btnContainer = document.createElement('div');
+                btnContainer.className = 'btn-container';
+                btnContainer.style.cssText = 'display:flex;justify-content:space-between;align-items:center;margin-top:12px;flex-wrap:wrap;gap:8px;';
+                const leftGroup = document.createElement('div');
+                leftGroup.style.cssText = 'display:flex;gap:8px;align-items:center;flex-wrap:wrap;';
+                const rightGroup = document.createElement('div');
+                rightGroup.style.cssText = 'display:flex;gap:8px;align-items:center;flex-wrap:wrap;';
+
+                if (essayMarkdown) {
+                    const essayBtn = document.createElement('button');
+                    essayBtn.className = 'copy-btn';
+                    essayBtn.style.cssText = 'opacity:1;background:linear-gradient(135deg,var(--gold-bg) 0%,white 100%);border-color:var(--gold);color:var(--gold);font-weight:600;';
+                    essayBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy Full Essay';
+                    essayBtn.onclick = function() {
+                        navigator.clipboard.writeText(essayMarkdown).then(function() {
+                            essayBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+                            setTimeout(() => {
+                                essayBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy Full Essay';
+                            }, 2000);
+                        });
+                    };
+                    leftGroup.appendChild(essayBtn);
+                    const copyBtn = document.createElement('button');
+                    copyBtn.className = 'copy-btn';
+                    copyBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy';
+                    copyBtn.onclick = function() {
+                        navigator.clipboard.writeText(content).then(function() {
+                            copyBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+                            copyBtn.classList.add('copied');
+                            setTimeout(function() {
+                                copyBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy';
+                                copyBtn.classList.remove('copied');
+                            }, 2000);
+                        });
+                    };
+                    leftGroup.appendChild(copyBtn);
+                } else {
+                    const copyBtn = document.createElement('button');
+                    copyBtn.className = 'copy-btn';
+                    copyBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy';
+                    copyBtn.onclick = function() {
+                        navigator.clipboard.writeText(content).then(function() {
+                            copyBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+                            copyBtn.classList.add('copied');
+                            setTimeout(function() {
+                                copyBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy';
+                                copyBtn.classList.remove('copied');
+                            }, 2000);
+                        });
+                    };
+                    rightGroup.appendChild(copyBtn);
+                }
+                btnContainer.appendChild(leftGroup);
+                btnContainer.appendChild(rightGroup);
+                div.appendChild(btnContainer);
+            }
+
+            messagesDiv.appendChild(div);
+            if (welcome && welcome.style.display !== 'none') welcome.style.display = 'none';
+
+            if (type === 'assistant' && typewriterEnabled && content.length <= 4000) {
+                typewriterDisplay(contentDiv, content, function() {
+                    contentDiv.innerHTML = renderedHTML;
+                    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+                });
+            }
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+        window.enhancedAddMessage = enhancedAddMessage;    </script>
+</body>
+</html>

@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="400" viewBox="0 0 1200 400">
+  <defs>
+    <!-- Sky gradient -->
+    <linearGradient id="sky" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#faf8f5"/>
+      <stop offset="100%" stop-color="#f0ebe3"/>
+    </linearGradient>
+    
+    <!-- Water gradient -->
+    <linearGradient id="water" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#5aa0b0" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#4a9a8a" stop-opacity="0.1"/>
+    </linearGradient>
+    
+    <!-- Piton silhouette gradient -->
+    <linearGradient id="piton" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#7a1a2e" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#5c1220" stop-opacity="0.18"/>
+    </linearGradient>
+    
+    <!-- Petit Piton gradient -->
+    <linearGradient id="petit" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#9a7520" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#7a5a15" stop-opacity="0.15"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="1200" height="400" fill="url(#sky)"/>
+  
+  <!-- Distant hills -->
+  <path d="M0 320 Q150 280 300 300 Q450 260 600 290 Q750 270 900 300 Q1050 280 1200 310 L1200 400 L0 400 Z" fill="#5c1220" opacity="0.08"/>
+  
+  <!-- Gros Piton (taller, left) -->
+  <path d="M280 400 L380 180 L480 400 Z" fill="url(#piton)"/>
+  <path d="M300 400 L380 200 L460 400 Z" fill="#7a1a2e" opacity="0.12"/>
+  
+  <!-- Petit Piton (shorter, right) -->
+  <path d="M620 400 L720 220 L820 400 Z" fill="url(#petit)"/>
+  <path d="M640 400 L720 240 L800 400 Z" fill="#9a7520" opacity="0.1"/>
+  
+  <!-- Piton foothills -->
+  <path d="M200 400 Q300 350 400 370 Q500 340 600 360 Q700 330 800 360 Q900 340 1000 370 L1200 400 L0 400 Z" fill="#5c1220" opacity="0.1"/>
+  
+  <!-- Caribbean Sea -->
+  <rect x="0" y="340" width="1200" height="60" fill="url(#water)"/>
+  
+  <!-- Wave lines -->
+  <path d="M0 350 Q100 345 200 350 Q300 355 400 350 Q500 345 600 350 Q700 355 800 350 Q900 345 1000 350 Q1100 355 1200 350" stroke="#5aa0b0" stroke-width="1" fill="none" opacity="0.2"/>
+  <path d="M0 360 Q100 355 200 360 Q300 365 400 360 Q500 355 600 360 Q700 365 800 360 Q900 355 1000 360 Q1100 365 1200 360" stroke="#4a9a8a" stroke-width="0.8" fill="none" opacity="0.15"/>
+  <path d="M0 370 Q100 365 200 370 Q300 375 400 370 Q500 365 600 370 Q700 375 800 370 Q900 365 1000 370 Q1100 375 1200 370" stroke="#5aa0b0" stroke-width="0.6" fill="none" opacity="0.12"/>
+  
+  <!-- Palm tree silhouettes (left) -->
+  <g opacity="0.15">
+    <path d="M120 400 L125 300 L130 400" fill="#5c1220"/>
+    <path d="M100 310 Q125 290 150 310 Q125 300 100 310" fill="#5c1220"/>
+    <path d="M105 320 Q125 295 145 320 Q125 305 105 320" fill="#7a1a2e"/>
+  </g>
+  
+  <!-- Palm tree silhouettes (right) -->
+  <g opacity="0.12">
+    <path d="M1050 400 L1055 320 L1060 400" fill="#5c1220"/>
+    <path d="M1035 330 Q1055 310 1075 330 Q1055 320 1035 330" fill="#5c1220"/>
+    <path d="M1040 340 Q1055 315 1070 340 Q1055 325 1040 340" fill="#7a1a2e"/>
+  </g>
+  
+  <!-- Coral reef accents (subtle) -->
+  <circle cx="150" cy="380" r="8" fill="#d4705a" opacity="0.1"/>
+  <circle cx="350" cy="385" r="6" fill="#d4705a" opacity="0.08"/>
+  <circle cx="550" cy="380" r="7" fill="#d4705a" opacity="0.1"/>
+  <circle cx="750" cy="385" r="5" fill="#d4705a" opacity="0.08"/>
+  <circle cx="950" cy="380" r="8" fill="#d4705a" opacity="0.1"/>
+  <circle cx="1100" cy="385" r="6" fill="#d4705a" opacity="0.08"/>
+</svg>

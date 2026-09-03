@@ -1,3 +1,26 @@
-node_modules/
+# OS files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Temporary files
+*.tmp
+*.bak
+
+# Secrets
+cert.pem
+key.pem
+
+# Wrangler local state (.wrangler/ is local cache). The tracked wrangler.toml
+# is committed ON PURPOSE since the auto-deploy pipeline: it contains no
+# credentials — only name/dates/account-id. API keys live in Worker secrets.
+wrangler.jsonc
 .wrangler/
-cloudflare.txt
+.vercel
+.env*

@@ -1,0 +1,3451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WhatIfWeBelieved — Exploring Faith, Seeking Truth</title>
+    <meta name="description" content="WhatIfWeBelieved explores Christian faith through thoughtful teaching, biblical reflection, and honest conversation: theology articles, sermon reviews, a free book, and an AI theology agent trained on Adventist doctrine and Scripture.">
+    <link rel="canonical" href="https://whatifwebelieved.vercel.app/">
+    <meta name="robots" content="index, follow">
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="WhatIfWeBelieved">
+    <meta property="og:title" content="WhatIfWeBelieved — Exploring Faith, Seeking Truth">
+    <meta property="og:description" content="WhatIfWeBelieved explores Christian faith through thoughtful teaching, biblical reflection, and honest conversation: theology articles, sermon reviews, a free book, and an AI theology agent trained on Adventist doctrine and Scripture.">
+    <meta property="og:url" content="https://whatifwebelieved.vercel.app/">
+    <meta property="og:image" content="https://whatifwebelieved.vercel.app/bg-1.jpg">
+    <meta property="og:locale" content="en_US">
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="WhatIfWeBelieved — Exploring Faith, Seeking Truth">
+    <meta name="twitter:description" content="WhatIfWeBelieved explores Christian faith through thoughtful teaching, biblical reflection, and honest conversation: theology articles, sermon reviews, a free book, and an AI theology agent.">
+    <meta name="twitter:image" content="https://whatifwebelieved.vercel.app/bg-1.jpg">
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@graph": [
+            {
+                "@type": "WebSite",
+                "@id": "https://whatifwebelieved.vercel.app/#website",
+                "url": "https://whatifwebelieved.vercel.app/",
+                "name": "WhatIfWeBelieved",
+                "description": "A channel devoted to the exploration of faith, theology, and the transformative power of belief.",
+                "inLanguage": "en",
+                "publisher": { "@id": "https://whatifwebelieved.vercel.app/#organization" }
+            },
+            {
+                "@type": "Organization",
+                "@id": "https://whatifwebelieved.vercel.app/#organization",
+                "name": "WhatIfWeBelieved",
+                "url": "https://whatifwebelieved.vercel.app/",
+                "sameAs": [ "https://www.youtube.com/@paulos1844" ]
+            },
+            {
+                "@type": "WebApplication",
+                "@id": "https://whatifwebelieved.vercel.app/agent/#webapp",
+                "name": "WhatIfWeBelieved Theology AI Agent",
+                "url": "https://whatifwebelieved.vercel.app/agent/",
+                "description": "An AI research agent trained on Adventist doctrines, Ellen G. White's writings, Christian philosophy, and Scripture, providing scholarly, cited answers.",
+                "applicationCategory": "EducationalApplication",
+                "operatingSystem": "Any",
+                "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+            }
+        ]
+    }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Vercel Web Analytics -->
+    <script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments)};</script>
+    <script defer src="/_vercel/insights/script.js"></script>
+    <!-- Google Analytics - Replace G-9ZM6VF3FZY with your actual GA4 measurement ID -->
+    <script>
+        (function() {
+            var id = 'G-9ZM6VF3FZY'; // <-- SET YOUR GA4 MEASUREMENT ID HERE
+            if (id && id !== 'G-9ZM6VF3FZY' && id.startsWith('G-')) {
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', id);
+                var s = document.createElement('script');
+                s.src = 'https://www.googletagmanager.com/gtag/js?id=' + id;
+                s.async = true;
+                document.head.appendChild(s);
+            }
+        })();
+    </script>
+    <style>
+        :root {
+            --crimson: #7a1a2e;
+            --crimson-dark: #5c1220;
+            --crimson-light: #9a2a3e;
+            --gold: #9a7520;
+            --gold-light: #b89040;
+            --cream: #ffffff;
+            --cream-dark: #f8f4ef;
+            --paper: #faf8f5;
+            --ink: #1a0f18;
+            --ink-light: #5a4038;
+            --muted: #6a5848;
+            --border: rgba(200,162,78,0.2);
+            --shadow: rgba(44,24,16,0.06);
+            --glass: rgba(255,255,255,0.55);
+            --glass-border: rgba(200,162,78,0.12);
+            --glow-gold: rgba(200,162,78,0.3);
+            --glow-crimson: rgba(122,26,46,0.25);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(180deg, #faf8f5 0%, #f0ebe3 50%, #faf8f5 100%);
+            background-attachment: fixed;
+            color: var(--ink);
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        h1, h2, h3, h4 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 32px;
+        }
+
+        /* --- NAV --- */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 32px;
+            margin: 0 -32px;
+            background: rgba(255,255,255,0.7);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border-bottom: 1px solid var(--glass-border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 30px rgba(0,0,0,0.03), 0 1px 0 rgba(200,162,78,0.06);
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .nav-logo .shield {
+            width: 36px;
+            height: 44px;
+            flex-shrink: 0;
+            filter: drop-shadow(0 2px 6px var(--glow-crimson));
+        }
+
+        .nav-logo .shield svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .nav-logo-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--crimson);
+            letter-spacing: -0.3px;
+        }
+
+        .nav-logo-text span {
+            color: var(--gold);
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--ink-light);
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: color 0.3s, transform 0.3s;
+            letter-spacing: 0.2px;
+        }
+
+        .nav-links a:hover {
+            color: var(--crimson);
+            transform: translateY(-1px);
+        }
+
+        .nav-btn {
+            background: linear-gradient(135deg, var(--crimson) 0%, #9a2a3e 100%);
+            color: #fff !important;
+            padding: 10px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px var(--glow-crimson), inset 0 1px 0 rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .nav-btn:hover {
+            background: linear-gradient(135deg, var(--crimson-dark) 0%, var(--crimson) 100%) !important;
+            box-shadow: 0 6px 25px var(--glow-crimson), inset 0 1px 0 rgba(255,255,255,0.25);
+            transform: translateY(-2px);
+        }
+
+        /* --- HERO --- */
+        .hero {
+            position: relative;
+            min-height: 85vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background: #1a1215;
+        }
+
+        .hero-video-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            overflow: hidden;
+            background: url('https://i.ytimg.com/vi/D2FfteQ7sXI/maxresdefault.jpg') center/cover no-repeat;
+            filter: brightness(1.0) contrast(1.08) saturate(1.1);
+            box-shadow: inset 0 0 0 1px rgba(200,162,78,0.15), inset 0 0 80px rgba(26,18,21,0.4), inset 0 0 160px rgba(26,18,21,0.3);
+        }
+
+        .hero-video-inner {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100vw;
+            height: 56.25vw;
+            min-height: 100%;
+            min-width: 177.78vh;
+            transform: translate(-50%, -50%);
+        }
+
+        .hero-video-inner iframe,
+        .hero-video-inner div {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            background:
+                radial-gradient(ellipse at 30% 20%, rgba(255,255,255,0.2) 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 80%, rgba(255,255,255,0.1) 0%, transparent 50%),
+                linear-gradient(135deg, rgba(255,255,255,0.25) 0%, rgba(255,255,255,0.1) 100%);
+        }
+
+        /* --- HERO GALLERY FRAME --- */
+        .hero-frame {
+            position: absolute;
+            inset: 84px 28px 28px 28px;
+            z-index: 2;
+            pointer-events: none;
+            border: 1px solid rgba(200,162,78,0.28);
+            border-radius: 4px;
+            box-shadow:
+                0 0 0 6px rgba(200,162,78,0.05),
+                0 0 0 7px rgba(255,255,255,0.045),
+                0 0 70px rgba(200,162,78,0.10),
+                inset 0 0 50px rgba(200,162,78,0.035);
+            animation: heroFrameBreath 8s ease-in-out infinite;
+        }
+
+        .hero-frame::before {
+            content: '';
+            position: absolute;
+            inset: 7px;
+            border: 1px solid rgba(200,162,78,0.12);
+            border-radius: 2px;
+        }
+
+        .hero-frame-corner {
+            position: absolute;
+            width: 26px;
+            height: 26px;
+            border: 0 solid rgba(200,162,78,0.65);
+            filter: drop-shadow(0 0 5px rgba(200,162,78,0.35));
+        }
+
+        .hero-frame-corner.tl { top: -1px; left: -1px; border-top-width: 2px; border-left-width: 2px; border-top-left-radius: 5px; }
+        .hero-frame-corner.tr { top: -1px; right: -1px; border-top-width: 2px; border-right-width: 2px; border-top-right-radius: 5px; }
+        .hero-frame-corner.bl { bottom: -1px; left: -1px; border-bottom-width: 2px; border-left-width: 2px; border-bottom-left-radius: 5px; }
+        .hero-frame-corner.br { bottom: -1px; right: -1px; border-bottom-width: 2px; border-right-width: 2px; border-bottom-right-radius: 5px; }
+
+        @keyframes heroFrameBreath {
+            0%, 100% { box-shadow: 0 0 0 6px rgba(200,162,78,0.05), 0 0 0 7px rgba(255,255,255,0.045), 0 0 50px rgba(200,162,78,0.08), inset 0 0 50px rgba(200,162,78,0.035); }
+            50%      { box-shadow: 0 0 0 6px rgba(200,162,78,0.055), 0 0 0 7px rgba(255,255,255,0.05), 0 0 80px rgba(200,162,78,0.14), inset 0 0 60px rgba(200,162,78,0.05); }
+        }
+
+        /* --- HERO MOTTO MARQUEE --- */
+        .hero-motto-marquee {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 52px;
+            z-index: 3;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            background: linear-gradient(180deg, rgba(26,18,21,0.55) 0%, rgba(26,18,21,0.18) 100%);
+            border-bottom: 1px solid rgba(200,162,78,0.28);
+            box-shadow: 0 6px 30px rgba(0,0,0,0.25);
+            -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+            mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+        }
+
+        .hero-motto-track {
+            display: inline-flex;
+            white-space: nowrap;
+            will-change: transform;
+            animation: heroMottoScroll 36s linear infinite;
+        }
+
+        .hero-motto-marquee:hover .hero-motto-track {
+            animation-play-state: paused;
+        }
+
+        .hero-motto-item {
+            display: inline-flex;
+            align-items: center;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.05rem;
+            font-weight: 900;
+            font-style: italic;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            color: var(--gold-light);
+            text-shadow: 0 2px 20px rgba(200,162,78,0.5), 0 0 40px rgba(200,162,78,0.2);
+            line-height: 1;
+            padding-right: 96px;
+        }
+
+        .hero-motto-sep {
+            display: inline-block;
+            margin: 0 28px;
+            font-style: normal;
+            font-size: 0.7em;
+            color: var(--gold);
+            text-shadow: 0 0 12px rgba(200,162,78,0.6);
+        }
+
+        @keyframes heroMottoScroll {
+            from { transform: translateX(0); }
+            to   { transform: translateX(-50%); }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .hero-motto-track { animation: none; }
+            .hero-frame { animation: none; }
+        }
+
+        .hero .container {
+            position: relative;
+            z-index: 3;
+            text-align: center;
+            padding: 80px 32px 60px;
+            animation: heroFadeIn 1s ease forwards;
+        }
+
+        @keyframes heroFadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .hero-shield-deco {
+            display: none;
+        }
+
+        .hero-emblem-large {
+            width: 80px;
+            height: 96px;
+            margin: 0 auto 28px;
+            filter: drop-shadow(0 4px 20px rgba(200,162,78,0.4));
+        }
+
+        .hero-emblem-large svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .hero-emblem-large svg path:first-child {
+            stroke: var(--crimson);
+            opacity: 0.8;
+        }
+
+        .hero-emblem-large svg path:last-child {
+            stroke: var(--gold);
+            opacity: 0.6;
+        }
+
+        .hero-emblem-large svg text {
+            fill: var(--gold);
+            opacity: 0.8;
+        }
+
+        .hero h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 4.2rem;
+            font-weight: 900;
+            color: #fff;
+            letter-spacing: -1.5px;
+            margin-bottom: 16px;
+            line-height: 1.15;
+            text-shadow: 0 2px 30px rgba(0,0,0,0.3);
+        }
+
+        .hero h1 .highlight {
+            color: #e8a0b0;
+        }
+
+        .hero h1 .gold-highlight {
+            color: var(--gold-light);
+        }
+
+        .hero-ticker {
+            overflow: hidden;
+            white-space: nowrap;
+            max-width: 520px;
+            margin: 20px auto 24px;
+            height: 1.4em;
+            position: relative;
+        }
+
+        .hero-ticker-track {
+            display: inline-flex;
+            gap: 80px;
+            animation: ticker-scroll 20s linear infinite;
+            padding-right: 80px;
+        }
+
+        .hero-ticker:hover .hero-ticker-track {
+            animation-play-state: paused;
+        }
+
+        .hero-ticker-track span {
+            font-size: 0.75rem;
+            font-weight: 500;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--gold);
+            opacity: 0.7;
+            white-space: nowrap;
+            text-shadow: 0 1px 8px rgba(200,162,78,0.3);
+        }
+
+        @keyframes ticker-scroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        .hero-subtitle {
+            font-size: 1.15rem;
+            color: rgba(255,255,255,0.75);
+            max-width: 600px;
+            margin: 0 auto 32px;
+            font-weight: 300;
+            line-height: 1.8;
+            text-shadow: 0 1px 8px rgba(0,0,0,0.2);
+        }
+
+        .hero-actions {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .hero .btn-primary {
+            background: linear-gradient(135deg, var(--crimson) 0%, #9a2a3e 100%);
+            color: #fff;
+            box-shadow: 0 4px 20px var(--glow-crimson), inset 0 1px 0 rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .hero .btn-primary:hover {
+            background: linear-gradient(135deg, var(--crimson-dark) 0%, var(--crimson) 100%);
+            color: #fff;
+            box-shadow: 0 8px 35px var(--glow-crimson), inset 0 1px 0 rgba(255,255,255,0.25);
+        }
+
+        .hero .btn-secondary {
+            background: rgba(255,255,255,0.15);
+            color: #fff;
+            border-color: rgba(255,255,255,0.3);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .hero .btn-secondary:hover {
+            background: rgba(255,255,255,0.25);
+            border-color: rgba(255,255,255,0.4);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .hero-divider {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            margin-top: 40px;
+            color: rgba(255,255,255,0.4);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .hero-divider::before,
+        .hero-divider::after {
+            content: '';
+            width: 60px;
+            height: 1px;
+            background: rgba(255,255,255,0.2);
+        }
+
+        .hero-ai-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 28px;
+            padding: 10px 22px;
+            background: linear-gradient(135deg, rgba(154,117,32,0.25) 0%, rgba(200,162,78,0.15) 100%);
+            border: 1px solid rgba(200,162,78,0.4);
+            border-radius: 50px;
+            color: var(--gold-light);
+            font-size: 0.88rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-decoration: none;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            box-shadow: 0 0 30px rgba(200,162,78,0.15), inset 0 1px 0 rgba(255,255,255,0.1);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            animation: hero-ai-badge-glow 3s ease-in-out infinite;
+        }
+
+        .hero-ai-badge:hover {
+            background: linear-gradient(135deg, rgba(154,117,32,0.4) 0%, rgba(200,162,78,0.25) 100%);
+            border-color: rgba(200,162,78,0.6);
+            box-shadow: 0 0 50px rgba(200,162,78,0.3), inset 0 1px 0 rgba(255,255,255,0.15);
+            transform: translateY(-2px);
+        }
+
+        .hero-ai-badge-pulse {
+            position: absolute;
+            top: 50%;
+            left: 14px;
+            width: 8px;
+            height: 8px;
+            background: var(--gold-light);
+            border-radius: 50%;
+            transform: translateY(-50%);
+            animation: hero-ai-pulse 2s ease-in-out infinite;
+        }
+
+        .hero-ai-badge-tag {
+            background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 100%);
+            color: #fff;
+            font-size: 0.65rem;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        @keyframes hero-ai-badge-glow {
+            0%, 100% { box-shadow: 0 0 30px rgba(200,162,78,0.15), inset 0 1px 0 rgba(255,255,255,0.1); }
+            50% { box-shadow: 0 0 40px rgba(200,162,78,0.25), inset 0 1px 0 rgba(255,255,255,0.12); }
+        }
+
+        @keyframes hero-ai-pulse {
+            0%, 100% { opacity: 1; transform: translateY(-50%) scale(1); }
+            50% { opacity: 0.5; transform: translateY(-50%) scale(1.5); }
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--crimson) 0%, #9a2a3e 100%);
+            color: #fff;
+            padding: 14px 36px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 1rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(255,255,255,0.1);
+            cursor: pointer;
+            box-shadow: 0 4px 15px var(--glow-crimson), inset 0 1px 0 rgba(255,255,255,0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn-primary:hover::after {
+            left: 100%;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, var(--crimson-dark) 0%, var(--crimson) 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px var(--glow-crimson), inset 0 1px 0 rgba(255,255,255,0.25);
+        }
+
+        .btn-secondary {
+            background: var(--glass);
+            color: var(--ink);
+            padding: 14px 36px;
+            border-radius: 10px;
+            font-weight: 500;
+            font-size: 1rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            border: 1px solid var(--glass-border);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--gold);
+            background: rgba(255,255,255,0.8);
+            box-shadow: 0 8px 30px var(--glow-gold);
+            transform: translateY(-2px);
+        }
+
+        /* --- SECTION HEADERS --- */
+        .section {
+            padding: 80px 0;
+            scroll-margin-top: 80px;
+        }
+
+        .section-dark {
+            background: var(--glass);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-top: 1px solid var(--glass-border);
+            border-bottom: 1px solid var(--glass-border);
+            color: var(--ink);
+        }
+
+        .section-dark .section-title {
+            color: var(--ink);
+        }
+
+        .section-dark .section-subtitle {
+            color: var(--ink-light);
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 56px;
+        }
+
+        .section-label {
+            display: inline-block;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 12px;
+            text-shadow: 0 1px 6px rgba(200,162,78,0.3);
+        }
+
+        .section-title {
+            font-size: 2.6rem;
+            color: var(--ink);
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, var(--ink) 0%, var(--crimson-dark) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .section-subtitle {
+            font-size: 1.05rem;
+            color: var(--ink-light);
+            max-width: 560px;
+            margin: 0 auto;
+            font-weight: 300;
+        }
+
+        .section-header-left {
+            text-align: left;
+            margin-bottom: 48px;
+        }
+
+        .section-header-left .section-title {
+            font-size: 2.2rem;
+        }
+
+        /* --- FEATURED VIDEOS --- */
+        .videos-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+
+        .video-card {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 14px;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            text-decoration: none;
+            display: block;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+        }
+
+        .video-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.08), 0 0 0 1px rgba(200,162,78,0.2), 0 0 20px rgba(200,162,78,0.06);
+        }
+
+        .video-thumb {
+            position: relative;
+            aspect-ratio: 16/9;
+            background: #f0ede8;
+            overflow: hidden;
+        }
+
+        .video-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), filter 0.5s;
+            filter: brightness(1.1) saturate(1.05);
+        }
+
+        .video-card:hover .video-thumb img {
+            transform: scale(1.08);
+            filter: brightness(1.2) saturate(1.15);
+        }
+
+        .video-thumb .play-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(122,26,46,0.6) 0%, rgba(92,18,32,0.7) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+
+        .video-card:hover .play-overlay {
+            opacity: 1;
+        }
+
+        .play-btn-circle {
+            width: 56px;
+            height: 56px;
+            background: rgba(255,255,255,0.95);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            transition: transform 0.3s;
+        }
+
+        .video-card:hover .play-btn-circle {
+            transform: scale(1.1);
+        }
+
+        .play-btn-circle svg {
+            width: 20px;
+            height: 20px;
+            fill: var(--crimson);
+            margin-left: 3px;
+        }
+
+        .video-category {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            background: linear-gradient(135deg, var(--crimson) 0%, var(--crimson-light) 100%);
+            color: #fff;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 5px 14px;
+            border-radius: 6px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            box-shadow: 0 2px 10px var(--glow-crimson);
+        }
+
+        .video-info {
+            padding: 20px 22px 22px;
+        }
+
+        .video-info h3 {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--ink);
+            line-height: 1.4;
+            margin-bottom: 6px;
+        }
+
+        .video-info .video-meta {
+            font-size: 0.8rem;
+            color: var(--muted);
+        }
+
+        /* --- ABOUT / MISSION --- */
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 64px;
+            align-items: center;
+        }
+
+        .about-text .lead {
+            font-size: 1.15rem;
+            color: var(--ink-light);
+            margin-bottom: 24px;
+            line-height: 1.8;
+        }
+
+        .about-text p {
+            color: var(--ink-light);
+            margin-bottom: 20px;
+        }
+
+        .about-image {
+            background: var(--cream-dark);
+            border-radius: 16px;
+            aspect-ratio: 4/3;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 8px 40px rgba(0,0,0,0.08);
+            border: 1px solid var(--glass-border);
+        }
+
+        .about-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .about-image .image-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 20px;
+            background: linear-gradient(transparent, rgba(26,15,24,0.4));
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #fff;
+        }
+
+        /* --- CONTENT PILLARS --- */
+        .pillars-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 28px;
+        }
+
+        .pillar-card {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 40px 32px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .pillar-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--gold), var(--crimson), var(--gold));
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+
+        .pillar-card:hover::before {
+            opacity: 1;
+        }
+
+        .pillar-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.08), 0 0 0 1px rgba(200,162,78,0.15), 0 0 20px rgba(200,162,78,0.04);
+        }
+
+        .pillar-number {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1;
+            margin-bottom: 16px;
+        }
+
+        .pillar-card h3 {
+            font-size: 1.5rem;
+            color: var(--ink);
+            margin-bottom: 8px;
+        }
+
+        .pillar-card .pillar-tagline {
+            font-size: 0.85rem;
+            color: var(--gold);
+            font-weight: 600;
+            margin-bottom: 16px;
+            letter-spacing: 0.5px;
+        }
+
+        .pillar-card p {
+            font-size: 0.9rem;
+            color: var(--ink-light);
+            line-height: 1.7;
+        }
+
+        .pillar-card ul {
+            list-style: none;
+            margin-top: 20px;
+        }
+
+        .pillar-card ul li {
+            font-size: 0.85rem;
+            color: var(--ink-light);
+            padding: 6px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .pillar-card ul li::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 100%);
+            border-radius: 50%;
+            flex-shrink: 0;
+            box-shadow: 0 0 6px rgba(200,162,78,0.4);
+        }
+
+        /* --- TESTIMONIALS --- */
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+
+        .testimonial-card {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 14px;
+            padding: 32px;
+            position: relative;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .testimonial-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.06), 0 0 0 1px rgba(200,162,78,0.2), 0 0 20px rgba(200,162,78,0.04);
+        }
+
+        .testimonial-card .quote-mark {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            line-height: 1;
+            background: linear-gradient(135deg, var(--crimson) 0%, var(--gold) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            opacity: 0.3;
+            position: absolute;
+            top: 20px;
+            left: 24px;
+        }
+
+        .testimonial-card blockquote {
+            font-size: 0.95rem;
+            color: var(--ink-light);
+            line-height: 1.7;
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+
+        .testimonial-card .attribution {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .testimonial-card .attribution .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--cream-dark) 0%, white 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            color: var(--crimson);
+            font-size: 1rem;
+            flex-shrink: 0;
+            border: 2px solid var(--glass-border);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .testimonial-card .attribution .name {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: var(--ink);
+        }
+
+        .testimonial-card .attribution .role {
+            font-size: 0.8rem;
+            color: var(--muted);
+        }
+
+        /* --- BOOK / RESOURCE --- */
+        .book-section {
+            background: var(--glass);
+            border-radius: 20px;
+            padding: 64px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 48px;
+            align-items: center;
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            box-shadow: 0 8px 40px rgba(0,0,0,0.04);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .book-section:hover {
+            box-shadow: 0 20px 60px rgba(0,0,0,0.06), 0 0 0 1px rgba(200,162,78,0.2), 0 0 25px rgba(200,162,78,0.03);
+        }
+
+        .book-visual {
+            aspect-ratio: 3/4;
+            background: linear-gradient(135deg, var(--crimson) 0%, #5a1020 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 16px;
+            padding: 40px;
+            color: #fff;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 15px 50px var(--glow-crimson);
+        }
+
+        .book-visual::before {
+            content: '';
+            position: absolute;
+            inset: 8px;
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 8px;
+            pointer-events: none;
+        }
+
+        .book-visual::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.1) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .book-visual .book-icon-svg {
+            width: 56px;
+            height: 56px;
+            opacity: 0.7;
+        }
+
+        .book-visual h3 {
+            font-size: 1.4rem;
+            color: #fff;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .book-visual .book-sub {
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.7);
+            font-style: italic;
+        }
+
+        .book-info h2 {
+            font-size: 2rem;
+            margin-bottom: 16px;
+        }
+
+        .book-info h2 span {
+            color: var(--crimson);
+        }
+
+        .book-info p {
+            color: var(--ink-light);
+            font-size: 0.95rem;
+            margin-bottom: 20px;
+            line-height: 1.8;
+        }
+
+        .book-info .btn-download {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(135deg, var(--crimson) 0%, #9a2a3e 100%);
+            color: #fff;
+            padding: 14px 32px;
+            border-radius: 10px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s;
+            font-size: 0.95rem;
+            box-shadow: 0 4px 15px var(--glow-crimson), inset 0 1px 0 rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .book-info .btn-download:hover {
+            background: linear-gradient(135deg, var(--crimson-dark) 0%, var(--crimson) 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px var(--glow-crimson);
+        }
+
+        .book-info .release-note {
+            margin-top: 12px;
+            font-size: 0.8rem;
+            color: var(--muted);
+        }
+
+        /* --- SECTION DIVIDER --- */
+        .section-divider {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            padding: 8px 0 16px;
+        }
+
+        .section-divider::before,
+        .section-divider::after {
+            content: '';
+            height: 1px;
+            width: 80px;
+            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+        }
+
+        .section-divider .divider-diamond {
+            width: 8px;
+            height: 8px;
+            background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 100%);
+            transform: rotate(45deg);
+            flex-shrink: 0;
+            box-shadow: 0 0 10px rgba(200,162,78,0.4);
+        }
+
+        .section-divider.light::before,
+        .section-divider.light::after {
+            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+        }
+
+        .section-divider.light .divider-diamond {
+            background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 100%);
+        }
+
+        /* --- NEWSLETTER --- */
+        .newsletter-section {
+            text-align: center;
+            padding: 64px 48px;
+            background: var(--glass);
+            border-radius: 16px;
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            box-shadow: 0 8px 40px rgba(0,0,0,0.03);
+        }
+
+        .newsletter-section h3 {
+            font-size: 1.8rem;
+            color: var(--ink);
+            margin-bottom: 12px;
+        }
+
+        .newsletter-section p {
+            color: var(--ink-light);
+            font-size: 0.95rem;
+            margin-bottom: 28px;
+            max-width: 480px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .newsletter-form {
+            display: flex;
+            gap: 12px;
+            max-width: 440px;
+            margin: 0 auto;
+        }
+
+        .newsletter-form input {
+            flex: 1;
+            padding: 14px 18px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            background: rgba(255,255,255,0.6);
+            color: var(--ink);
+            outline: none;
+            transition: all 0.3s;
+            backdrop-filter: blur(6px);
+        }
+
+        .newsletter-form input:focus {
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px var(--glow-gold);
+            background: rgba(255,255,255,0.8);
+        }
+
+        .newsletter-form input::placeholder {
+            color: var(--muted);
+        }
+
+        .newsletter-form button {
+            background: linear-gradient(135deg, var(--crimson) 0%, #9a2a3e 100%);
+            color: #fff;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            white-space: nowrap;
+            font-family: 'Inter', sans-serif;
+            box-shadow: 0 4px 15px var(--glow-crimson), inset 0 1px 0 rgba(255,255,255,0.2);
+        }
+
+        .newsletter-form button:hover {
+            background: linear-gradient(135deg, var(--crimson-dark) 0%, var(--crimson) 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px var(--glow-crimson);
+        }
+
+        .newsletter-note {
+            font-size: 0.8rem;
+            color: var(--muted);
+            margin-top: 16px;
+        }
+
+        /* --- CTA --- */
+        .cta-section {
+            text-align: center;
+            padding: 80px 0;
+        }
+
+        .cta-section .section-title {
+            font-size: 2.8rem;
+        }
+
+        .cta-section p {
+            color: var(--ink-light);
+            max-width: 500px;
+            margin: 0 auto 32px;
+            font-size: 1.05rem;
+        }
+
+        /* --- FOOTER --- */
+        footer {
+            border-top: 1px solid var(--glass-border);
+            padding: 40px 0;
+            background: rgba(255,255,255,0.5);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 32px;
+        }
+
+        .footer-brand .nav-logo {
+            margin-bottom: 12px;
+        }
+
+        .footer-brand p {
+            font-size: 0.85rem;
+            color: var(--muted);
+            max-width: 280px;
+            line-height: 1.7;
+        }
+
+        .footer-col h4 {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--ink);
+            margin-bottom: 16px;
+        }
+
+        .footer-col a {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--ink-light);
+            text-decoration: none;
+            padding: 4px 0;
+            transition: color 0.3s, transform 0.3s;
+        }
+
+        .footer-col a:hover {
+            color: var(--crimson);
+            transform: translateX(3px);
+        }
+
+        .footer-social {
+            display: flex;
+            gap: 12px;
+        }
+
+        .footer-social a {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            border: 1px solid var(--glass-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--muted);
+            transition: all 0.3s;
+            padding: 0;
+            background: var(--glass);
+            backdrop-filter: blur(6px);
+        }
+
+        .footer-social a:hover {
+            border-color: var(--crimson);
+            color: var(--crimson);
+            background: var(--glow-crimson);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px var(--glow-crimson);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid var(--glass-border);
+            padding-top: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .footer-bottom p {
+            font-size: 0.8rem;
+            color: var(--muted);
+        }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 1024px) {
+            .videos-grid { grid-template-columns: repeat(2, 1fr); }
+            .testimonials-grid { grid-template-columns: repeat(2, 1fr); }
+            .about-grid { gap: 40px; }
+        }
+
+        @media (max-width: 768px) {
+            .container { padding: 0 20px; }
+            nav { margin: 0 -20px; padding: 16px 20px; }
+
+            .hero { min-height: 70vh; }
+            .hero-motto-marquee { height: 44px; }
+            .hero-motto-item { font-size: 0.85rem; letter-spacing: 2px; padding-right: 64px; }
+            .hero-frame { inset: 70px 14px 14px 14px; }
+            .hero-frame-corner { width: 18px; height: 18px; }
+            .hero-video-bg { filter: brightness(1.0) contrast(1.08) saturate(1.1); }
+            .hero-overlay {
+                background:
+                    radial-gradient(ellipse at 30% 20%, rgba(255,255,255,0.2) 0%, transparent 50%),
+                    radial-gradient(ellipse at 70% 80%, rgba(255,255,255,0.1) 0%, transparent 50%),
+                    linear-gradient(135deg, rgba(255,255,255,0.25) 0%, rgba(255,255,255,0.1) 100%);
+            }
+            .hero .container { padding: 60px 20px; }
+            .hero h1 { font-size: 2.6rem; }
+            .section-title { font-size: 2rem; }
+
+            .videos-grid { grid-template-columns: 1fr; }
+            .testimonials-grid { grid-template-columns: 1fr; }
+            .about-grid { grid-template-columns: 1fr; }
+            .pillars-grid { grid-template-columns: 1fr; }
+            .book-section { grid-template-columns: 1fr; padding: 32px; }
+            .footer-grid { grid-template-columns: 1fr 1fr; }
+
+            nav .nav-links a:not(.nav-btn) { display: none; }
+        }
+
+        /* --- CATEGORY FILTER BAR --- */
+        .filter-bar {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .filter-chip {
+            padding: 9px 22px;
+            border-radius: 24px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            border: 1px solid var(--glass-border);
+            background: var(--glass);
+            color: var(--ink-light);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            user-select: none;
+            letter-spacing: 0.3px;
+        }
+
+        .filter-chip:hover {
+            border-color: var(--gold);
+            color: var(--ink);
+            background: rgba(255,255,255,0.85);
+            box-shadow: 0 4px 16px rgba(200,162,78,0.12);
+            transform: translateY(-1px);
+        }
+
+        .filter-chip.active {
+            background: linear-gradient(135deg, var(--crimson) 0%, var(--crimson-light) 100%);
+            color: #fff;
+            border-color: transparent;
+            box-shadow: 0 4px 18px var(--glow-crimson);
+            transform: translateY(-1px);
+        }
+
+        .filter-chip.active:hover {
+            background: linear-gradient(135deg, var(--crimson-dark) 0%, var(--crimson) 100%);
+            box-shadow: 0 6px 24px var(--glow-crimson);
+        }
+
+        /* Per-category badge colors */
+        .video-category.cat-theology {
+            background: linear-gradient(135deg, var(--crimson) 0%, var(--crimson-light) 100%);
+        }
+
+        .video-category.cat-scripture {
+            background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 100%);
+        }
+
+        .video-category.cat-discipleship {
+            background: linear-gradient(135deg, #6b3a5c 0%, #8a4a6c 100%);
+        }
+
+        /* Filter transitions */
+        .videos-grid .video-card {
+            transition: opacity 0.35s ease, transform 0.35s ease;
+        }
+
+        .videos-grid .video-card.filter-hidden {
+            display: none;
+        }
+
+        .videos-grid .video-card.filter-visible {
+            animation: cardFadeIn 0.35s ease forwards;
+        }
+
+        @keyframes cardFadeIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Pillar card clickable */
+        .pillar-card[data-filter] {
+            cursor: pointer;
+        }
+
+        .pillar-card[data-filter]:hover .pillar-number {
+            text-shadow: 0 0 20px rgba(200,162,78,0.5);
+        }
+
+        @media (max-width: 480px) {
+            .hero { min-height: 60vh; }
+            .hero h1 { font-size: 2rem; }
+            .hero-motto-marquee { height: 38px; }
+            .hero-motto-item { font-size: 0.72rem; letter-spacing: 1px; padding-right: 48px; }
+            .hero-motto-sep { margin: 0 16px; }
+            .hero-frame { inset: 60px 10px 10px 10px; }
+            .hero-emblem-large { width: 60px; height: 72px; }
+            .footer-grid { grid-template-columns: 1fr; }
+        }
+
+        /* ARTICLE CONTENT STYLES */
+        .article-content {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            font-size: 1.08rem;
+            line-height: 1.9;
+            color: #000000;
+            max-width: 720px;
+            margin: 0 auto;
+            font-weight: 600;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
+        }
+        .article-content p {
+            margin-bottom: 1.6em;
+            text-align: justify;
+            hyphens: auto;
+            color: #000000;
+            font-weight: 600;
+        }
+        .article-content h5 {
+            font-family: 'Playfair Display', 'Georgia', serif;
+            font-size: 1.3rem;
+            color: #5a0f20;
+            margin-top: 2.2em;
+            margin-bottom: 0.8em;
+            font-weight: 700;
+            line-height: 1.3;
+            border-bottom: 3px solid #b8922e;
+            padding-bottom: 10px;
+            display: inline-block;
+            letter-spacing: 0.3px;
+        }
+        .article-content strong {
+            color: #000000;
+            font-weight: 800;
+        }
+        .article-content em {
+            color: #3d2a1f;
+            font-style: italic;
+            font-weight: 500;
+        }
+        @media (max-width: 640px) {
+            .article-content { font-size: 1rem; line-height: 1.8; }
+            .article-content h5 { font-size: 1.2rem; }
+        }
+
+        /* --- AI AGENT SHOWCASE --- */
+        .ai-showcase {
+            padding: 100px 0;
+            background: linear-gradient(180deg, #0d0a18 0%, #1a1228 40%, #0d0a18 100%);
+            color: #fff;
+            position: relative;
+        }
+
+        .ai-showcase-bg {
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(ellipse at 20% 30%, rgba(154,117,32,0.12) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 70%, rgba(122,26,46,0.1) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(200,162,78,0.05) 0%, transparent 60%);
+            pointer-events: none;
+        }
+
+        .ai-showcase-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .ai-showcase-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 20px;
+            background: rgba(200,162,78,0.1);
+            border: 1px solid rgba(200,162,78,0.3);
+            border-radius: 50px;
+            color: var(--gold-light);
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 24px;
+        }
+
+        .ai-showcase-title {
+            font-size: clamp(2.2rem, 5vw, 3.5rem);
+            font-weight: 900;
+            line-height: 1.15;
+            margin-bottom: 20px;
+            color: #fff;
+        }
+
+        .ai-showcase-subtitle {
+            font-size: 1.1rem;
+            color: rgba(255,255,255,0.6);
+            max-width: 650px;
+            margin: 0 auto;
+            line-height: 1.7;
+            font-weight: 300;
+        }
+
+        .ai-showcase-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            margin-bottom: 50px;
+        }
+
+        .ai-showcase-card {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(200,162,78,0.15);
+            border-radius: 16px;
+            padding: 32px 28px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ai-showcase-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+
+        .ai-showcase-card:hover {
+            background: rgba(255,255,255,0.07);
+            border-color: rgba(200,162,78,0.3);
+            transform: translateY(-4px);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3), 0 0 40px rgba(200,162,78,0.08);
+        }
+
+        .ai-showcase-card:hover::before {
+            opacity: 1;
+        }
+
+        .ai-showcase-card-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, rgba(200,162,78,0.15) 0%, rgba(154,117,32,0.1) 100%);
+            border: 1px solid rgba(200,162,78,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            color: var(--gold-light);
+        }
+
+        .ai-showcase-card h3 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: #fff;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .ai-showcase-card p {
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.55);
+            line-height: 1.6;
+        }
+
+        .ai-showcase-demos {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .ai-showcase-demos-label {
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.4);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 16px;
+            font-weight: 600;
+        }
+
+        .ai-showcase-demos-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .ai-showcase-demo-chip {
+            padding: 10px 20px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(200,162,78,0.15);
+            border-radius: 50px;
+            color: rgba(255,255,255,0.7);
+            font-size: 0.85rem;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        .ai-showcase-demo-chip:hover {
+            background: rgba(200,162,78,0.15);
+            border-color: rgba(200,162,78,0.4);
+            color: var(--gold-light);
+            transform: translateY(-1px);
+        }
+
+        .ai-showcase-cta {
+            text-align: center;
+        }
+
+        .ai-showcase-cta-note {
+            margin-top: 16px;
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.4);
+        }
+
+        @media (max-width: 768px) {
+            .ai-showcase-grid { grid-template-columns: 1fr; }
+            .ai-showcase { padding: 60px 0; }
+            .ai-showcase-demos-grid { gap: 8px; }
+            .ai-showcase-demo-chip { font-size: 0.78rem; padding: 8px 14px; }
+        }
+
+        /* --- SCROLL PROGRESS BAR --- */
+        #scroll-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--crimson), var(--gold), var(--gold-light));
+            width: 0%;
+            z-index: 9999;
+            transition: width 0.1s linear;
+            box-shadow: 0 0 8px rgba(200,162,78,0.5);
+        }
+
+        /* --- REVEAL ANIMATIONS --- */
+        .reveal {
+            opacity: 0;
+            transform: translateY(36px);
+            transition: opacity 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                        transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .reveal-delay-1 { transition-delay: 0.08s; }
+        .reveal-delay-2 { transition-delay: 0.16s; }
+        .reveal-delay-3 { transition-delay: 0.24s; }
+        .reveal-delay-4 { transition-delay: 0.32s; }
+
+        /* Staggered card children */
+        .stagger-children > * {
+            opacity: 0;
+            transform: translateY(24px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+
+        .stagger-children.visible > *:nth-child(1) { transition-delay: 0.05s; }
+        .stagger-children.visible > *:nth-child(2) { transition-delay: 0.12s; }
+        .stagger-children.visible > *:nth-child(3) { transition-delay: 0.19s; }
+        .stagger-children.visible > *:nth-child(4) { transition-delay: 0.26s; }
+        .stagger-children.visible > *:nth-child(5) { transition-delay: 0.33s; }
+        .stagger-children.visible > *:nth-child(6) { transition-delay: 0.40s; }
+
+        .stagger-children.visible > * {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* --- QUICK ACCESS BAR + DROPDOWN MENUS --- */
+        .quickbar {
+            display: flex;
+            align-items: stretch;
+            gap: 10px;
+            flex-wrap: nowrap;
+            padding: 10px 0 4px;
+            border-bottom: 1px solid rgba(200,162,78,0.14);
+        }
+
+        .qb-item {
+            position: relative;
+        }
+
+        .qb-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 9px 16px;
+            border-radius: 12px;
+            border: 1px solid var(--glass-border);
+            background: rgba(255,255,255,0.65);
+            color: var(--ink);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.88rem;
+            font-weight: 600;
+            letter-spacing: 0.2px;
+            cursor: pointer;
+            transition: all 0.25s;
+            white-space: nowrap;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+        }
+
+        .qb-btn:hover,
+        .qb-item.open .qb-btn {
+            border-color: rgba(200,162,78,0.5);
+            background: #fff;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+            transform: translateY(-1px);
+        }
+
+        .qb-btn .qb-chev {
+            width: 12px;
+            height: 12px;
+            transition: transform 0.25s;
+            flex-shrink: 0;
+        }
+
+        .qb-item.open .qb-chev {
+            transform: rotate(180deg);
+        }
+
+        .qb-badge {
+            font-size: 0.62rem;
+            font-weight: 800;
+            letter-spacing: 0.6px;
+            text-transform: uppercase;
+            padding: 2px 7px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, #ff5252, #fb8500);
+            color: #fff;
+            box-shadow: 0 2px 8px rgba(255,82,82,0.35);
+            flex-shrink: 0;
+        }
+
+        .qb-badge.first {
+            background: linear-gradient(135deg, var(--crimson) 0%, #9a2a3e 100%);
+            box-shadow: 0 2px 8px rgba(122,26,46,0.35);
+        }
+
+        .qb-live {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #ff5252;
+            box-shadow: 0 0 0 0 rgba(255,82,82,0.55);
+            animation: qbPulse 1.8s infinite;
+            flex-shrink: 0;
+        }
+
+        @keyframes qbPulse {
+            0% { box-shadow: 0 0 0 0 rgba(255,82,82,0.55); }
+            70% { box-shadow: 0 0 0 8px rgba(255,82,82,0); }
+            100% { box-shadow: 0 0 0 0 rgba(255,82,82,0); }
+        }
+
+        .qb-panel {
+            position: absolute;
+            top: calc(100% + 12px);
+            left: 0;
+            width: 380px;
+            max-width: calc(100vw - 32px);
+            background: #fff;
+            border: 1px solid var(--glass-border);
+            border-radius: 18px;
+            box-shadow: 0 18px 50px rgba(0,0,0,0.14), 0 2px 10px rgba(0,0,0,0.06);
+            padding: 22px;
+            z-index: 200;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(8px);
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .qb-item.open .qb-panel {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .qb-panel .qb-eyebrow {
+            font-size: 0.66rem;
+            font-weight: 800;
+            letter-spacing: 1.4px;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 6px;
+        }
+
+        .qb-panel h4 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.25rem;
+            color: var(--ink);
+            margin: 0 0 8px;
+            line-height: 1.2;
+        }
+
+        .qb-panel p {
+            font-size: 0.88rem;
+            line-height: 1.55;
+            color: var(--ink-light);
+            margin: 0 0 12px;
+        }
+
+        .qb-panel ul {
+            list-style: none;
+            margin: 0 0 16px;
+            padding: 0;
+            display: grid;
+            gap: 8px;
+        }
+
+        .qb-panel ul li {
+            font-size: 0.84rem;
+            color: var(--ink-light);
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+        }
+
+        .qb-panel ul li::before {
+            content: '✦';
+            color: var(--gold);
+            font-size: 0.7rem;
+            margin-top: 2px;
+            flex-shrink: 0;
+        }
+
+        .qb-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 10px 18px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-decoration: none;
+            color: #fff;
+            background: linear-gradient(135deg, var(--crimson) 0%, var(--crimson-dark) 100%);
+            box-shadow: 0 4px 14px rgba(122,26,46,0.28);
+            transition: all 0.25s;
+        }
+
+        .qb-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 22px rgba(122,26,46,0.38);
+        }
+
+        .qb-cta.gold {
+            background: linear-gradient(135deg, #f0c56e 0%, #b8872f 100%);
+            color: #2a1606;
+            box-shadow: 0 4px 14px rgba(240,197,110,0.35);
+        }
+
+        .qb-cta.gold:hover {
+            box-shadow: 0 8px 22px rgba(240,197,110,0.45);
+        }
+
+        .qb-cta.kids {
+            background: linear-gradient(135deg, #fb8500 0%, #ff5252 100%);
+            box-shadow: 0 4px 14px rgba(251,133,0,0.35);
+        }
+
+        .qb-cta.kids:hover {
+            box-shadow: 0 8px 22px rgba(251,133,0,0.45);
+        }
+
+        .qb-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 14px;
+        }
+
+        .qb-chip {
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 20px;
+            background: #f5f1ea;
+            border: 1px solid rgba(200,162,78,0.2);
+            color: var(--ink-light);
+        }
+
+        @media (max-width: 900px) {
+            .quickbar { overflow-x: auto; scrollbar-width: none; }
+            .quickbar::-webkit-scrollbar { display: none; }
+        }
+
+        @media (max-width: 640px) {
+            .qb-panel { left: 0; right: 0; margin: 0 auto; }
+        }
+
+        /* --- BACK TO TOP --- */
+        #back-to-top {
+            position: fixed;
+            bottom: 32px;
+            right: 32px;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--crimson) 0%, var(--crimson-dark) 100%);
+            color: #fff;
+            border: 1px solid rgba(200,162,78,0.3);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2), 0 0 0 1px rgba(200,162,78,0.15);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(20px);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 900;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
+        #back-to-top.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        #back-to-top:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(122,26,46,0.4), 0 0 0 1px rgba(200,162,78,0.3);
+        }
+
+        #back-to-top svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* --- MOBILE NAV --- */
+        .nav-toggle {
+            display: none;
+            width: 40px;
+            height: 40px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            padding: 8px;
+            position: relative;
+            z-index: 110;
+            color: var(--ink);
+        }
+
+        .nav-toggle span {
+            display: block;
+            width: 24px;
+            height: 2px;
+            background: currentColor;
+            border-radius: 2px;
+            transition: all 0.3s;
+            position: absolute;
+            left: 8px;
+        }
+
+        .nav-toggle span:nth-child(1) { top: 11px; }
+        .nav-toggle span:nth-child(2) { top: 19px; }
+        .nav-toggle span:nth-child(3) { top: 27px; }
+
+        .nav-toggle.open span:nth-child(1) {
+            top: 19px;
+            transform: rotate(45deg);
+        }
+
+        .nav-toggle.open span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .nav-toggle.open span:nth-child(3) {
+            top: 19px;
+            transform: rotate(-45deg);
+        }
+
+        .nav-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.4);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 50;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .nav-overlay.show {
+            opacity: 1;
+        }
+
+        .nav-mobile-panel {
+            position: fixed;
+            top: 0;
+            right: -300px;
+            width: 280px;
+            height: 100vh;
+            background: linear-gradient(180deg, #faf8f5 0%, #f0ebe3 100%);
+            z-index: 105;
+            padding: 80px 32px 32px;
+            transition: right 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: -10px 0 40px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            overflow-y: auto;
+        }
+
+        .nav-mobile-panel.open {
+            right: 0;
+        }
+
+        .nav-mobile-panel a {
+            text-decoration: none;
+            color: var(--ink-light);
+            font-size: 1.1rem;
+            font-weight: 500;
+            padding: 12px 16px;
+            border-radius: 10px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .nav-mobile-panel a:hover,
+        .nav-mobile-panel a:active {
+            background: rgba(200,162,78,0.12);
+            color: var(--ink);
+            transform: translateX(4px);
+        }
+
+        .nav-mobile-panel .nav-mobile-subscribe {
+            margin-top: 16px;
+            background: linear-gradient(135deg, var(--crimson) 0%, #9a2a3e 100%);
+            color: #fff !important;
+            padding: 14px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            justify-content: center;
+            box-shadow: 0 4px 15px var(--glow-crimson);
+        }
+
+        .nav-mobile-panel .nav-mobile-subscribe:hover {
+            transform: translateY(-2px);
+        }
+
+        /* --- ACTIVE NAV LINK --- */
+        .nav-links a.active-section {
+            color: var(--crimson);
+            font-weight: 600;
+        }
+
+        /* --- FOCUS STYLES --- */
+        :focus-visible {
+            outline: 2px solid var(--gold);
+            outline-offset: 3px;
+            border-radius: 4px;
+        }
+
+        a:focus-visible,
+        button:focus-visible,
+        input:focus-visible,
+        textarea:focus-visible {
+            outline: 2px solid var(--gold);
+            outline-offset: 3px;
+            border-radius: 4px;
+        }
+
+        /* --- SMOOTH CUSTOM SCROLLBAR --- */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(200,162,78,0.25);
+            border-radius: 10px;
+            border: 2px solid transparent;
+            background-clip: content-box;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(200,162,78,0.4);
+            border: 2px solid transparent;
+            background-clip: content-box;
+        }
+
+        @media (max-width: 768px) {
+            .nav-toggle { display: block; }
+            .nav-links { display: none; }
+            #back-to-top { bottom: 20px; right: 20px; width: 44px; height: 44px; }
+        }
+    </style>
+</head>
+<body>
+    <!-- SCROLL PROGRESS BAR -->
+    <div id="scroll-progress"></div>
+
+    <!-- NAV -->
+    <div class="container">
+        <nav>
+            <a href="#" class="nav-logo">
+                <div class="shield">
+                    <svg viewBox="0 0 36 44" fill="none">
+                        <path d="M18 2 L34 9 L34 24 C34 33 18 42 18 42 C18 42 2 33 2 24 L2 9 Z" fill="#7a1a2e"/>
+                        <path d="M18 7 L30 12 L30 24 C30 31 18 37 18 37 C18 37 6 31 6 24 L6 12 Z" fill="none" stroke="#9a7520" stroke-width="1.5"/>
+                        <text x="18" y="26" text-anchor="middle" fill="#9a7520" font-size="11" font-weight="bold" font-family="serif">W</text>
+                    </svg>
+                </div>
+                <span class="nav-logo-text">WhatIfWe<span>Believed</span></span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="#videos">Videos</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#articles">Articles</a></li>
+                <li><a href="#book">Book</a></li>
+                <li><a href="#ai-agent-showcase">AI Agent</a></li>
+                <li><a href="bible-game/index.html" style="color:var(--crimson);font-weight:600;">Kids' Game</a></li>
+                <li><a href="radio/index.html" style="display:inline-flex;align-items:center;gap:6px;padding:7px 16px;border-radius:24px;background:linear-gradient(135deg,#f0c56e 0%,#b8872f 100%);color:#2a1606;font-weight:700;box-shadow:0 4px 14px rgba(240,197,110,0.35);transition:all 0.3s;">&#128251; Radio</a></li>
+                <li><a href="https://www.youtube.com/@paulos1844?sub_confirmation=1" target="_blank" class="nav-btn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                    Subscribe
+                </a></li>
+            </ul>
+            <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+                <span></span><span></span><span></span>
+            </button>
+        </nav>
+
+        <!-- QUICK ACCESS BAR + DROPDOWN MENUS -->
+        <div class="quickbar" id="quickbar">
+            <div class="qb-item" data-qb="kids">
+                <button class="qb-btn" type="button" aria-haspopup="true" aria-expanded="false">
+                    Kids' Corner
+                    <span class="qb-badge">New</span>
+                    <svg class="qb-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+                <div class="qb-panel">
+                    <div class="qb-eyebrow">Kids' Corner · New</div>
+                    <h4>Bible Game for Children</h4>
+                    <p>A colorful 600-question Bible adventure made just for kids &mdash; with stars, streaks, badges, music, and lots of celebration!</p>
+                    <ul>
+                        <li>600 questions across the whole Bible</li>
+                        <li>Stars, streaks &amp; 19 collectible badges</li>
+                        <li>Music, confetti &amp; a kid-safe design</li>
+                    </ul>
+                    <a class="qb-cta kids" href="bible-game/index.html">Play the Bible Game &rarr;</a>
+                    <div class="qb-chips"><span class="qb-chip">Free</span><span class="qb-chip">Ages 5&ndash;12</span><span class="qb-chip">No sign-up</span></div>
+                </div>
+            </div>
+            <div class="qb-item" data-qb="prophecy">
+                <button class="qb-btn" type="button" aria-haspopup="true" aria-expanded="false">
+                    Prophecy Study
+                    <span class="qb-badge">New</span>
+                    <svg class="qb-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+                <div class="qb-panel">
+                    <div class="qb-eyebrow">Daniel · Revelation · Teens &amp; Adults</div>
+                    <h4>Bible Prophecy Study Game</h4>
+                    <p>A 560-question quiz tracing Daniel&rsquo;s pattern into Revelation&rsquo;s enlargement &mdash; 20 mirror gates for home, Sabbath School, or retreat.</p>
+                    <ul>
+                        <li>560 questions across 20 Daniel &harr; Revelation mirror gates</li>
+                        <li>1- or 2-player with scores, streaks &amp; steal rounds</li>
+                        <li>Scripture references &amp; historicist study notes</li>
+                    </ul>
+                    <a class="qb-cta gold" href="https://1844p.github.io/Bible-Prophecy-Adult-Game/" target="_blank" rel="noopener">Play the Prophecy Game &rarr;</a>
+                    <div class="qb-chips"><span class="qb-chip">Teens &amp; adults</span><span class="qb-chip">Free</span><span class="qb-chip">No sign-up</span></div>
+                </div>
+            </div>
+            <div class="qb-item" data-qb="radio">
+                <button class="qb-btn" type="button" aria-haspopup="true" aria-expanded="false">
+                    <span class="qb-live" aria-hidden="true"></span>
+                    The Station
+                    <span class="qb-badge">On the Air</span>
+                    <svg class="qb-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+                <div class="qb-panel">
+                    <div class="qb-eyebrow">The Station · On the Air</div>
+                    <h4>What If We Believed Radio</h4>
+                    <p>An original radio experience with hymns, encouragement, and truth &mdash; now broadcasting live to the world.</p>
+                    <ul>
+                        <li>90-second broadcasts, on demand</li>
+                        <li>Beautiful hymns &amp; a warm station sound</li>
+                        <li>New episodes arriving every week</li>
+                    </ul>
+                    <a class="qb-cta gold" href="radio/index.html">&#128251; Tune In to the Radio &rarr;</a>
+                    <div class="qb-chips"><span class="qb-chip">Live now</span><span class="qb-chip">Free</span><span class="qb-chip">Any device</span></div>
+                </div>
+            </div>
+            <div class="qb-item" data-qb="agent">
+                <button class="qb-btn" type="button" aria-haspopup="true" aria-expanded="false">
+                    AI Agent
+                    <span class="qb-badge first">First of its kind</span>
+                    <svg class="qb-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+                <div class="qb-panel">
+                    <div class="qb-eyebrow">Possibly the First Adventist-Focused AI Agent</div>
+                    <h4>Ask Anything About Adventist Theology</h4>
+                    <p>Thoughtful, Scripture-rooted answers to your deepest questions about faith, prophecy, and the Bible.</p>
+                    <ul>
+                        <li>Rooted in Adventist theology &amp; the Bible</li>
+                        <li>Clear, compassionate, thoughtful answers</li>
+                        <li>Free to use &mdash; right in your browser</li>
+                    </ul>
+                    <a class="qb-cta" href="#ai-agent-showcase">Meet the AI Agent &rarr;</a>
+                    <div class="qb-chips"><span class="qb-chip">Try it now</span><span class="qb-chip">Free</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MOBILE NAV OVERLAY & PANEL -->
+    <div class="nav-overlay" id="navOverlay"></div>
+    <div class="nav-mobile-panel" id="navMobilePanel">
+        <a href="#videos" onclick="closeMobileNav()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+            Videos
+        </a>
+        <a href="#about" onclick="closeMobileNav()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+            About
+        </a>
+        <a href="#articles" onclick="closeMobileNav()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+            Articles
+        </a>
+        <a href="#book" onclick="closeMobileNav()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M20 2H8a2 2 0 0 0-2 2v16h14V2z"/></svg>
+            Free Book
+        </a>
+        <a href="#ai-agent-showcase" onclick="closeMobileNav()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a4 4 0 0 1 4 4c0 1.95-1.4 3.58-3.25 3.93L12 22"/><circle cx="12" cy="6" r="1" fill="currentColor" stroke="none"/></svg>
+            AI Agent
+        </a>
+        <a href="bible-game/index.html" onclick="closeMobileNav()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+            Kids' Game
+        </a>
+        <a href="radio/index.html" onclick="closeMobileNav()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg>
+            Radio
+        </a>
+        <a href="https://www.youtube.com/@paulos1844?sub_confirmation=1" target="_blank" class="nav-mobile-subscribe" onclick="closeMobileNav()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            Subscribe on YouTube
+        </a>
+    </div>
+
+    <!-- HERO -->
+    <section class="hero">
+        <div class="hero-video-bg">
+            <div class="hero-video-inner">
+                <div id="hero-video-player"></div>
+                <iframe 
+                    id="hero-video-iframe"
+                    src="https://www.youtube.com/embed/D2FfteQ7sXI?autoplay=1&mute=1&loop=1&playlist=D2FfteQ7sXI&controls=0&showinfo=0&rel=0&modestbranding=1&iv_load_policy=3&enablejsapi=1" 
+                    allow="autoplay; encrypted-media; fullscreen" 
+                    allowfullscreen
+                    frameborder="0"
+                    title="Hero Background Video">
+                </iframe>
+            </div>
+        </div>
+        <div class="hero-overlay"></div>
+        <div class="hero-frame" aria-hidden="true">
+            <span class="hero-frame-corner tl"></span>
+            <span class="hero-frame-corner tr"></span>
+            <span class="hero-frame-corner bl"></span>
+            <span class="hero-frame-corner br"></span>
+        </div>
+        <div class="hero-motto-marquee" aria-hidden="true">
+            <div class="hero-motto-track">
+                <span class="hero-motto-item">We Affirm Faith <span class="hero-motto-sep">&#9670;</span> We Celebrate Critical Christian Thinking <span class="hero-motto-sep">&#9670;</span></span>
+                <span class="hero-motto-item">We Affirm Faith <span class="hero-motto-sep">&#9670;</span> We Celebrate Critical Christian Thinking <span class="hero-motto-sep">&#9670;</span></span>
+            </div>
+        </div>
+        <div class="container">
+            <div class="hero-emblem-large">
+                <svg viewBox="0 0 72 88" fill="none">
+                    <path d="M36 4 L68 14 L68 30 C68 46 36 60 36 60 C36 60 4 46 4 30 L4 14 Z" stroke="#9a7520" stroke-width="1.5"/>
+                    <path d="M36 12 L58 19 L58 30 C58 42 36 52 36 52 C36 52 14 42 14 30 L14 19 Z" stroke="#b89040" stroke-width="1.5"/>
+                    <text x="36" y="38" text-anchor="middle" fill="#9a7520" font-size="16" font-weight="bold" font-family="serif">W</text>
+                </svg>
+            </div>
+            <h1>What If We <span class="highlight">Believed</span>?<br><span class="gold-highlight">Exploring Faith Together</span></h1>
+            <div class="hero-ticker">
+                <div class="hero-ticker-track">
+                    <span>Theology</span><span>Scripture</span><span>Discipleship</span><span>Faith</span><span>Truth</span>
+                    <span>Theology</span><span>Scripture</span><span>Discipleship</span><span>Faith</span><span>Truth</span>
+                </div>
+            </div>
+            <p class="hero-subtitle">A channel devoted to the exploration of faith, theology, and the transformative power of belief. Join us as we wrestle with life's biggest questions and discover truth together.</p>
+            <div class="hero-actions">
+                <a href="https://www.youtube.com/@paulos1844?sub_confirmation=1" target="_blank" class="btn-primary">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                    Subscribe on YouTube
+                </a>
+                <a href="#videos" class="btn-secondary">Browse Teachings</a>
+            </div>
+            <a href="#ai-agent-showcase" class="hero-ai-badge">
+                <span class="hero-ai-badge-pulse"></span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a4 4 0 0 1 4 4c0 1.95-1.4 3.58-3.25 3.93L12 22"/><path d="M12 2a4 4 0 0 0-4 4c0 1.95 1.4 3.58 3.25 3.93"/><circle cx="12" cy="6" r="1" fill="currentColor" stroke="none"/><path d="M4.93 10.93a4 4 0 0 0 3.53 5.64"/><path d="M19.07 10.93a4 4 0 0 1-3.53 5.64"/></svg>
+                <span>AI-Powered Theology Agent</span>
+                <span class="hero-ai-badge-tag">New</span>
+            </a>
+        </div>
+    </section>
+
+    <!-- FEATURED VIDEOS -->
+    <section id="videos" class="section">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-label">Featured Teachings</div>
+                <h2 class="section-title">Recent Conversations</h2>
+                <p class="section-subtitle">Thought-provoking teachings exploring faith, scripture, and the life of belief.</p>
+            </div>
+            <div class="filter-bar" id="videoFilter">
+                <button class="filter-chip active" data-filter="all" onclick="filterVideos('all', this)">All</button>
+                <button class="filter-chip" data-filter="theology" onclick="filterVideos('theology', this)">Theology</button>
+                <button class="filter-chip" data-filter="scripture" onclick="filterVideos('scripture', this)">Scripture</button>
+                <button class="filter-chip" data-filter="discipleship" onclick="filterVideos('discipleship', this)">Discipleship</button>
+            </div>
+            <div class="videos-grid" id="videosGrid">
+                <a href="https://www.youtube.com/watch?v=ea0dtxkE-bw" target="_blank" class="video-card" data-category="theology">
+                    <div class="video-thumb">
+                        <img src="https://i.ytimg.com/vi/ea0dtxkE-bw/hqdefault.jpg" alt="Reprogramming an Empire" loading="lazy">
+                        <span class="video-category cat-theology">Theology</span>
+                        <div class="play-overlay">
+                            <div class="play-btn-circle">
+                                <svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="video-info">
+                        <h3>Reprogramming an Empire: From Erased Asset to Indispensable Anchor</h3>
+                        <div class="video-meta">WhatIfWeBelieved</div>
+                    </div>
+                </a>
+                <a href="https://www.youtube.com/watch?v=l9V_MDWfUkg" target="_blank" class="video-card" data-category="theology">
+                    <div class="video-thumb">
+                        <img src="https://i.ytimg.com/vi/l9V_MDWfUkg/hqdefault.jpg" alt="Unstoppable" loading="lazy">
+                        <span class="video-category cat-theology">Theology</span>
+                        <div class="play-overlay">
+                            <div class="play-btn-circle">
+                                <svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="video-info">
+                        <h3>Unstoppable: The Rebooted Asset</h3>
+                        <div class="video-meta">WhatIfWeBelieved</div>
+                    </div>
+                </a>
+                <a href="https://www.youtube.com/watch?v=881ddNnGCfs" target="_blank" class="video-card" data-category="scripture">
+                    <div class="video-thumb">
+                        <img src="https://i.ytimg.com/vi/881ddNnGCfs/hqdefault.jpg" alt="How a Good Man Loses His Shape" loading="lazy">
+                        <span class="video-category cat-scripture">Scripture</span>
+                        <div class="play-overlay">
+                            <div class="play-btn-circle">
+                                <svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="video-info">
+                        <h3>How a Good Man Loses His Shape</h3>
+                        <div class="video-meta">WhatIfWeBelieved</div>
+                    </div>
+                </a>
+                <a href="https://www.youtube.com/watch?v=vfUmeceFEhw" target="_blank" class="video-card" data-category="discipleship">
+                    <div class="video-thumb">
+                        <img src="https://i.ytimg.com/vi/vfUmeceFEhw/hqdefault.jpg" alt="No Guardrails" loading="lazy">
+                        <span class="video-category cat-discipleship">Discipleship</span>
+                        <div class="play-overlay">
+                            <div class="play-btn-circle">
+                                <svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="video-info">
+                        <h3>No Guardrails: Faith Without a Safety Net</h3>
+                        <div class="video-meta">WhatIfWeBelieved</div>
+                    </div>
+                </a>
+                <a href="https://www.youtube.com/watch?v=AJq8H3v6z-s" target="_blank" class="video-card" data-category="scripture">
+                    <div class="video-thumb">
+                        <img src="https://i.ytimg.com/vi/AJq8H3v6z-s/hqdefault.jpg" alt="Not a Word" loading="lazy">
+                        <span class="video-category cat-scripture">Scripture</span>
+                        <div class="play-overlay">
+                            <div class="play-btn-circle">
+                                <svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="video-info">
+                        <h3>Not a Word</h3>
+                        <div class="video-meta">WhatIfWeBelieved</div>
+                    </div>
+                </a>
+                <a href="https://www.youtube.com/watch?v=D2FfteQ7sXI" target="_blank" class="video-card" data-category="theology">
+                    <div class="video-thumb">
+                        <img src="https://i.ytimg.com/vi/D2FfteQ7sXI/hqdefault.jpg" alt="Stop Fighting for the Tent" loading="lazy">
+                        <span class="video-category cat-theology">Theology</span>
+                        <div class="play-overlay">
+                            <div class="play-btn-circle">
+                                <svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="video-info">
+                        <h3>Stop Fighting for the Tent</h3>
+                        <div class="video-meta">WhatIfWeBelieved</div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- DIVIDER -->
+    <div class="container">
+        <div class="section-divider">
+            <span class="divider-diamond"></span>
+        </div>
+    </div>
+
+    <!-- ABOUT -->
+    <section id="about" class="section section-dark">
+        <div class="container">
+            <div class="about-grid">
+                <div class="about-text">
+                    <div class="section-label" style="text-align:left;">Our Mission</div>
+                    <h2 class="section-title" style="font-size:2.2rem;">Faith Seeking<br>Understanding</h2>
+                    <p class="lead">WhatIfWeBelieved is a YouTube channel dedicated to exploring the depths of Christian faith through thoughtful teaching, biblical reflection, and honest conversation.</p>
+                    <p>In a world that often reduces faith to sentiment or dismisses it as irrational, we believe that asking "what if we believed?" opens the door to a more vibrant, intellectually honest, and transformative encounter with God.</p>
+                    <p>Whether you are a seasoned believer, a curious skeptic, or somewhere in between, you are welcome here.</p>
+                    <a href="https://www.youtube.com/@paulos1844" target="_blank" class="btn-primary" style="margin-top:8px;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                        Visit the Channel
+                    </a>
+                    <p style="margin-top:16px;font-size:0.9rem;color:var(--ink-light);">Questions? Contact us at <a href="mailto:wentlandwordsworth@gmail.com" style="color:var(--crimson);text-decoration:none;font-weight:600;">wentlandwordsworth@gmail.com</a></p>
+                </div>
+                <div class="about-image" style="background-image:url('https://i.ytimg.com/vi/gaUP18rqD4A/hqdefault.jpg');background-size:cover;background-position:center;">
+                    <a href="https://www.youtube.com/watch?v=gaUP18rqD4A" target="_blank" style="display:block;width:100%;height:100%;position:relative;">
+                        <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;background:rgba(122,26,46,0.75);opacity:0;transition:opacity 0.3s;"
+                             onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0'">
+                            <svg width="56" height="40" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg>
+                            <span style="color:#fff;font-size:1.1rem;font-weight:600;font-family:'Inter',sans-serif;">Watch Now →</span>
+                        </div>
+                    </a>
+                    <div class="image-caption" style="flex-direction:column;align-items:flex-start;gap:6px;">
+                        <span style="background:var(--gold);color:white;padding:4px 10px;border-radius:20px;font-size:0.75rem;font-weight:700;letter-spacing:0.5px;">New Video</span>
+                        <span style="color:white;font-size:0.9rem;font-weight:600;text-shadow:0 1px 3px rgba(0,0,0,0.5);">The Guillotine vs. The Tabernacle</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CONTENT PILLARS -->
+    <section class="section section-dark" style="padding-top:0;position:relative;overflow:hidden;">
+        <div style="position:absolute;inset:0;z-index:0;background:url('wallpaper-theology.svg?v=2') center/cover no-repeat;opacity:0.4;"></div>
+        <div class="container" style="position:relative;z-index:1;">
+            <div class="section-header">
+                <div class="section-label">Three Pillars</div>
+                <h2 class="section-title">Our Content Focus</h2>
+                <p class="section-subtitle">Every teaching is rooted in one of three areas that define our approach to faith.</p>
+            </div>
+            <div class="pillars-grid">
+                <div class="pillar-card" data-filter="theology" onclick="scrollAndFilter('theology')">
+                    <div class="pillar-number">01</div>
+                    <h3>Theology</h3>
+                    <div class="pillar-tagline">Deep Dive &middot; Foundational Truths</div>
+                    <p>Exploring the doctrines of the Christian faith — the nature of God, the work of Christ, the role of Scripture, and the grand narrative of redemption.</p>
+                    <ul>
+                        <li>Systematic theology</li>
+                        <li>Biblical theology</li>
+                        <li>Historical creeds</li>
+                    </ul>
+                </div>
+                <div class="pillar-card" data-filter="scripture" onclick="scrollAndFilter('scripture')">
+                    <div class="pillar-number">02</div>
+                    <h3>Scripture</h3>
+                    <div class="pillar-tagline">Exposition &middot; Parables &middot; Narrative</div>
+                    <p>Walking through the biblical text with care and attention — uncovering the meaning of passages, parables, and stories that shape the life of faith.</p>
+                    <ul>
+                        <li>Verse-by-verse teaching</li>
+                        <li>Parables explained</li>
+                        <li>Old &amp; New Testament</li>
+                    </ul>
+                </div>
+                <div class="pillar-card" data-filter="discipleship" onclick="scrollAndFilter('discipleship')">
+                    <div class="pillar-number">03</div>
+                    <h3>Discipleship</h3>
+                    <div class="pillar-tagline">Practice &middot; Formation &middot; Life</div>
+                    <p>What does it look like to follow Jesus in the modern world? Practical teaching on prayer, community, suffering, and the habits of the Christian life.</p>
+                    <ul>
+                        <li>Spiritual disciplines</li>
+                        <li>Faith &amp; culture</li>
+                        <li>Christian living</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- THEOLOGY ARTICLES -->
+    <section class="section" id="articles">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-label">Theology</div>
+                <h2 class="section-title">Articles &amp; Reviews</h2>
+                <p class="section-subtitle">In-depth theological writing and sermon reviews for the serious student of Scripture.</p>
+            </div>
+            <div class="pillar-card" style="max-width:800px;margin:0 auto;">
+                <div class="pillar-number">01</div>
+                <h3 style="font-size:1.5rem;">"God's Mixed Feelings About Jewelry"</h3>
+                <div class="pillar-tagline">Sermon Review &middot; Dr. Alexander Biscette &middot; Reviewed by Pastor Wentland Paul</div>
+                <p style="margin-top:16px;">This review examines the hermeneutical method and exegetical claims of Dr. Alexander Biscette's sermon "God's Mixed Feelings About Jewelry." The sermon argues, from a survey of texts spanning Genesis to the Pastoral and General Epistles, that jewelry is morally neutral in itself and that scripture's censure falls on idolatrous disposition rather than on the object worn. This review finds that the argument presented for that conclusion does not hold under sustained examination.</p>
+                <p style="margin-top:12px;">The sermon rests on a single controlling hermeneutic applied recursively across dissimilar texts rather than on the convergent, independent witnesses it presents itself as marshaling. That hermeneutic conflates divine forbearance with divine sanction, misreads precious metal functioning as currency as personal ornament, and sits uneasily beside an extended sequence of illustrative anecdotes that function rhetorically as mockery of the very appearances the sermon claims not to be judging.</p>
+                <div style="margin-top:24px;display:flex;gap:12px;flex-wrap:wrap;">
+                    <a href="paul_review_unsparing.pdf" download class="btn-primary" style="text-decoration:none;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                        Download .pdf
+                    </a>
+                    <a href="articles/gods-mixed-feelings-about-jewelry/" class="btn-primary" style="text-decoration:none;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                        Read Full Review
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- DIVIDER -->
+    <div class="container">
+        <div class="section-divider light">
+            <span class="divider-diamond"></span>
+        </div>
+    </div>
+
+    <!-- TESTIMONIALS -->
+    <section class="section">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-label">Voices</div>
+                <h2 class="section-title">What People Are Saying</h2>
+                <p class="section-subtitle">The What If We Believed Forum has inspired a global conversation about faith and reason. Here are voices from the wider community.</p>
+            </div>
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <div class="quote-mark">&ldquo;</div>
+                    <blockquote>Jesus said that the One who created the outside also created the inside. God is concerned not only with what people see, but with the heart. Christ emptied Himself of His privileges and power to serve us as a human being. That is the pattern of true leadership. This is the Politics of Jesus…</blockquote>
+                    <div class="attribution">
+                        <div class="avatar">B</div>
+                        <div>
+                            <div class="name">Bruce Paul</div>
+                            <div class="role">Florida, USA</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="quote-mark">&ldquo;</div>
+                    <blockquote>Pastor Wentland Paul, through his weekly voice notes, has touched minds and hearts both regionally and internationally. With his God-given creative genius, he has unpacked natural truths, broached touchy subjects, met spiritual needs, prioritized the Word of God, expounded and stimulated depth of thought and elicited positive feedback. May his selfless work be memorialized in the minds of many to the greater glory of God.</blockquote>
+                    <div class="attribution">
+                        <div class="avatar">L</div>
+                        <div>
+                            <div class="name">Dr. Lazarus Castang (PhD)</div>
+                            <div class="role">Boston, MA, USA</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="quote-mark">&ldquo;</div>
+                    <blockquote>The Sabbath Voice Note by Pastor Wentland Paul is a gripping Theo-Psycho-Social commentary which captures the prevailing experiential and philosophical discourse and provides biblical meaning, direction and clarity to our post-modern and post-Christian realities. In a few priceless moments Pastor Wentland Paul skillfully identifies the subtle sweet baffling deceit used by the enemy to trap the secular mind and like Elijah rebuilding the altar of truth he lays clear epistemological moorings to anchor the mind in the path that leads to everlasting life!</blockquote>
+                    <div class="attribution">
+                        <div class="avatar">T</div>
+                        <div>
+                            <div class="name">Pastor Terry Alva John</div>
+                            <div class="role">Vice President for Spiritual Development, University of the Southern Caribbean, Trinidad &amp; Tobago</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- BOOK / RESOURCE -->
+    <section id="book" class="section" style="padding-top:0;">
+        <div class="container">
+            <div class="book-section">
+                <div class="book-visual">
+                    <div class="book-icon-svg">
+                        <svg viewBox="0 0 56 56" fill="none">
+                            <rect x="8" y="6" width="40" height="44" rx="2" stroke="white" stroke-width="1.5" fill="none"/>
+                            <rect x="12" y="10" width="32" height="36" rx="1" stroke="white" stroke-width="1" fill="none" opacity="0.5"/>
+                            <line x1="16" y1="20" x2="40" y2="20" stroke="white" stroke-width="1" opacity="0.6"/>
+                            <line x1="16" y1="26" x2="36" y2="26" stroke="white" stroke-width="1" opacity="0.4"/>
+                            <line x1="16" y1="32" x2="32" y2="32" stroke="white" stroke-width="1" opacity="0.4"/>
+                            <line x1="16" y1="38" x2="28" y2="38" stroke="white" stroke-width="1" opacity="0.3"/>
+                        </svg>
+                    </div>
+                    <h3>Affirming Faith<br>Through Thought</h3>
+                    <div class="book-sub">A Limited Release</div>
+                </div>
+                <div class="book-info">
+                    <div class="section-label" style="text-align:left;">Free Download</div>
+                    <h2>Affirming Faith <span>Through Thought</span></h2>
+                    <p>A limited-release book exploring the intersection of reason and belief. This volume invites readers to consider how thoughtful engagement with Scripture, theology, and the life of the mind can deepen and enrich Christian faith.</p>
+                    <p>Available for a short time as a free download.</p>
+                    <div style="display:flex;gap:12px;flex-wrap:wrap;">
+                        <a href="Affirming_Faith_Through_Thought_Refined.pdf" target="_blank" class="btn-download" download>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                            Download Book
+                        </a>
+                        <a href="Affirming_Faith_Through_Thought_Workbook.pdf" target="_blank" class="btn-download" download>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                            Download Workbook
+                        </a>
+                    </div>
+                    <div class="release-note">Limited release &middot; Free for a short time</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- KIDS' CORNER — BIBLE GAME FOR CHILDREN -->
+    <section id="kids-corner" class="section" style="padding:80px 0;background:linear-gradient(135deg,#fff7e8 0%,#fdf0ff 50%,#eef8ff 100%);border-top:1px solid var(--glass-border);border-bottom:1px solid var(--glass-border);">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-label" style="color:var(--crimson);">Kids' Corner &middot; New</div>
+                <h2 class="section-title" style="font-size:2.4rem;">Bible Game for Children</h2>
+                <p class="section-subtitle">A colorful 600-question Bible adventure made just for kids &mdash; with stars, streaks, badges, music, and lots of celebration!</p>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-bottom:36px;">
+                <div style="background:var(--glass);border:1px solid var(--glass-border);border-radius:16px;padding:32px 28px;text-align:center;backdrop-filter:blur(10px);box-shadow:0 4px 20px rgba(0,0,0,0.04);">
+                    <div style="font-size:44px;margin-bottom:10px;">&#127759;</div>
+                    <h3 style="font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--ink);margin-bottom:6px;">10 Big Adventures</h3>
+                    <p style="font-size:0.9rem;color:var(--ink-light);">From Creation to Revelation &mdash; every story of the Bible becomes a quest.</p>
+                </div>
+                <div style="background:var(--glass);border:1px solid var(--glass-border);border-radius:16px;padding:32px 28px;text-align:center;backdrop-filter:blur(10px);box-shadow:0 4px 20px rgba(0,0,0,0.04);">
+                    <div style="font-size:44px;margin-bottom:10px;">&#11088;&#127873;</div>
+                    <h3 style="font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--ink);margin-bottom:6px;">Stars &amp; Badges</h3>
+                    <p style="font-size:0.9rem;color:var(--ink-light);">Earn stars for quick answers and collect 19 fun badge stickers along the way.</p>
+                </div>
+                <div style="background:var(--glass);border:1px solid var(--glass-border);border-radius:16px;padding:32px 28px;text-align:center;backdrop-filter:blur(10px);box-shadow:0 4px 20px rgba(0,0,0,0.04);">
+                    <div style="font-size:44px;margin-bottom:10px;">&#128266;&#127881;</div>
+                    <h3 style="font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--ink);margin-bottom:6px;">Music &amp; Confetti</h3>
+                    <p style="font-size:0.9rem;color:var(--ink-light);">Happy music, sound effects, and confetti bursts celebrate every win!</p>
+                </div>
+            </div>
+            <div style="text-align:center;">
+                <a href="bible-game/index.html" class="btn-primary" style="font-size:1.15rem;padding:16px 44px;background:linear-gradient(135deg,#fb8500 0%,#ff5252 100%);box-shadow:0 6px 25px rgba(251,133,0,0.4);">
+                    &#127752; Play the Bible Game for Children
+                </a>
+                <p style="margin-top:14px;font-size:0.85rem;color:var(--muted);">Free &middot; No sign-up &middot; 600 questions &middot; Your progress is saved automatically</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- WHAT IF WE BELIEVED RADIO -->
+    <style>
+        /* ---- radio listening-room atmosphere ---- */
+        .radio-hero { position: relative; overflow: hidden; }
+        .radio-hero::before { content: ''; position: absolute; inset: 0; pointer-events: none; background:
+            radial-gradient(600px 320px at 12% 0%, rgba(240,197,110,0.18), transparent 60%),
+            radial-gradient(560px 320px at 88% 100%, rgba(255,246,232,0.10), transparent 60%); }
+        .radio-orbs { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+        .radio-orbs span { position: absolute; border-radius: 50%; filter: blur(44px); opacity: .40; animation: orbFloat 14s ease-in-out infinite; }
+        .radio-orbs span:nth-child(1) { width: 230px; height: 230px; background: #f0c56e; top: -40px; left: 7%; }
+        .radio-orbs span:nth-child(2) { width: 190px; height: 190px; background: #ff8f70; bottom: -36px; right: 9%; animation-delay: -5s; opacity: .16; }
+        .radio-orbs span:nth-child(3) { width: 150px; height: 150px; background: #aef7c4; top: 42%; left: 56%; animation-delay: -9s; opacity: .10; }
+        @keyframes orbFloat { 0%,100% { transform: translateY(0) scale(1); } 50% { transform: translateY(24px) scale(1.06); } }
+
+        /* ---- vintage radio cabinet ---- */
+        .radio-cab { position: relative; width: 100%; max-width: 420px; margin: 0 auto 44px; }
+        .radio-cab .cabinet { position: relative; border-radius: 26px; padding: 30px 26px 26px;
+            background: linear-gradient(160deg, #b07c48 0%, #8a5a2e 45%, #5f3c1f 100%);
+            border: 1px solid rgba(240,197,110,0.5);
+            box-shadow: 0 24px 60px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,246,232,0.2), inset 0 -18px 30px rgba(0,0,0,0.2); }
+        .radio-cab .grille { display: flex; gap: 10px; justify-content: center; padding: 12px 0 10px; }
+        .radio-cab .grille i { width: 9px; height: 9px; border-radius: 50%; background: rgba(56,30,14,0.85); box-shadow: inset 0 1px 2px rgba(0,0,0,0.6); }
+        .radio-cab .dial { position: relative; background: linear-gradient(180deg, #3a2818, #4e331d); border: 1px solid rgba(240,197,110,0.35); border-radius: 14px; padding: 14px 12px 10px; margin-top: 6px; box-shadow: inset 0 2px 10px rgba(0,0,0,0.4); }
+        .radio-cab .freq { font-family: 'Playfair Display', serif; color: var(--cream); text-align: center; letter-spacing: 2px; font-size: 1.15rem; }
+        .radio-cab .band { display: flex; justify-content: space-between; font-size: .62rem; color: rgba(247,239,220,0.5); letter-spacing: 1px; margin-top: 4px; padding: 0 2px; }
+        .radio-cab .needle { position: absolute; bottom: 9px; left: 50%; width: 2px; height: 46px; background: #ff5252; transform-origin: 50% 100%; box-shadow: 0 0 8px rgba(255,82,82,0.8); animation: needleSway 6s ease-in-out infinite; }
+        .radio-cab .needle::after { content: ''; position: absolute; top: -5px; left: -3px; width: 8px; height: 8px; border-radius: 50%; background: #ff5252; box-shadow: 0 0 10px #ff5252; }
+        @keyframes needleSway { 0%,100% { transform: rotate(-6deg); } 50% { transform: rotate(8deg); } }
+        .radio-cab .onair { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 13px; font-size: .78rem; letter-spacing: 3px; color: rgba(247,239,220,0.85); text-transform: uppercase; }
+        .radio-cab .onair .dot { width: 10px; height: 10px; border-radius: 50%; background: #ff5252; box-shadow: 0 0 12px #ff5252; animation: pulseDot 1.6s ease-in-out infinite; }
+        @keyframes pulseDot { 0%,100% { opacity: 1; } 50% { opacity: .35; } }
+        .radio-cab .knobs { display: flex; justify-content: center; gap: 26px; margin-top: 16px; }
+        .radio-cab .knob { width: 46px; height: 46px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #e0b45a, #8a6d2f 70%); box-shadow: 0 4px 12px rgba(0,0,0,0.4), inset 0 2px 3px rgba(255,255,255,0.35); position: relative; }
+        .radio-cab .knob::after { content: ''; position: absolute; top: 8px; left: 50%; transform: translateX(-50%); width: 4px; height: 11px; background: rgba(255,246,232,0.85); border-radius: 2px; }
+        .radio-cab .warm-glow { position: absolute; inset: auto 10% -18px 10%; height: 48px; background: radial-gradient(ellipse at center, rgba(240,197,110,0.4), transparent 70%); filter: blur(10px); pointer-events: none; }
+
+        /* ---- today's lineup strip ---- */
+        .radio-lineup { max-width: 700px; margin: 0 auto 44px; }
+        .radio-lineup h4 { font-size: .8rem; letter-spacing: 3px; color: #f2c979; text-transform: uppercase; text-align: center; margin: 0 0 14px; }
+        .radio-lineup .strip { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+        .radio-lineup .slot { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: 30px; background: rgba(255,246,232,0.06); border: 1px solid rgba(240,197,110,0.25); color: rgba(255,246,232,0.92); font-size: .85rem; transition: all .3s; }
+        .radio-lineup .slot:hover { background: rgba(240,197,110,0.18); border-color: rgba(240,197,110,0.6); transform: translateY(-2px); }
+        .radio-lineup .slot .t { color: #f2c979; font-weight: 700; }
+
+        /* ---- feature cards ---- */
+        .radio-card { transition: transform .35s ease, box-shadow .35s ease, border-color .35s ease; }
+        .radio-card:hover { transform: translateY(-6px); box-shadow: 0 18px 44px rgba(0,0,0,0.25), 0 0 0 1px rgba(240,197,110,0.25), 0 0 30px rgba(240,197,110,0.10); border-color: rgba(240,197,110,0.6); }
+        .radio-card .icon { transition: transform .35s ease; }
+        .radio-card:hover .icon { transform: scale(1.12) rotate(-3deg); }
+    </style>
+    <section id="radio" class="section radio-hero" style="padding:80px 0;background:radial-gradient(1200px 700px at 50% -10%,#a96f3d 0%,#7d4e29 45%,#4f351e 100%);color:#fff6e8;border-top:1px solid rgba(240,197,110,0.4);border-bottom:1px solid rgba(240,197,110,0.4);box-shadow:inset 0 0 120px rgba(0,0,0,0.18);">
+        <div class="radio-orbs" aria-hidden="true"><span></span><span></span><span></span></div>
+        <div class="container">
+            <div class="section-header">
+                <div class="section-label" style="display:inline-block;padding:8px 20px;border-radius:30px;background:rgba(240,197,110,0.16);border:1px solid rgba(240,197,110,0.45);font-size:1rem;color:#f2c979;letter-spacing:1.5px;">The Station &middot; On the Air</div>
+                <h2 class="section-title" style="font-size:2.6rem;color:#fff6e8;text-shadow:0 2px 24px rgba(240,197,110,0.25);">What If We Believed Radio</h2>
+                <p class="section-subtitle" style="font-size:1.2rem;color:rgba(255,246,232,0.95);">A retro radio experience &mdash; turn the dial, hear the static crackle, and catch worship, Bible stories, prayer, and hymns broadcast live in your browser.</p>
+            </div>
+
+            <div class="radio-cab" aria-hidden="true">
+                <div class="cabinet">
+                    <div class="grille"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+                    <div class="dial">
+                        <div class="freq">92.1 MHz</div>
+                        <div class="band"><span>88</span><span>96</span><span>104</span><span>108</span></div>
+                        <div class="needle"></div>
+                    </div>
+                    <div class="onair"><span class="dot"></span> ON AIR</div>
+                    <div class="knobs"><div class="knob"></div><div class="knob"></div></div>
+                </div>
+                <div class="warm-glow"></div>
+            </div>
+
+            <div class="radio-lineup">
+                <h4>&#128197; Today&rsquo;s Lineup &mdash; find your time, pull up a chair</h4>
+                <div class="strip">
+                    <span class="slot"><span class="t">06:00</span> &#127749; Morning Worship</span>
+                    <span class="slot"><span class="t">09:00</span> &#128214; Bible Stories</span>
+                    <span class="slot"><span class="t">12:00</span> &#128365; Prayer Hour</span>
+                    <span class="slot"><span class="t">15:00</span> &#127932; Hymns &amp; Praise</span>
+                    <span class="slot"><span class="t">18:00</span> &#128118; Kids&rsquo; Bible Hour</span>
+                    <span class="slot"><span class="t">21:00</span> &#127748; Night of Reflection</span>
+                </div>
+            </div>
+
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-bottom:36px;">
+                <div class="radio-card" style="background:rgba(255,246,232,0.08);border:1px solid rgba(240,197,110,0.35);border-radius:16px;padding:32px 28px;text-align:center;">
+                    <div class="icon" style="font-size:44px;margin-bottom:10px;">&#128225;</div>
+                    <h3 style="font-family:'Playfair Display',serif;font-size:1.35rem;color:#fff6e8;margin-bottom:6px;">5 Living Stations</h3>
+                    <p style="font-size:1.05rem;color:rgba(255,246,232,0.9);">Morning Worship, Bible Stories, Prayer Hour, Hymns &amp; Praise, and a Kids' Bible Hour.</p>
+                </div>
+                <div class="radio-card" style="background:rgba(255,246,232,0.08);border:1px solid rgba(240,197,110,0.35);border-radius:16px;padding:32px 28px;text-align:center;">
+                    <div class="icon" style="font-size:44px;margin-bottom:10px;">&#127925;</div>
+                    <h3 style="font-family:'Playfair Display',serif;font-size:1.35rem;color:#fff6e8;margin-bottom:6px;">Real Radio Sound</h3>
+                    <p style="font-size:1.05rem;color:rgba(255,246,232,0.9);">Static, dial clicks, and jingles are synthesized live with the Web Audio API &mdash; no files, no streaming.</p>
+                </div>
+                <div class="radio-card" style="background:rgba(255,246,232,0.08);border:1px solid rgba(240,197,110,0.35);border-radius:16px;padding:32px 28px;text-align:center;">
+                    <div class="icon" style="font-size:44px;margin-bottom:10px;">&#128264;</div>
+                    <h3 style="font-family:'Playfair Display',serif;font-size:1.35rem;color:#fff6e8;margin-bottom:6px;">Tune It Yourself</h3>
+                    <p style="font-size:1.05rem;color:rgba(255,246,232,0.9);">Drag the knobs, watch the signal meter, and let the announcer tell you what's on air.</p>
+                </div>
+            </div>
+            <div style="text-align:center;">
+                <a href="radio/index.html" class="btn-primary" style="font-size:1.15rem;padding:16px 44px;background:linear-gradient(135deg,#f0c56e 0%,#b8872f 100%);color:#2a1606;box-shadow:0 6px 30px rgba(240,197,110,0.45);">
+                    &#128251; Tune In to the Radio
+                </a>
+                <p style="margin-top:14px;font-size:1rem;color:rgba(255,246,232,0.9);">&#127909; Live broadcast &middot; Tune in from any device</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- AI AGENT SHOWCASE -->
+    <section id="ai-agent-showcase" class="ai-showcase" style="position:relative;overflow:hidden;">
+        <div class="ai-showcase-bg"></div>
+        <div class="container" style="position:relative;z-index:1;">
+            <div class="ai-showcase-header">
+                <div class="ai-showcase-badge">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                    Possibly the First Adventist-Focused AI Agent
+                </div>
+                <h2 class="ai-showcase-title">Ask Anything About<br><span style="background:linear-gradient(135deg,var(--gold),var(--gold-light));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Adventist Theology</span></h2>
+                <p class="ai-showcase-subtitle">Our AI research agent is trained on Adventist doctrines, Ellen G. White's writings, Christian philosophy, and Scripture. Get scholarly, cited answers — not generic AI responses.</p>
+            </div>
+            <div class="ai-showcase-grid">
+                <div class="ai-showcase-card">
+                    <div class="ai-showcase-card-icon">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                    </div>
+                    <h3>Deep Scripture Study</h3>
+                    <p>Explore prophetic interpretation, typology, and theological frameworks across Old and New Testaments with scholarly precision.</p>
+                </div>
+                <div class="ai-showcase-card">
+                    <div class="ai-showcase-card-icon">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+                    </div>
+                    <h3>Adventist Doctrines</h3>
+                    <p>Sabbath, Sanctuary, Investigative Judgment, Great Controversy — get clear, sourced explanations of every core belief.</p>
+                </div>
+                <div class="ai-showcase-card">
+                    <div class="ai-showcase-card-icon">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    </div>
+                    <h3>Christian Philosophy</h3>
+                    <p>From Augustine to Plantinga, Kant to Kierkegaard — engage with the greatest thinkers in Christian intellectual history.</p>
+                </div>
+            </div>
+            <div class="ai-showcase-demos">
+                <p class="ai-showcase-demos-label">Try asking:</p>
+                <div class="ai-showcase-demos-grid">
+                    <a href="agent/index.html?q=What+is+the+investigative+judgment%3F" class="ai-showcase-demo-chip">What is the investigative judgment?</a>
+                    <a href="agent/index.html?q=How+does+Ellen+White%27s+prophetic+ministry+compare+to+other+prophets%3F" class="ai-showcase-demo-chip">How does Ellen White's ministry compare to other prophets?</a>
+                    <a href="agent/index.html?q=What+is+the+theology+of+the+Sabbath+in+Adventist+thought%3F" class="ai-showcase-demo-chip">What is the theology of the Sabbath?</a>
+                    <a href="agent/index.html?q=How+does+the+Great+Controversy+theme+unify+Adventist+theology%3F" class="ai-showcase-demo-chip">How does the Great Controversy theme unify Adventist theology?</a>
+                    <a href="agent/index.html?q=What+is+the+sanctuary+doctrine+and+why+does+it+matter%3F" class="ai-showcase-demo-chip">What is the sanctuary doctrine?</a>
+                    <a href="agent/index.html?q=Compare+justification+and+sanctification+in+Adventist+thought" class="ai-showcase-demo-chip">Justification vs. sanctification in Adventist thought</a>
+                </div>
+            </div>
+            <div class="ai-showcase-cta">
+                <a href="agent/index.html" class="btn-primary" style="text-decoration:none;padding:18px 48px;font-size:1.1rem;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                    Start a Conversation
+                </a>
+                <p class="ai-showcase-cta-note">Free to use &middot; Bring your own Gemini API key &middot; No sign-up required</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- THEOLOGY AGENT -->
+    <section id="agent" class="section section-dark" style="padding-top:0;position:relative;overflow:hidden;">
+        <div style="position:absolute;inset:0;z-index:0;background:url('wallpaper-theology.svg?v=2') center/cover no-repeat;opacity:0.3;"></div>
+        <div class="container" style="position:relative;z-index:1;">
+            <div class="section-header">
+                <div class="section-label" style="font-size:1.3rem;">How It Works</div>
+                <h2 class="section-title">Your Theology Research Assistant</h2>
+                <p class="section-subtitle">A specialized AI that stays within its domain — Adventist theology and Christian philosophy — and clearly distinguishes inference from established doctrine.</p>
+            </div>
+            <div style="max-width:800px;margin:0 auto;">
+                <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(200,162,78,0.2);border-radius:12px;padding:24px;margin-bottom:20px;">
+                    <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:20px;">
+                        <a href="agent/index.html" class="btn-primary" style="text-decoration:none;">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                            Open Agent Interface
+                        </a>
+                        <a href="https://aistudio.google.com/apikey" target="_blank" style="text-decoration:none;color:var(--gold);font-weight:600;font-size:0.9rem;display:inline-flex;align-items:center;gap:6px;">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                            Get Free API Key
+                        </a>
+                    </div>
+                    <div style="margin-top:16px;padding:16px;background:rgba(200,162,78,0.1);border-radius:8px;border:1px solid rgba(200,162,78,0.2);">
+                        <p style="font-size:0.85rem;color:var(--ink-light);margin:0 0 8px;"><strong style="color:var(--gold);">New to API keys?</strong> No problem — it's free and easy:</p>
+                        <ol style="font-size:0.85rem;color:var(--ink-light);margin:0;padding-left:20px;line-height:1.8;">
+                            <li>Click "Get Free API Key" above</li>
+                            <li>Sign in with your Google account (Gmail)</li>
+                            <li>Click "Create API Key" and copy it</li>
+                            <li>Paste it in the agent interface when prompted</li>
+                        </ol>
+                        <p style="font-size:0.8rem;color:var(--muted);margin:8px 0 0;">No credit card required. Free tier available.</p>
+                    </div>
+                </div>
+                <div style="padding:16px;background:rgba(122,26,46,0.1);border-radius:8px;border-left:3px solid var(--crimson);">
+                    <p style="font-size:0.9rem;color:var(--ink-light);"><strong style="color:var(--crimson);">In Scope:</strong> Adventist theology &amp; doctrines, Ellen G. White's prophetic ministry, Christian philosophy &amp; philosophers, Philosophy of religion, Christian ethics &amp; apologetics.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="section section-dark">
+        <div class="container">
+            <div class="cta-section">
+                <div class="section-label">Join Us</div>
+                <h2 class="section-title">Explore the Ideas<br>That Shape Our Lives</h2>
+                <p>Subscribe to WhatIfWeBelieved on YouTube and join a community of people seeking truth, understanding, and a deeper faith.</p>
+                <a href="https://www.youtube.com/@paulos1844?sub_confirmation=1" target="_blank" class="btn-primary">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                    Subscribe Now
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section class="section" style="padding-bottom:0;">
+        <div class="container">
+            <div class="newsletter-section">
+                <h3>Questions &amp; Queries</h3>
+                <p>Have a question, suggestion, or want to connect? Send us a message and we'll get back to you.</p>
+                <form id="contact-form" class="newsletter-form" action="https://formspree.io/f/xdaqyzqo" method="POST" style="flex-direction:column;align-items:center;gap:12px;">
+                    <input type="hidden" name="_subject" value="New message from WhatIfWeBelieved">
+                    <input type="hidden" name="_captcha" value="false">
+                    <div style="display:flex;gap:12px;width:100%;max-width:500px;">
+                        <input type="text" name="name" placeholder="Your name" required style="flex:1;">
+                        <input type="email" name="email" placeholder="Your email" required style="flex:1;">
+                    </div>
+                    <textarea name="message" placeholder="Your message..." rows="4" required style="width:100%;max-width:500px;padding:14px;border:1px solid var(--border);border-radius:6px;font-family:'Inter',sans-serif;font-size:0.9rem;resize:vertical;outline:none;"></textarea>
+                    <button type="submit">Send Message</button>
+                    <div id="contact-success" style="display:none;color:var(--gold);font-weight:600;font-size:0.9rem;">Message sent! We'll get back to you.</div>
+                    <div id="contact-error" style="display:none;color:var(--crimson);font-weight:600;font-size:0.9rem;">Something went wrong. Try emailing us directly.</div>
+                </form>
+                <div class="newsletter-note" style="margin-top:12px;">Or email us directly at <a href="mailto:wentlandwordsworth@gmail.com" style="color:var(--crimson);text-decoration:none;font-weight:600;">wentlandwordsworth@gmail.com</a></div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        document.getElementById('contact-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            var form = e.target;
+            var submitBtn = form.querySelector('button[type="submit"]');
+            var successMsg = document.getElementById('contact-success');
+            var errorMsg = document.getElementById('contact-error');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Sending...';
+            successMsg.style.display = 'none';
+            errorMsg.style.display = 'none';
+            var data = new FormData(form);
+            fetch(form.action, {
+                method: 'POST',
+                body: data,
+                headers: { 'Accept': 'application/json' }
+            }).then(function(response) {
+                if (response.ok) {
+                    form.reset();
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Send Message';
+                    successMsg.style.display = 'block';
+                    setTimeout(function() { successMsg.style.display = 'none'; }, 5000);
+                } else {
+                    throw new Error('Form submission failed');
+                }
+            }).catch(function() {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Send Message';
+                errorMsg.style.display = 'block';
+                setTimeout(function() { errorMsg.style.display = 'none'; }, 5000);
+            });
+        });
+    </script>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="#" class="nav-logo">
+                        <div class="shield">
+                            <svg viewBox="0 0 36 44" fill="none">
+                                <path d="M18 2 L34 9 L34 24 C34 33 18 42 18 42 C18 42 2 33 2 24 L2 9 Z" fill="#7a1a2e"/>
+                                <path d="M18 7 L30 12 L30 24 C30 31 18 37 18 37 C18 37 6 31 6 24 L6 12 Z" fill="none" stroke="#9a7520" stroke-width="1.5"/>
+                                <text x="18" y="26" text-anchor="middle" fill="#9a7520" font-size="11" font-weight="bold" font-family="serif">W</text>
+                            </svg>
+                        </div>
+                        <span class="nav-logo-text">WhatIfWe<span>Believed</span></span>
+                    </a>
+                    <p>Exploring faith, theology, and the transformative power of belief. A YouTube channel devoted to seeking truth together.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Content</h4>
+                    <a href="#videos">Videos</a>
+                    <a href="#articles">Articles</a>
+                    <a href="articles/gods-mixed-feelings-about-jewelry/">Sermon Review</a>
+                    <a href="#book">Free Book</a>
+                    <a href="#ai-agent-showcase">AI Agent</a>
+                    <a href="bible-game/index.html">Kids' Game</a>
+                    <a href="radio/index.html">Radio</a>
+                    <a href="https://www.youtube.com/@paulos1844/videos" target="_blank">All Videos</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Connect</h4>
+                    <a href="https://www.youtube.com/@paulos1844" target="_blank">YouTube</a>
+                    <a href="https://www.youtube.com/@paulos1844?sub_confirmation=1" target="_blank">Subscribe</a>
+                    <a href="mailto:wentlandwordsworth@gmail.com">Contact Us</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Follow</h4>
+                    <div class="footer-social">
+                        <a href="https://www.youtube.com/@paulos1844" target="_blank" aria-label="YouTube">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 WhatIfWeBelieved &middot; <a href="https://www.youtube.com/@paulos1844" target="_blank" style="color:var(--muted);text-decoration:none;">@paulos1844</a></p>
+                <p style="font-size:0.75rem;color:var(--muted);">Seeking truth together.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- BACK TO TOP -->
+    <button id="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Back to top">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+    </button>
+
+    <script>
+        // YouTube IFrame API for reliable autoplay
+        var tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
+        var firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+        var player;
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('hero-video-player', {
+                height: '100%',
+                width: '100%',
+                videoId: 'D2FfteQ7sXI',
+                playerVars: {
+                    'autoplay': 1,
+                    'mute': 1,
+                    'loop': 1,
+                    'playlist': 'D2FfteQ7sXI',
+                    'controls': 0,
+                    'showinfo': 0,
+                    'rel': 0,
+                    'modestbranding': 1,
+                    'iv_load_policy': 3,
+                    'playsinline': 1
+                },
+                events: {
+                    'onReady': function(event) {
+                        event.target.playVideo();
+                    }
+                }
+            });
+        }
+
+        // Fallback: try to play iframe video on user interaction
+        document.addEventListener('click', function() {
+            var iframe = document.querySelector('.hero-video-inner iframe');
+            if (iframe) {
+                iframe.src = iframe.src; // Reload iframe to trigger playback
+            }
+        }, { once: true });
+
+        // --- Category Filtering ---
+        function filterVideos(category, chipEl) {
+            // Update active chip
+            var chips = document.querySelectorAll('#videoFilter .filter-chip');
+            chips.forEach(function(c) { c.classList.remove('active'); });
+            if (chipEl) chipEl.classList.add('active');
+
+            // Filter cards
+            var cards = document.querySelectorAll('#videosGrid .video-card');
+            cards.forEach(function(card) {
+                var match = category === 'all' || card.getAttribute('data-category') === category;
+                if (match) {
+                    card.classList.remove('filter-hidden');
+                    card.classList.add('filter-visible');
+                    card.style.display = '';
+                } else {
+                    card.classList.add('filter-hidden');
+                    card.classList.remove('filter-visible');
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        function scrollAndFilter(category) {
+            var videosSection = document.getElementById('videos');
+            if (videosSection) {
+                videosSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+            // Find and click the matching chip
+            setTimeout(function() {
+                var chip = document.querySelector('#videoFilter .filter-chip[data-filter="' + category + '"]');
+                if (chip) filterVideos(category, chip);
+            }, 400);
+        }
+
+        // --- SCROLL PROGRESS BAR ---
+        window.addEventListener('scroll', function() {
+            var scrollTop = window.scrollY;
+            var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            var progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+            document.getElementById('scroll-progress').style.width = progress + '%';
+        });
+
+        // --- BACK TO TOP VISIBILITY ---
+        window.addEventListener('scroll', function() {
+            var btn = document.getElementById('back-to-top');
+            if (window.scrollY > window.innerHeight * 0.6) {
+                btn.classList.add('show');
+            } else {
+                btn.classList.remove('show');
+            }
+        });
+
+        // --- REVEAL ON SCROLL (IntersectionObserver) ---
+        if ('IntersectionObserver' in window) {
+            var revealObserver = new IntersectionObserver(function(entries) {
+                entries.forEach(function(entry) {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        revealObserver.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+            document.querySelectorAll('.reveal, .stagger-children').forEach(function(el) {
+                revealObserver.observe(el);
+            });
+
+            // Also observe individual cards that are not inside stagger-children
+            document.querySelectorAll('.video-card, .pillar-card, .testimonial-card, .ai-showcase-card').forEach(function(card, i) {
+                // Only if not inside a stagger container
+                if (!card.closest('.stagger-children')) {
+                    card.classList.add('reveal');
+                    card.classList.add('reveal-delay-' + Math.min(i + 1, 4));
+                    revealObserver.observe(card);
+                }
+            });
+        } else {
+            // Fallback: show everything
+            document.querySelectorAll('.reveal, .stagger-children').forEach(function(el) {
+                el.classList.add('visible');
+            });
+        }
+
+        // --- MOBILE NAV ---
+        var navToggle = document.getElementById('navToggle');
+        var navOverlay = document.getElementById('navOverlay');
+        var navPanel = document.getElementById('navMobilePanel');
+
+        function openMobileNav() {
+            navToggle.classList.add('open');
+            navOverlay.classList.add('show');
+            navPanel.classList.add('open');
+            navOverlay.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeMobileNav() {
+            navToggle.classList.remove('open');
+            navOverlay.classList.remove('show');
+            navPanel.classList.remove('open');
+            setTimeout(function() {
+                navOverlay.style.display = 'none';
+                document.body.style.overflow = '';
+            }, 350);
+        }
+
+        if (navToggle) {
+            navToggle.addEventListener('click', function() {
+                if (navPanel.classList.contains('open')) {
+                    closeMobileNav();
+                } else {
+                    openMobileNav();
+                }
+            });
+        }
+
+        if (navOverlay) {
+            navOverlay.addEventListener('click', closeMobileNav);
+        }
+
+        // Close mobile nav on escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && navPanel && navPanel.classList.contains('open')) {
+                closeMobileNav();
+            }
+        });
+
+        // --- QUICK ACCESS DROPDOWN MENUS ---
+        var qbItems = document.querySelectorAll('.qb-item');
+        var qbCanHover = window.matchMedia('(hover: hover)').matches;
+
+        function closeAllQb(except) {
+            qbItems.forEach(function(item) {
+                if (item !== except) {
+                    item.classList.remove('open');
+                    var btn = item.querySelector('.qb-btn');
+                    if (btn) btn.setAttribute('aria-expanded', 'false');
+                }
+            });
+        }
+
+        qbItems.forEach(function(item) {
+            var btn = item.querySelector('.qb-btn');
+
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                var isOpen = item.classList.contains('open');
+                closeAllQb(item);
+                if (!isOpen) {
+                    item.classList.add('open');
+                    btn.setAttribute('aria-expanded', 'true');
+                }
+            });
+
+            if (qbCanHover) {
+                item.addEventListener('mouseenter', function() {
+                    closeAllQb(item);
+                    item.classList.add('open');
+                    btn.setAttribute('aria-expanded', 'true');
+                });
+                item.addEventListener('mouseleave', function() {
+                    item.classList.remove('open');
+                    btn.setAttribute('aria-expanded', 'false');
+                });
+            }
+        });
+
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.qb-item')) closeAllQb();
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeAllQb();
+        });
+
+        // --- ACTIVE NAV LINK ---
+        function updateActiveNavLink() {
+            var sections = ['videos', 'about', 'articles', 'book', 'ai-agent-showcase'];
+            var scrollPos = window.scrollY + 120;
+            var currentId = '';
+
+            sections.forEach(function(id) {
+                var el = document.getElementById(id);
+                if (el && el.offsetTop <= scrollPos) {
+                    currentId = id;
+                }
+            });
+
+            document.querySelectorAll('.nav-links a').forEach(function(link) {
+                link.classList.remove('active-section');
+                if (link.getAttribute('href') === '#' + currentId) {
+                    link.classList.add('active-section');
+                }
+            });
+        }
+
+        window.addEventListener('scroll', updateActiveNavLink);
+        window.addEventListener('load', updateActiveNavLink);
+
+        // --- ADD REVEAL CLASSES TO SECTION HEADERS & CONTAINERS (for auto-reveal) ---
+        document.querySelectorAll('.section-header, .about-grid, .book-section, .newsletter-section, .cta-section, .ai-showcase-header').forEach(function(el) {
+            if (!el.classList.contains('reveal')) {
+                el.classList.add('reveal');
+            }
+        });
+
+        // Add stagger-children to grid containers
+        document.querySelectorAll('.videos-grid, .pillars-grid, .testimonials-grid, .ai-showcase-grid').forEach(function(el) {
+            if (!el.classList.contains('stagger-children')) {
+                el.classList.add('stagger-children');
+            }
+        });
+
+        // Re-run observer for newly added classes
+        if (typeof revealObserver !== 'undefined') {
+            document.querySelectorAll('.reveal:not(.visible), .stagger-children:not(.visible)').forEach(function(el) {
+                revealObserver.observe(el);
+            });
+        }
+
+        // --- SWIPE TO CLOSE MOBILE NAV ---
+        var touchStartX = 0;
+        document.addEventListener('touchstart', function(e) {
+            touchStartX = e.changedTouches[0].screenX;
+        }, { passive: true });
+
+        document.addEventListener('touchend', function(e) {
+            if (navPanel && navPanel.classList.contains('open')) {
+                var touchEndX = e.changedTouches[0].screenX;
+                if (touchEndX - touchStartX > 80) {
+                    closeMobileNav();
+                }
+            }
+        }, { passive: true });
+    </script>
+
+</body>
+</html>

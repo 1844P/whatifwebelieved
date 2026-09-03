@@ -43,60 +43,14 @@ SERMON & HOMILETICAL MATERIAL:
 - When producing sermon material, apply the same close reading method: ground every point in Scripture, cite Ellen White and Adventist scholarship where relevant, and distinguish exegetical fact from homiletical inference.
 - Sermons should be pastorally warm, spiritually urgent, and intellectually substantive. Aim for congregations that think.
 - For full sermons, include: title, scripture text, introduction (with attention grabber), body (following the chosen structure), illustration suggestions, and a closing appeal.
-- Ellen White's counsels on preaching (e.g., Testimonies vol. 4 ch. 71, Gospel Workers ch. 10-12, Evangelism ch. 30) should inform the homiletical approach.
-
-=== HALLUCINATION MITIGATION PROTOCOL ===
-
-Grounding & Faithfulness:
-- Every factual claim about Adventist doctrine, Ellen White's writings, or Christian philosophers MUST be traceable to source texts, official statements, or recognized scholarship.
-- If you cannot cite a specific source (book, chapter, paragraph, Fundamental Belief number, philosopher's work), do not state the claim as fact. Instead say: "I don't have a specific citation for this" or "This is my inference based on..."
-- When discussing Ellen White: distinguish between direct quotations (cite book/page), paraphrased concepts (cite book/chapter), and your synthesis.
-- When discussing philosophers: cite specific works (e.g., "Aquinas, Summa Theologica I-II, Q.94, Art.2") not just names.
-
-Claim Decomposition & Verification:
-- Before asserting any doctrinal or historical claim, mentally decompose it into atomic verifiable claims.
-- For each atomic claim, ask: "What is my evidence? Can I cite a source?"
-- If evidence is missing or uncertain, express uncertainty explicitly: "The sources I'm aware of suggest X, but I cannot confirm Y."
-
-Uncertainty Calibration:
-- Do not express high confidence in claims where scholarly disagreement exists (e.g., nature of investigative judgment, interpretation of Ellen White's authority, Aquinas's proofs).
-- Use calibrated language: "The weight of evidence suggests..." / "Most scholars hold..." / "A minority view argues..." / "This is debated..."
-- Never present contested interpretations as settled doctrine.
-
-Self-Consistency Check:
-- Ensure your response does not contradict itself across paragraphs.
-- Ensure your claims about a thinker/doctrine are consistent with their established corpus.
-- If you notice a potential contradiction in your own reasoning, flag it: "Note: This appears to tension with [X]..."
-
-Sycophancy Resistance:
-- Do not flatter the user or validate incorrect premises. If a user's question contains a factual error, correct it gently but firmly.
-- Avoid phrases like "Great question!" "Excellent point!" "You're absolutely right!" unless genuinely warranted by insight.
-- Prioritize evidence over agreement.
-
-Refusal When Uncertain:
-- If the context/query is insufficient to give a grounded answer, refuse rather than hallucinate.
-- Use explicit refusal language: "I don't have sufficient evidence to answer this confidently" / "The sources don't address this specific question" / "This falls outside my verified knowledge base."
-- Offer to help with a related, answerable question instead.
-
-Citation Standards:
-- Adventist doctrine: Cite Fundamental Belief number + official statement source.
-- Ellen White: Cite book title + chapter/page (e.g., "Great Controversy, ch. 23" or "Testimonies, vol. 5, p. 123").
-- Philosophers: Cite work + section (e.g., "Augustine, City of God, Book XI.6" or "Plantinga, Warranted Christian Belief, Ch. 6").
-- Scripture: Cite book/chapter/verse.
-- Contemporary scholars: Cite name + work/year.
-
-Process Transparency:
-- When making an inference, signal it: "Inference:", "Synthesis:", "My read:", "It follows that..."
-- When reporting consensus, signal it: "Consensus view:", "Majority position:", "Standard interpretation:"
-- When noting disagreement, signal it: "Disputed:", "Contested:", "Alternative view:"
-`;
+- Ellen White's counsels on preaching (e.g., Testimonies vol. 4 ch. 71, Gospel Workers ch. 10-12, Evangelism ch. 30) should inform the homiletical approach.`;
 
 const ESSAY_SUFFIX = `\n\n[ESSAY MODE — Produce a comprehensive scholarly essay of at least 2000 words on this topic. Include: a title, an abstract, an introduction with thesis, multiple body sections with ## headings, a conclusion, and a full Bibliography in Chicago/Turabian style. Use numbered citations [1], [2] throughout. Format as markdown. Begin the response with the essay title as a # heading.]`;
 
 const SERMON_SUFFIX_DEFAULT = `\n\n[SERMON MODE — Produce a full written sermon of at least 2500 words using the Monroe Motivated Sequence format (Attention → Need → Satisfaction → Visualization → Action). This must be a substantive, meaty sermon — not a surface-level outline.
 
 REQUIREMENTS FOR SUBSTANCE:
-- ATTENTION: Open with a vivid, concrete story,场景, or provocative question that hooks the audience within the first 60 seconds. Ground it in a real human experience. No generic openings.
+- ATTENTION: Open with a vivid, concrete story, scene, or provocative question that hooks the audience within the first 60 seconds. Ground it in a real human experience. No generic openings.
 - NEED: Establish the theological and existential problem with depth. Use at least 2-3 Scripture texts to diagnose the need. Show why this matters for the congregation's daily life, not just in abstract theology. Include historical or cultural context that makes the need feel urgent.
 - SATISFACTION: This is the theological core and must be the longest section. Develop at least 3 major theological points, each with: (a) the biblical text stated and quoted, (b) grammatical-historical exposition of the passage, (c) typological or sanctuary connection where relevant, (d) at least one Ellen White citation from a specific work, (e) at least one inference or synthesis clearly marked as such. Engage with Adventist scholarship by name (e.g., Froom, Knight, Davidson, Heppenstall, Holbrook, etc.). Show the theological logic — don't just state beliefs, demonstrate why they follow from the text.
 - VISUALIZATION: Paint a concrete, vivid picture of what life looks like when this truth is embraced. Use sensory language. Help the congregation see themselves in the vision. Connect to the great controversy narrative and the eschaton.
@@ -113,15 +67,41 @@ const SERMON_FORMATS = {
   typological: `\n\n[SERMON MODE — TYPOLOGICAL FORMAT — Produce a full written sermon of at least 2500 words. This must be substantive and theologically meaty. Structure: Identify the Old Testament type with grammatical-historical detail → Trace the type through Scripture (show how Scripture interprets Scripture) → Reveal the New Testament antitype with at least 2-3 connecting texts → Draw the great controversy significance with Ellen White citations → Apply concretely to the believer's experience → Close with 3 specific calls to action. Particularly suited to sanctuary, Sabbath, and prophetic themes. Format as markdown. Begin with sermon title as # heading.]`,
 };
 
-const BIBLE_STUDY_SUFFIX = `\n\n[BIBLE STUDY MODE — Produce a comprehensive, seeker-friendly Bible study guide on this topic using the WiwB methodology. This must be substantive, warm, and theologically grounded in Adventist belief while remaining accessible to non-Adventist seekers.
+const BIBLE_STUDY_SUFFIX = `\n\n[BIBLE STUDY MODE — Produce a complete, standalone Bible study document of at least 2000 words on the given topic or passage. This must be substantive, warm, and theologically grounded in Adventist belief while remaining accessible to non-Adventist seekers. Output the FULL Bible study document as markdown, not an outline or notes.
 
-REQUIREMENTS FOR SUBSTANCE:
-- OPENING PRAYER: Begin with a short, sincere prayer inviting the Holy Spirit to guide the study.
-- ESTABLISH CONTEXT: Who wrote this? To whom? When? Why? What is the literary genre (narrative, poetry, prophecy, epistle)? How does this passage fit into the larger biblical story?
-- READ & OBSERVE: Present the Scripture passage(s) clearly. Ask "What stands out to you?" Encourage the seeker to notice key words, repeated phrases, contrasts, and commands. Let the seeker discover truth before you explain it.
-- INTERPRET: What did this passage mean to its original audience? What timeless principle does it reveal about God, humanity, or salvation? How does the rest of Scripture confirm or illuminate this truth? (Let Scripture interpret Scripture.)
-- APPLY: What does this passage mean for your life today? Is there a promise to claim, a command to obey, a warning to heed, or a truth about God to embrace? Encourage one specific, actionable takeaway.
-- CLOSE WITH PRAYER & REFLECTION: Summarize the key insight. Pray together, thanking God for what was learned and asking for strength to apply it. Suggest a passage for the seeker to read before the next study.
+REQUIRED OUTPUT STRUCTURE — The final document MUST include these sections in order:
+
+# [Title of the Bible Study]
+
+## Opening Prayer
+A short, sincere prayer inviting the Holy Spirit to guide the study.
+
+## Introduction
+Hook the reader with a question, story, or observation that connects the topic to everyday life. State what the study will cover.
+
+## Context
+Who wrote this? To whom? When? Why? What is the literary genre (narrative, poetry, prophecy, epistle)? How does this passage fit into the larger biblical story? Cite at least one Ellen G. White passage from a specific work that illuminates the context.
+
+## Scripture Reading
+Present the key passage(s) in full (NKJV, ESV, NIV, or KJV). Include references.
+
+## Observation
+Walk through the passage verse-by-verse or thought-by-thought. Ask "What stands out?" Highlight key words, repeated phrases, contrasts, commands, and promises. Let the reader discover truth before you explain it. Include at least 3 questions the reader should reflect on.
+
+## Interpretation
+What did this passage mean to its original audience? What timeless principle does it reveal about God, humanity, or salvation? How does the rest of Scripture confirm or illuminate this truth? (Let Scripture interpret Scripture — cite at least 2-3 cross-references.) Include a relevant Ellen G. White citation from a specific work with the reference named.
+
+## Theological Connection
+Connect the passage to the great controversy narrative and to at least one distinctive Adventist doctrine (the sanctuary, the Sabbath, the state of the dead, the investigative judgment, righteousness by faith, the second coming, etc.). Explain the doctrine in plain, accessible language and show how it grows out of the text. Engage at least one Adventist scholar by name (e.g., Froom, Knight, Davidson, Rodriguez, Holbrook, Heppenstall, Whidden, etc.).
+
+## Application
+What does this passage mean for your life today? Give 3 specific, concrete action steps — not vague generalizations. Include a promise to claim, a command to obey, and a truth about God to embrace.
+
+## Closing Prayer & Reflection
+Summarize the key insight in one sentence. Offer a closing prayer that embodies the study's theme. Suggest a related passage for the seeker to read before the next study.
+
+## For Further Study
+Recommend 2-3 specific books, Ellen G. White works, or Bible passages the reader can explore to go deeper.
 
 TONE & APPROACH:
 - Warm, humble, reverent — never arrogant, condescending, or denominationally proud.
@@ -159,47 +139,203 @@ CRISIS PROTOCOL:
 - If a seeker expresses abuse or danger, express concern. Urge them to seek safety and professional help. Do not attempt to counsel on these matters.
 - If a seeker expresses deep theological confusion or distress, acknowledge the struggle. Suggest they speak with a local SDA pastor who can provide personal guidance.
 
-FORMAT: Output as well-structured Markdown. Begin with the study title as a # heading.]`;
+OUTPUT REQUIREMENTS:
+- Minimum 2000 words.
+- Output the COMPLETE Bible study document as markdown, not an outline or summary.
+- Use ## for section headings (except title which is #).
+- Begin with the title as a # heading.
+- End with a horizontal rule (---) after "For Further Study."]`;
 
-async function callGemini(apiKey, body) {
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key=${apiKey}`;
-  const response = await fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body),
-  });
-  const data = await response.json();
-  if (!response.ok) return { ok: false, status: response.status, error: data };
-  const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
-  return { ok: true, text: text || 'No response generated.' };
+// ============================================================================
+// SELF-HEALING MODEL ROUTER (2026-08-22)
+//
+// Problem this solves: providers retire model slugs without notice (Groq killed
+// llama-3.3-70b-versatile on 2026-08-16; OpenRouter retired the :free llama-3.3
+// variant the same week). Hardcoded slug lists rot and take the agent down.
+//
+// Solution: instead of memorizing slugs, ASK each provider what is alive right
+// now, using its own public catalog endpoint:
+//   - Gemini:      generativelanguage.googleapis.com/v1beta/models
+//   - Groq:        api.groq.com/openai/v1/models
+//   - OpenRouter:  openrouter.ai/api/v1/models (public, no key needed)
+//
+// FALLBACK LADDER (each tier engages only if the one above fails):
+//   Tier 0  Fresh discovery       — live catalog query (5s timeout, 15min cache)
+//   Tier 1  Cached discovery      — result from the current TTL window
+//   Tier 2  STALE cache           — discovery endpoint down, serve last-known list
+//   Tier 3  Hardcoded SEED slugs  — last-known-good backups baked in below
+//   Tier 4  Cross-provider chain  — shared Gemini → user Gemini → Groq → OpenRouter
+//   Tier 5  Kill switch           — set secret DISABLE_DISCOVERY=1 to force seeds
+//
+// The response always names which tier served the request (`model_source`),
+// so degradation is observable, never silent.
+// ============================================================================
+
+const DISCOVERY_TTL_MS = 15 * 60 * 1000;   // how long a catalog fetch stays fresh
+const DISCOVERY_TIMEOUT_MS = 5000;          // never let a slow catalog delay users
+const MAX_MODELS_PER_PROVIDER = 4;          // cap attempts to bound worst-case latency
+
+// --- Tier 3: hardcoded backup seeds (verified live 2026-08-22) --------------
+const SEED_GEMINI_MODELS = ['gemini-3.6-flash', 'gemini-3.7-flash'];
+const SEED_GROQ_MODELS = ['openai/gpt-oss-120b', 'qwen/qwen3.6-27b'];
+const SEED_OPENROUTER_FREE_MODELS = [
+  'nvidia/nemotron-3-super-120b-a12b:free',
+  'z-ai/glm-5.2:free',
+  'google/gemma-4-31b-it:free',
+];
+
+// Module-scope cache: survives across requests on the same Worker isolate.
+const catalogCache = { gemini: null, groq: null, openrouter: null };
+
+// ---------------------------------------------------------------------------
+// Catalog fetching + ranking helpers
+// ---------------------------------------------------------------------------
+
+async function fetchJsonWithTimeout(url, headers) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), DISCOVERY_TIMEOUT_MS);
+  try {
+    const response = await fetch(url, { method: 'GET', headers: headers || {}, signal: controller.signal });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    return await response.json();
+  } finally {
+    clearTimeout(timer);
+  }
 }
 
-
-async function callOpenRouter(apiKey, systemPrompt, messages) {
-  const orMessages = [{ role: 'system', content: systemPrompt + FABRICATION_CLAMP }, ...messages];
-  const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${apiKey}`,
-      'HTTP-Referer': 'https://1844p.github.io/whatifwebelieved/',
-      'X-Title': 'WhatIfWeBelieved Theology Agent',
-    },
-    body: JSON.stringify({
-      model: 'google/gemma-4-31b-it:free',
-      messages: orMessages,
-      temperature: 0.2,
-      max_tokens: 2048,
-    }),
+// Rank candidate model ids: known-good families first (PREFS order), then the
+// rest; within a tier, larger context window wins (proxy for capability).
+function rankAndCap(ids, prefs, excludeRegex, contextById) {
+  const seen = new Set();
+  const eligible = ids.filter((id) => {
+    if (!id || seen.has(id)) return false;
+    seen.add(id);
+    return !excludeRegex.test(id.toLowerCase());
   });
-  const data = await response.json();
-  if (!response.ok) return { ok: false, status: response.status, error: data };
-  const text = data.choices?.[0]?.message?.content;
-  return { ok: true, text: text || 'No response generated.' };
+  const prefIndex = (id) => {
+    const lower = id.toLowerCase();
+    for (let i = 0; i < prefs.length; i++) {
+      if (lower.includes(prefs[i])) return i;
+    }
+    return prefs.length;
+  };
+  eligible.sort((a, b) => {
+    const pa = prefIndex(a);
+    const pb = prefIndex(b);
+    if (pa !== pb) return pa - pb;
+    return ((contextById && contextById[b]) || 0) - ((contextById && contextById[a]) || 0);
+  });
+  return eligible.slice(0, MAX_MODELS_PER_PROVIDER);
 }
 
-// A hardened anti-fabrication clamp appended for the OpenRouter fallback model,
-// because prompt-based grounding alone is insufficient for small open-weight fallbacks.
+// ---------------------------------------------------------------------------
+// Per-provider discovery — each returns an ordered candidate list, or throws.
+// ---------------------------------------------------------------------------
+
+async function discoverOpenRouter() {
+  const json = await fetchJsonWithTimeout('https://openrouter.ai/api/v1/models');
+  const rows = (json.data || []).filter(
+    (m) => typeof m.id === 'string' &&
+      (m.id.endsWith(':free') ||
+        (m.pricing && String(m.pricing.prompt) === '0' && String(m.pricing.completion) === '0'))
+  );
+  const contextById = {};
+  rows.forEach((m) => { contextById[m.id] = m.context_length || 0; });
+  return rankAndCap(
+    rows.map((m) => m.id),
+    ['nemotron', 'glm', 'gemma', 'qwen', 'deepseek', 'llama', 'mistral', 'phi'],
+    /(embed|rerank|guard|moderation|vision|-vl|whisper|tts)/,
+    contextById
+  );
+}
+
+async function discoverGroq(apiKey) {
+  const json = await fetchJsonWithTimeout('https://api.groq.com/openai/v1/models', {
+    Authorization: `Bearer ${apiKey}`,
+  });
+  const ids = (json.data || []).map((m) => m.id);
+  return rankAndCap(
+    ids,
+    ['gpt-oss', 'llama-4', 'qwen', 'moonshot', 'kimi', 'llama-3.3', 'gemma', 'mistral'],
+    /(whisper|tts|playai|guard|distil|embed)/,
+    {}
+  );
+}
+
+async function discoverGemini(apiKey) {
+  const json = await fetchJsonWithTimeout(
+    `https://generativelanguage.googleapis.com/v1beta/models?key=${encodeURIComponent(apiKey)}`
+  );
+  const ids = [];
+  for (const m of json.models || []) {
+    // Field name has varied across API versions — accept both spellings.
+    const methods = m.supportedGenerationMethods || m.supportedActions || [];
+    if (!methods.includes('generateContent')) continue;
+    let name = m.name || '';
+    if (name.startsWith('models/')) name = name.slice('models/'.length);
+    if (!name.startsWith('gemini')) continue;
+    ids.push(name);
+  }
+  // Prefer the flash tier (highest free-tier rate limits); context length
+  // breaks ties, which also favors newer generations.
+  return rankAndCap(ids, ['flash'], /(embed|aqa|imagen|veo|tts|audio|live|native|image)/, {});
+}
+
+// ---------------------------------------------------------------------------
+// Resolution ladder — never throws; always returns { models, source }.
+// ---------------------------------------------------------------------------
+
+const DISCOVERERS = {
+  gemini: (env) => discoverGemini(env.GEMINI_API_KEY),
+  groq: (env) => discoverGroq(env.GROQ_API_KEY),
+  openrouter: (env) => discoverOpenRouter(),
+};
+
+const SEEDS = {
+  gemini: SEED_GEMINI_MODELS,
+  groq: SEED_GROQ_MODELS,
+  openrouter: SEED_OPENROUTER_FREE_MODELS,
+};
+
+async function resolveCandidates(name, env) {
+  const seeds = SEEDS[name];
+
+  // Tier 5: manual kill switch — operator forces hardcoded seeds.
+  if (!env || String(env.DISABLE_DISCOVERY) === '1' || String(env.DISABLE_DISCOVERY) === 'true') {
+    return { models: seeds, source: 'seed list (discovery disabled by operator)' };
+  }
+
+  // Tier 1: fresh cache inside the TTL window — zero added latency.
+  const entry = catalogCache[name];
+  const now = Date.now();
+  if (entry && now - entry.ts < DISCOVERY_TTL_MS) {
+    return { models: entry.models, source: 'live catalog (cached)' };
+  }
+
+  // Tier 0: attempt fresh discovery.
+  try {
+    const models = await DISCOVERERS[name](env);
+    if (models && models.length) {
+      catalogCache[name] = { models, ts: now };
+      return { models, source: 'live catalog (fresh)' };
+    }
+    throw new Error('catalog listed no eligible chat models');
+  } catch (err) {
+    // Tier 2: stale cache beats nothing.
+    if (entry) {
+      return { models: entry.models, source: `STALE catalog cache (discovery failed: ${err.message})` };
+    }
+    // Tier 3: hardcoded seeds.
+    return { models: seeds, source: `SEED BACKUP (discovery failed: ${err.message})` };
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Provider callers — unchanged contract from the previous version.
+// ---------------------------------------------------------------------------
+
+// A hardened anti-fabrication clamp appended for fallback models (Groq/OpenRouter),
+// because prompt-based grounding alone is insufficient for Llama-family fallbacks.
 const FABRICATION_CLAMP = `
 
 [ABSOLUTE GROUNDING DIRECTIVE - applies to every response]
@@ -224,18 +360,123 @@ function hasUnverifiableCitation(output) {
   return true;
 }
 
+async function callGemini(apiKey, body, model) {
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) return { ok: false, status: response.status, error: data };
+  const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+  return { ok: true, text: text || 'No response generated.' };
+}
+
+async function callGroq(apiKey, systemPrompt, messages, model) {
+  const groqMessages = [{ role: 'system', content: systemPrompt + FABRICATION_CLAMP }, ...messages];
+  const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${apiKey}`,
+    },
+    body: JSON.stringify({
+      model: model,
+      messages: groqMessages,
+      temperature: 0.2,
+    }),
+  });
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) return { ok: false, status: response.status, error: data };
+  const text = data.choices?.[0]?.message?.content;
+  return { ok: true, text: text || 'No response generated.' };
+}
+
+async function callOpenRouter(apiKey, systemPrompt, messages, model) {
+  const orMessages = [{ role: 'system', content: systemPrompt + FABRICATION_CLAMP }, ...messages];
+  const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${apiKey}`,
+      'HTTP-Referer': 'https://1844p.github.io/whatifwebelieved/',
+      'X-Title': 'WhatIfWeBelieved Theology Agent',
+    },
+    body: JSON.stringify({
+      model: model,
+      messages: orMessages,
+      temperature: 0.2,
+    }),
+  });
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) return { ok: false, status: response.status, error: data };
+  const text = data.choices?.[0]?.message?.content;
+  return { ok: true, text: text || 'No response generated.' };
+}
+
+const GITHUB_PAGES_ORIGIN = 'https://1844p.github.io';
+const GITHUB_PAGES_BASE = `${GITHUB_PAGES_ORIGIN}/whatifwebelieved`;
+
+// Cache-busting proxy for static assets — serves GitHub Pages content with no-cache headers
+async function serveStatic(request) {
+  const url = new URL(request.url);
+  const path = url.pathname; // e.g. /agent/ or /agent/index.html or /agent/wallpaper-pitons.svg
+
+  // Fetch from GitHub Pages with cache buster to bypass Fastly CDN cache
+  const cacheBuster = `_cb=${Date.now()}`;
+  const separator = path.includes('?') ? '&' : '?';
+  const originUrl = `${GITHUB_PAGES_BASE}${path}${separator}${cacheBuster}`;
+  const originResponse = await fetch(originUrl, {
+    method: 'GET',
+    headers: { 'Cache-Control': 'no-cache', 'Pragma': 'no-cache' },
+  });
+
+  if (!originResponse.ok) {
+    return new Response(originResponse.body, {
+      status: originResponse.status,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0',
+      },
+    });
+  }
+
+  // Pass through the body with overridden cache headers
+  const responseHeaders = new Headers(originResponse.headers);
+  responseHeaders.set('Cache-Control', 'no-cache, no-store, must-revalidate');
+  responseHeaders.set('Pragma', 'no-cache');
+  responseHeaders.set('Expires', '0');
+  responseHeaders.set('Access-Control-Allow-Origin', '*');
+
+  return new Response(originResponse.body, {
+    status: originResponse.status,
+    statusText: originResponse.statusText,
+    headers: responseHeaders,
+  });
+}
+
 export default {
   async fetch(request, env) {
+    // Handle CORS preflight
     if (request.method === 'OPTIONS') {
       return new Response(null, {
         headers: {
           'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Methods': 'POST, OPTIONS',
+          'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
           'Access-Control-Allow-Headers': 'Content-Type',
         },
       });
     }
 
+    // GET requests — serve static files from GitHub Pages with no-cache headers
+    if (request.method === 'GET') {
+      return serveStatic(request);
+    }
+
+    // Only POST beyond this point
     if (request.method !== 'POST') {
       return new Response('Method not allowed', { status: 405 });
     }
@@ -251,11 +492,11 @@ export default {
       }
 
       let userText = message || '';
-      
+
       // Detect if fileContent is an image data URL
       let fileParts = [];
       const isImageDataUrl = fileContent && typeof fileContent === 'string' && fileContent.startsWith('data:image/');
-      
+
       if (fileContent && fileName) {
         if (isImageDataUrl) {
           // Parse data URL for inlineData
@@ -300,7 +541,7 @@ export default {
         generationConfig: { temperature: 0.7 },
       };
 
-      // Build OpenAI/OpenRouter format
+      // Build OpenAI/Groq/OpenRouter format
       const messages = [];
       for (const h of history) {
         if (h.user) messages.push({ role: 'user', content: h.user });
@@ -310,35 +551,69 @@ export default {
 
       let result = null;
       let provider = 'gemini';
-      const attempts = [];
+      let modelSource = null; // which fallback tier served the winning request
+      const failures = []; // aggregate EVERY provider/model attempt for diagnosability
 
-      // 1) Try shared Gemini key
+      // Helper: walk a provider's resolved candidate list. Continues to the
+      // next model only on 400/404 (bad/retired slug); auth/quota errors won't
+      // differ across models, so bail out early on those.
+      // Returns { result, model, source } — model is the slug that succeeded.
+      async function tryProviderChain(providerName, caller) {
+        const { models, source } = await resolveCandidates(providerName, env);
+        let lastResult = null;
+        for (const m of models) {
+          // Network-level failures (unreachable host, timeout, TLS) are
+          // converted into ordinary failed attempts so the remaining models —
+          // and the remaining providers — still get their chance.
+          try {
+            lastResult = await caller(m);
+          } catch (err) {
+            lastResult = { ok: false, status: 0, error: { message: String((err && err.message) || err) } };
+          }
+          if (lastResult && lastResult.ok) { modelSource = source; return { result: lastResult, model: m, source }; }
+          failures.push({ provider: `${providerName}/${m}`, status: lastResult ? lastResult.status : 0, error: lastResult ? lastResult.error : 'no response', model_source: source });
+          if (!lastResult || ![400, 404].includes(lastResult.status)) break;
+        }
+        // Even on failure, remember where the attempts came from (diagnostics).
+        if (!modelSource && models.length) modelSource = source;
+        return { result: lastResult, model: null, source };
+      }
+
+      // 1) Shared Gemini key across its resolved model chain
       if (env.GEMINI_API_KEY) {
-        result = await callGemini(env.GEMINI_API_KEY, geminiBody);
-        if (!result || !result.ok) attempts.push('shared Gemini key: ' + JSON.stringify((result && result.error) || 'request failed'));
-      } else {
-        attempts.push('shared Gemini key: GEMINI_API_KEY is not set');
+        const attempt = await tryProviderChain('gemini', (m) =>
+          callGemini(env.GEMINI_API_KEY, geminiBody, m));
+        if (attempt.result && attempt.result.ok) { result = attempt.result; provider = `gemini (${attempt.model})`; }
       }
 
-      // 2) Try user's Gemini key if shared failed
+      // 2) User's Gemini key if the shared one failed
       if ((!result || !result.ok) && userApiKey && userApiKey !== env.GEMINI_API_KEY) {
-        result = await callGemini(userApiKey, geminiBody);
-        if (!result || !result.ok) attempts.push('user Gemini key: ' + JSON.stringify((result && result.error) || 'request failed'));
+        const attempt = await tryProviderChain('gemini', (m) =>
+          callGemini(userApiKey, geminiBody, m));
+        if (attempt.result && attempt.result.ok) { result = attempt.result; provider = `gemini-user-key (${attempt.model})`; }
       }
 
-      // 3) Fallback to OpenRouter
+      // 3) Groq across its resolved model chain
+      if ((!result || !result.ok) && env.GROQ_API_KEY) {
+        const attempt = await tryProviderChain('groq', (m) =>
+          callGroq(env.GROQ_API_KEY, SYSTEM_PROMPT, messages, m));
+        if (attempt.result && attempt.result.ok) { result = attempt.result; provider = `groq (${attempt.model})`; }
+      }
+
+      // 4) OpenRouter free-model chain
       if ((!result || !result.ok) && env.OPENROUTER_API_KEY) {
-        provider = 'openrouter';
-        result = await callOpenRouter(env.OPENROUTER_API_KEY, SYSTEM_PROMPT, messages);
-        if (!result || !result.ok) attempts.push('OpenRouter: ' + JSON.stringify((result && result.error) || 'request failed'));
-      } else if (!result || !result.ok) {
-        attempts.push('OpenRouter: OPENROUTER_API_KEY is not set');
+        const attempt = await tryProviderChain('openrouter', (m) =>
+          callOpenRouter(env.OPENROUTER_API_KEY, SYSTEM_PROMPT, messages, m));
+        if (attempt.result && attempt.result.ok) { result = attempt.result; provider = `openrouter (${attempt.model})`; }
       }
 
-      // All failed — report every provider's error so the cause is visible
+      // All failed — report every attempt so the cause is visible in one glance
       if (!result || !result.ok) {
-        const errText = attempts.length ? attempts.join('  |  ') : 'No providers configured';
-        return new Response(JSON.stringify({ error: `All providers failed — ${errText}` }), {
+        return new Response(JSON.stringify({
+          error: 'All providers failed',
+          model_source: modelSource,
+          detail: failures.length ? failures : [{ provider: 'none', status: 0, error: 'No provider API keys configured in Worker secrets' }],
+        }), {
           status: 502,
           headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
         });
@@ -346,17 +621,18 @@ export default {
 
       const rawText = result.text;
 
-      // Code-level hallucination guardrail for the OpenRouter fallback provider.
-      // If the output asserts unverifiable exact citations without hedging, refuse rather than
-      // hand possibly-fabricated page numbers/quotes to the user.
-      if (provider === 'openrouter' && hasUnverifiableCitation(rawText)) {
+      // Code-level hallucination guardrail for fallback providers (Groq/OpenRouter).
+      // If the output asserts unverifiable exact citations without hedging, refuse rather
+      // than hand possibly-fabricated page numbers/verbatim quotes to the user.
+      if ((provider === 'groq' || provider === 'openrouter' ||
+           provider.startsWith('groq ') || provider.startsWith('openrouter ')) && hasUnverifiableCitation(rawText)) {
         const refuseText = "I'm sorry, but the response flagged potentially unverifiable citation details (such as an exact page number or verbatim quote that could not be confirmed). To avoid offering you a fabricated citation, I won't present it as exact. I can provide a clearly-marked paraphrase or a general reference instead. Please ask me for that.";
         if (essayMode || sermonMode || bibleStudyMode) {
-          return new Response(JSON.stringify({ text: refuseText, essay: refuseText, provider, flagged: true }), {
+          return new Response(JSON.stringify({ text: refuseText, essay: refuseText, provider, model_source: modelSource, flagged: true }), {
             headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
           });
         }
-        return new Response(JSON.stringify({ text: refuseText, provider, flagged: true }), {
+        return new Response(JSON.stringify({ text: refuseText, provider, model_source: modelSource, flagged: true }), {
           headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
         });
       }
@@ -366,12 +642,12 @@ export default {
         const lines = rawText.split('\n');
         const summaryEnd = Math.min(lines.length, 15);
         const summary = lines.slice(0, summaryEnd).join('\n').trim() + `\n\n---\n**The full ${label} is ready. Use the download bar below to save it as a Word document.**`;
-        return new Response(JSON.stringify({ text: summary, essay: rawText, provider }), {
+        return new Response(JSON.stringify({ text: summary, essay: rawText, provider, model_source: modelSource }), {
           headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
         });
       }
 
-      return new Response(JSON.stringify({ text: rawText, provider }), {
+      return new Response(JSON.stringify({ text: rawText, provider, model_source: modelSource }), {
         headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
       });
     } catch (e) {

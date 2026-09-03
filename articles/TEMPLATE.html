@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<!--
+    =====================================================================
+    WHATIFWEBELIEVED — REUSABLE ARTICLE TEMPLATE
+    =====================================================================
+    HOW TO PUBLISH A NEW ARTICLE (plain-language steps):
+
+    1. Create a new folder inside /articles named after your topic,
+       using lowercase letters and hyphens. Example: articles/the-sabbath-and-creation/
+    2. Copy THIS file into that folder and rename it to index.html.
+    3. Replace every placeholder below. Search for these markers:
+         [TITLE TAG]     — the browser tab text (keep under ~60 characters)
+         [META DESCRIPTION] — 1-2 sentences that honestly summarize the page.
+                              Do NOT invent content; describe what is actually on the page.
+         [SLUG]          — the folder name you chose in step 1.
+         [ARTICLE TITLE] — the big heading readers see (your <h1>).
+         [AUTHOR NAME]   — the writer's name.
+         [PUBLISH DATE]  — date the article went live (YYYY-MM-DD).
+         [SECTION ...]   — repeat the <h2> + <p> blocks for each section of your article.
+                           Use <h2> for main sections. Use <h3> for subsections.
+         [DOWNLOAD PDF]  — optional: change the PDF file name, or delete the button.
+    4. Add your article to the sitemap.xml file at the site root
+       (copy an existing <url> block and change the <loc> and <lastmod>).
+    5. Optional but recommended: add a teaser card on the homepage
+       in the "Articles & Reviews" section, linking to your new page.
+
+    The <script type="application/ld+json"> block already contains the
+    BlogPosting schema — just update the headline, description, dates,
+    and URL. Leave the "@type": "BlogPosting" line unchanged.
+    =====================================================================
+-->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- [TITLE TAG] — shows in search results and the browser tab -->
+    <title>[ARTICLE TITLE] | WhatIfWeBelieved</title>
+    <!-- [META DESCRIPTION] — the text shown under the title in Google results -->
+    <meta name="description" content="[META DESCRIPTION]">
+    <!-- Canonical: always the full live address of THIS page -->
+    <link rel="canonical" href="https://whatifwebelieved.vercel.app/articles/[SLUG]/">
+    <meta name="robots" content="index, follow">
+    <!-- Open Graph: controls how the page looks when shared on Facebook/WhatsApp/etc. -->
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="WhatIfWeBelieved">
+    <meta property="og:title" content="[ARTICLE TITLE] | WhatIfWeBelieved">
+    <meta property="og:description" content="[META DESCRIPTION]">
+    <meta property="og:url" content="https://whatifwebelieved.vercel.app/articles/[SLUG]/">
+    <meta property="og:image" content="https://whatifwebelieved.vercel.app/bg-1.jpg">
+    <meta property="og:locale" content="en_US">
+    <meta property="article:published_time" content="[PUBLISH DATE]">
+    <meta property="article:modified_time" content="[PUBLISH DATE]">
+    <meta property="article:author" content="[AUTHOR NAME]">
+    <!-- Twitter Card: same purpose as Open Graph, for X/Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="[ARTICLE TITLE] | WhatIfWeBelieved">
+    <meta name="twitter:description" content="[META DESCRIPTION]">
+    <meta name="twitter:image" content="https://whatifwebelieved.vercel.app/bg-1.jpg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "headline": "[ARTICLE TITLE]",
+        "description": "[META DESCRIPTION]",
+        "datePublished": "[PUBLISH DATE]",
+        "dateModified": "[PUBLISH DATE]",
+        "inLanguage": "en",
+        "articleSection": "[SECTION LABEL]",
+        "author": {
+            "@type": "Person",
+            "name": "[AUTHOR NAME]",
+            "url": "https://www.youtube.com/@paulos1844"
+        },
+        "publisher": {
+            "@type": "Organization",
+            "name": "WhatIfWeBelieved",
+            "url": "https://whatifwebelieved.vercel.app/",
+            "logo": {
+                "@type": "ImageObject",
+                "url": "https://whatifwebelieved.vercel.app/wallpaper-theology.svg"
+            }
+        },
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https://whatifwebelieved.vercel.app/articles/[SLUG]/"
+        },
+        "image": {
+            "@type": "ImageObject",
+            "url": "https://whatifwebelieved.vercel.app/bg-1.jpg"
+        }
+    }
+    </script>
+    <style>
+        /* The styling is the same for every article — no need to change anything below this point. */
+        :root {
+            --crimson: #7a1a2e;
+            --crimson-dark: #5c1220;
+            --gold: #9a7520;
+            --gold-light: #b89040;
+            --paper: #faf8f5;
+            --ink: #1a0f18;
+            --ink-light: #5a4038;
+            --muted: #6a5848;
+            --border: rgba(200,162,78,0.2);
+            --shadow: rgba(44,24,16,0.06);
+            --glass-border: rgba(200,162,78,0.12);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(180deg, #faf8f5 0%, #f0ebe3 50%, #faf8f5 100%);
+            background-attachment: fixed;
+            color: var(--ink);
+            line-height: 1.8;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        h1, h2, h3 { font-family: 'Playfair Display', serif; font-weight: 700; line-height: 1.25; }
+
+        .container { max-width: 780px; margin: 0 auto; padding: 0 24px; }
+
+        nav {
+            display: flex;
+            justify-content: center;
+            padding: 16px 32px;
+            background: rgba(255,255,255,0.8);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border-bottom: 1px solid var(--glass-border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .nav-logo-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--crimson);
+        }
+
+        .nav-logo-text span { color: var(--gold); }
+
+        .article-hero { padding: 64px 0 40px; text-align: center; }
+
+        .section-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 18px;
+        }
+
+        .article-hero h1 {
+            font-size: clamp(1.9rem, 5vw, 3rem);
+            color: var(--ink);
+            margin-bottom: 20px;
+        }
+
+        .byline { color: var(--muted); font-size: 0.95rem; margin-bottom: 8px; }
+        .byline strong { color: var(--crimson); font-weight: 600; }
+        .date-line { color: var(--muted); font-size: 0.85rem; }
+
+        .article-body {
+            background: rgba(255,255,255,0.65);
+            border: 1px solid var(--glass-border);
+            border-radius: 14px;
+            padding: 48px;
+            box-shadow: 0 10px 40px var(--shadow);
+        }
+
+        .article-body h2 { color: var(--crimson); font-size: 1.45rem; margin: 40px 0 16px; }
+        .article-body h2:first-of-type { margin-top: 0; }
+        .article-body h3 { color: var(--crimson); font-size: 1.15rem; margin: 28px 0 12px; }
+        .article-body p { color: var(--ink-light); font-size: 1.02rem; margin-bottom: 20px; }
+        .article-body p:last-child { margin-bottom: 0; }
+
+        .abstract-label {
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 14px;
+        }
+
+        blockquote {
+            border-left: 3px solid var(--gold);
+            margin: 24px 0;
+            padding: 4px 20px;
+            color: var(--ink-light);
+            font-style: italic;
+        }
+
+        .article-actions { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; margin-top: 36px; }
+
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--crimson);
+            color: #fff;
+            padding: 14px 28px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            text-decoration: none;
+            transition: background 0.3s;
+        }
+
+        .btn-primary:hover { background: var(--crimson-dark); }
+
+        .related-links { text-align: center; margin: 40px 0 56px; font-size: 0.9rem; }
+        .related-links a { color: var(--crimson); text-decoration: none; font-weight: 600; }
+        .related-links a:hover { text-decoration: underline; }
+
+        footer {
+            border-top: 1px solid var(--glass-border);
+            padding: 32px 0;
+            text-align: center;
+            color: var(--muted);
+            font-size: 0.85rem;
+        }
+
+        footer a { color: var(--muted); text-decoration: none; }
+        footer a:hover { color: var(--crimson); }
+
+        @media (max-width: 720px) {
+            .article-body { padding: 32px 22px; }
+            .article-hero { padding: 44px 0 28px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAV (keep as-is) -->
+    <nav>
+        <a href="../../index.html" class="nav-logo">
+            <span style="width:28px;height:34px;">
+                <svg viewBox="0 0 36 44" fill="none">
+                    <path d="M18 2 L34 9 L34 24 C34 33 18 42 18 42 C18 42 2 33 2 24 L2 9 Z" fill="#7a1a2e"/>
+                    <path d="M18 7 L30 12 L30 24 C30 31 18 37 18 37 C18 37 6 31 6 24 L6 12 Z" fill="none" stroke="#9a7520" stroke-width="1.5"/>
+                    <text x="18" y="26" text-anchor="middle" fill="#9a7520" font-size="11" font-weight="bold" font-family="serif">W</text>
+                </svg>
+            </span>
+            <span class="nav-logo-text">WhatIfWe<span>Believed</span></span>
+        </a>
+    </nav>
+
+    <!-- ARTICLE HEADER: change the title, byline, and tagline -->
+    <header class="article-hero">
+        <div class="container">
+            <div class="section-label">[SECTION LABEL — e.g., Theology, Sermon Review]</div>
+            <h1>[ARTICLE TITLE]</h1>
+            <p class="byline">By <strong>[AUTHOR NAME]</strong></p>
+            <p class="date-line">[PUBLISH DATE]</p>
+        </div>
+    </header>
+
+    <!-- ARTICLE BODY: copy/paste the <h2>/<h3>/<p> blocks for each section of your article -->
+    <main class="container">
+        <article class="article-body">
+
+            <h2>First Section Heading</h2>
+            <p>Write your article here. Keep one idea per paragraph. Use <h2> for main sections
+            and <h3> for subsections. Quote scripture and cite sources by name.</p>
+
+            <h2>Second Section Heading</h2>
+            <p>More of your article...</p>
+
+            <h2>Conclusion</h2>
+            <p>End the article with your concluding reflection.</p>
+
+        </article>
+
+        <!-- OPTIONAL: change the PDF name below, or delete this whole block if there is no PDF -->
+        <div class="article-actions">
+            <a href="https://whatifwebelieved.vercel.app/[PDF-NAME].pdf" class="btn-primary" download>Download PDF</a>
+        </div>
+
+        <div class="related-links">
+            <p>More writing: <a href="../../index.html#articles">All Articles &amp; Reviews</a> &middot; <a href="../../agent/index.html">Ask the Theology AI Agent</a></p>
+        </div>
+    </main>
+
+    <!-- FOOTER (keep as-is) -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 WhatIfWeBelieved &middot; <a href="https://www.youtube.com/@paulos1844" target="_blank">@paulos1844</a></p>
+        </div>
+    </footer>
+
+</body>
+</html>
