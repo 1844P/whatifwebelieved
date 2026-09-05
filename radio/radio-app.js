@@ -316,12 +316,14 @@ Continuous broadcast: playlist ring + intermission that repeats the
 
     // Professional sign-off when the announcer hands the air over to
     // Adventist World Radio (auto relay placeholder programming). The
-    // half-hour return uses the "back over" variant.
+    // half-hour return uses the "back over" variant. Both note that local
+    // programming is coming soon while AWR fills the air in the meantime.
     function awrSignOff(again) {
         if (!(AUTO_RELAY_PROGRAMMING && !userSwitchedToLocal)) return '';
-        return (again
-            ? 'And now, I turn you back over to Adventist World Radio'
-            : 'And now, I turn you over to Adventist World Radio') + '. Enjoy the blessing.';
+        const turn = again
+            ? 'I turn you back over to Adventist World Radio'
+            : 'I turn you over to Adventist World Radio';
+        return 'And now, local programming is coming soon. In the meantime, ' + turn + '. Enjoy the blessing.';
     }
 
     // Full on-air station introduction: the greeting plus the AWR hand-off
