@@ -19,7 +19,7 @@ Continuous broadcast: playlist ring + intermission that repeats the
 
     const STATIONS = [
         { freq: 88.5,  emoji: '\u{1F64F}', name: 'Morning Worship',   show: 'Songs & praise to start your day',   pattern: { type: 'pad',    chord: [261.63, 329.63, 392.0, 523.25], every: 1.6 } },
-        { freq: 92.1,  emoji: '\u{1F4D6}', name: 'Bible Stories',     show: 'Stories of faith, told aloud',        pattern: { type: 'arp',    notes: [392, 440, 523.25, 587.33, 659.25], step: 0.26 } },
+        { freq: 92.1,  emoji: '\u{1F4D6}', name: 'Bible Stories',     show: 'Stories of faith, told aloud',        pattern: { type: 'arp',    notes: [392, 440, 523.25, 587.33, 659.25], step: 0.26 }, voice: 'male' },
         { freq: 96.7,  emoji: '\u{1F56F}', name: 'Prayer Hour',       show: 'Quiet time & prayer',                 pattern: { type: 'prayer', drone: 130.81, bellEvery: 4 } },
         { freq: 100.3, emoji: '\u{1F3B5}', name: 'Hymns & Praise',    show: 'Timeless hymns, gently played',       pattern: { type: 'arp',    notes: [523.25, 659.25, 783.99, 1046.5], step: 0.3 } },
         { freq: 104.9, emoji: '\u{1F9D2}', name: "Kids' Bible Hour",  show: 'Bible adventures for little ears',    pattern: { type: 'kids',   notes: [523.25, 659.25, 783.99, 659.25, 880], step: 0.18 } }
@@ -273,14 +273,26 @@ Continuous broadcast: playlist ring + intermission that repeats the
     let hymnPlayedForSeq = 0;
     let welcomeEndTimer = null;
 
-    function pickVoice() {
+    // Preferred voices. DEFAULT keeps the original feel (mostly female
+    // natural voices); MALE is used for stations that want the male
+    // announcer (e.g. Bible Stories — see STATIONS[].voice) and tries male
+    // voices first before falling back.
+    const DEFAULT_VOICE_PREFS = ['google us english', 'microsoft aria', 'microsoft jenny', 'microsoft guy', 'samantha', 'karen', 'daniel', 'google uk english female', 'natural'];
+    const MALE_VOICE_PREFS = ['google uk english male', 'microsoft guy', 'microsoft david', 'microsoft mark', 'microsoft christopher', 'microsoft james', 'daniel'];
+
+    function pickVoice(gender) {
         if (!('speechSynthesis' in window)) return null;
         const voices = window.speechSynthesis.getVoices();
         if (!voices || !voices.length) return null;
-        const prefs = ['google us english', 'microsoft aria', 'microsoft jenny', 'microsoft guy', 'samantha', 'karen', 'daniel', 'google uk english female', 'natural'];
+        const prefs = gender === 'male' ? MALE_VOICE_PREFS : DEFAULT_VOICE_PREFS;
         for (const p of prefs) {
             const v = voices.find((x) => x && x.name && x.name.toLowerCase().includes(p));
             if (v) return v;
+        }
+        // Gender-aware fallback before settling for any English voice.
+        if (gender === 'male') {
+            const anyMale = voices.find((v) => v && v.name && /\b(david|mark|guy|james|christopher|daniel|michael|male)\b/i.test(v.name));
+            if (anyMale) return anyMale;
         }
         return voices.find((v) => v && v.lang && v.lang.toLowerCase().startsWith('en')) || null;
     }
@@ -300,6 +312,25 @@ Continuous broadcast: playlist ring + intermission that repeats the
         }
         return greet + ' to ' + station.name + '. ' + station.show + '. ' +
             'Sit back, take a breath, and enjoy the hour with us.';
+    }
+
+    // Professional sign-off when the announcer hands the air over to
+    // Adventist World Radio (auto relay placeholder programming). The
+    // half-hour return uses the "back over" variant.
+    function awrSignOff(again) {
+        if (!(AUTO_RELAY_PROGRAMMING && !userSwitchedToLocal)) return '';
+        return (again
+            ? 'And now, I turn you back over to Adventist World Radio'
+            : 'And now, I turn you over to Adventist World Radio') + '. Enjoy the blessing.';
+    }
+
+    // Full on-air station introduction: the greeting plus the AWR hand-off
+    // whenever the broadcast continues on the relay.
+    function stationAnnounceText(st, again) {
+        let text = stationLine(st);
+        const signOff = awrSignOff(again);
+        if (signOff) text += ' ' + signOff;
+        return text;
     }
 
     // Rough spoken duration (ms) at rate 0.9 — used as a safety net for the track.
@@ -361,7 +392,7 @@ Continuous broadcast: playlist ring + intermission that repeats the
                 // starts (prevents two stations talking over each other).
                 window.speechSynthesis.cancel();
                 const u = new SpeechSynthesisUtterance(text);
-                const v = pickVoice();
+                const v = pickVoice(state.locked && state.locked.voice);
                 if (v) u.voice = v;
                 u.rate = 0.9;
                 u.pitch = 1.0;
@@ -481,7 +512,7 @@ Continuous broadcast: playlist ring + intermission that repeats the
                 }
             }
             if (opts.announce !== false) {
-                announce(stationLine(station));
+                announce(stationAnnounceText(station, false));
             }
         } else {
             if (state.locked) {
@@ -548,7 +579,7 @@ Continuous broadcast: playlist ring + intermission that repeats the
                 const welcomeStation = state.locked;
                 playWelcome(function () {
                     if (state.power && state.locked === welcomeStation) {
-                        announce(stationLine(welcomeStation));
+                        announce(stationAnnounceText(welcomeStation, false));
                     }
                 });
             } else {
@@ -735,7 +766,7 @@ Continuous broadcast: playlist ring + intermission that repeats the
         const st = state.locked;
         externalAudioStatus.textContent = 'Announcer: interrupting the AWR relay for the ' + st.name + ' station intro';
         RadioAudio.pauseExternalAudio();
-        announce(stationLine(st) + ' And now, returning to the Adventist World Radio broadcast.');
+        announce(stationAnnounceText(st, true));
     }
 
     function startRelay(keyOrUrl, customLabel) {
