@@ -23,11 +23,13 @@ const RadioAudio = (function () {
     let hymnNodes = [];
     let hymnEndTimer = null;
 
-    // External audio support
+    // External audio support (internet relay mode)
     let externalAudio = null;
     let externalAudioSource = null;
     let externalAudioGain = null;
     let externalAudioUrl = null;
+    let externalRelayFallback = false; // true = plain <audio> path (no graph)
+    let externalVolume = 0.8;          // relay volume (setExternalAudioVolume)
 
     function ensure() {
         if (ctx) return;
@@ -97,6 +99,11 @@ const RadioAudio = (function () {
     function setVolume(v) {
         ensure();
         volGain.gain.setTargetAtTime(v, ctx.currentTime, 0.03);
+        // Keep a plain-element relay (no Web Audio graph) in step with the
+        // radio's main volume knob.
+        if (externalAudio && externalRelayFallback) {
+            externalAudio.volume = Math.max(0, Math.min(1, v));
+        }
     }
 
     function click() {
@@ -597,7 +604,13 @@ const RadioAudio = (function () {
         hymnVibSoftGain = null;
     }
 
-    // External audio functionality
+    // External audio functionality — internet relay mode.
+    // Preferred path: route the stream through the Web Audio graph via
+    // createMediaElementSource so it mixes like a station on the radio's
+    // buses. That requires the stream server to answer CORS headers (the
+    // AWR SID Media relay on iono.fm does, including the Icy-MetaData
+    // preflight). Servers without CORS (e.g. Faith FM, Hope FM UK) fall
+    // back to a plain <audio> element whose volume follows the main knob.
     function setExternalAudio(url) {
         // If URL hasn't changed, do nothing
         if (externalAudioUrl === url) return;
@@ -614,26 +627,91 @@ const RadioAudio = (function () {
             return;
         }
 
-        try {
-            // Create audio element
-            externalAudio = new Audio(url);
-            externalAudio.loop = true; // Loop for continuous broadcast
+        externalRelayFallback = false;
 
-            // Create MediaElementSource to connect to Web Audio API
-            externalAudioSource = ctx.createMediaElementSource(externalAudio);
+        const audio = new Audio();
+        audio.loop = true; // harmless for live streams, useful for files
+        audio.preload = 'none';
+        audio.src = url;
+        externalAudio = audio;
 
-            // Connect to our external audio gain node
-            externalAudioSource.connect(externalAudioGain);
+        startRelayElement(audio, true);
+    }
 
-            // Start playing
-            externalAudio.play().catch(e => {
-                console.error('Failed to play external audio:', e);
-                stopExternalAudio();
-            });
-        } catch (e) {
-            console.error('Error setting up external audio:', e);
-            stopExternalAudio();
+    // Start a relay element. When tryCors is true the element asks for CORS
+    // mode (crossOrigin='anonymous') so it can be pushed through the Web
+    // Audio graph; on a tainted/CORS-failed load, onRelayLoadError retries
+    // with a fresh, never-wrapped element.
+    function startRelayElement(audio, tryCors) {
+        audio.removeEventListener('error', onRelayLoadError);
+        audio.removeEventListener('error', onRelayPlayError);
+
+        if (tryCors) {
+            // Ask the browser to fetch in CORS mode (server must answer ACAO).
+            audio.crossOrigin = 'anonymous';
         }
+
+        try {
+            if (!externalAudioSource) {
+                externalAudioSource = ctx.createMediaElementSource(audio);
+                externalAudioSource.connect(externalAudioGain);
+                externalAudioGain.gain.setTargetAtTime(externalVolume, ctx.currentTime, 0.02);
+                externalRelayFallback = false;
+            }
+        } catch (e) {
+            // Tainted media: cannot route through the graph. Fall through to
+            // plain element playback below.
+            if (externalAudioSource) {
+                try { externalAudioSource.disconnect(); } catch (er) { /* noop */ }
+                externalAudioSource = null;
+            }
+            externalRelayFallback = true;
+        }
+
+        audio.volume = externalRelayFallback ? (volGain ? volGain.gain.value : 0.8) : 1;
+
+        const p = audio.play();
+        if (p && p.catch) p.catch(function () {
+            if (externalAudio !== audio) return; // replaced or already stopped
+            if (!externalRelayFallback) return;  // 'error' handler owns the CORS retry
+            stopExternalAudio();
+        });
+
+        audio.addEventListener('error', tryCors ? onRelayLoadError : onRelayPlayError);
+    }
+
+    // A CORS-mode load failed (server sends no Access-Control-Allow-Origin).
+    // createMediaElementSource can wrap an element only once, so the retry
+    // uses a brand-new, never-wrapped <audio> element playing plainly.
+    function onRelayLoadError() {
+        if (externalRelayFallback || !externalAudio) return;
+
+        const old = externalAudio;
+        try {
+            if (externalAudioSource) { externalAudioSource.disconnect(); externalAudioSource = null; }
+        } catch (e) { /* noop */ }
+
+        externalRelayFallback = true;
+        old.removeEventListener('error', onRelayLoadError);
+        old.removeEventListener('error', onRelayPlayError);
+        try { old.pause(); } catch (e) { /* noop */ }
+
+        const a = new Audio();
+        a.loop = true;
+        a.volume = volGain ? volGain.gain.value : 0.8;
+        a.src = old.src;
+        externalAudio = a;
+
+        const p = a.play();
+        if (p && p.catch) p.catch(function () {
+            if (externalAudio !== a) return;
+            stopExternalAudio();
+        });
+        a.addEventListener('error', onRelayPlayError);
+    }
+
+    function onRelayPlayError() {
+        stopExternalAudio();
     }
 
     function stopExternalAudio() {
@@ -642,6 +720,8 @@ const RadioAudio = (function () {
                 externalAudio.pause();
                 externalAudio.currentTime = 0;
             } catch (e) { /* ignore */ }
+            externalAudio.removeEventListener('error', onRelayLoadError);
+            externalAudio.removeEventListener('error', onRelayPlayError);
             externalAudio = null;
         }
         if (externalAudioSource) {
@@ -651,11 +731,16 @@ const RadioAudio = (function () {
             externalAudioSource = null;
         }
         externalAudioUrl = null;
+        externalRelayFallback = false;
     }
 
     function setExternalAudioVolume(v) {
-        if (externalAudioGain) {
+        externalVolume = v;
+        if (externalAudioGain && ctx) {
             externalAudioGain.gain.setTargetAtTime(v, ctx.currentTime, 0.03);
+        }
+        if (externalAudio && externalRelayFallback) {
+            externalAudio.volume = Math.max(0, Math.min(1, v));
         }
     }
 

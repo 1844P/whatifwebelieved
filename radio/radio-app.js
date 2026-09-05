@@ -32,6 +32,30 @@
         externalAudioVolume: 0.8 // New: volume for external audio
     };
 
+    /* ---------- internet relay presets ---------- */
+    // Live English relays of Adventist World Radio. AWR SID Media (South
+    // Africa) is the official AWR English service; its CDN (iono.fm) is
+    // fully CORS-enabled for web players, including the Icy-MetaData
+    // preflight. Faith FM (Australia) is an Adventist English station as an
+    // MP3 alternative. Any https stream URL works via the custom field too.
+    const RELAYS = {
+        awr: {
+            name: 'Adventist World Radio (English)',
+            sub:  'AWR SID Media \u00B7 South Africa \u2014 official AWR English service',
+            url:  'https://edge.iono.fm/xice/187_medium.aac'
+        },
+        faithfm: {
+            name: 'Faith FM (English)',
+            sub:  'Adventist radio \u00B7 Australia \u2014 24/7 English',
+            url:  'https://stream1.faithfm.com.au/FaithFM.mp3'
+        }
+    };
+
+    // Active relay descriptor, or null while the radio runs its own locally
+    // generated broadcast. While a relay is live, the radio stops generating
+    // sound and becomes a dedicated speaker/tuner for the internet stream.
+    let relay = null;
+
     /* ---------- continuous playlist ring + intermission ---------- */
     // The broadcast loops through TRACKS forever. Every INTERMISSION_EVERY
     // tracks, the station replays its power-on opening: the welcome jingle,
@@ -325,6 +349,18 @@
     }
 
     function renderScreen() {
+        if (relay) {
+            // Internet relay on air: the dial is cosmetic, the signal is
+            // full, and the stream name fills the screen.
+            screenStatic.style.opacity = '0';
+            setSignalBars(1);
+            onair.classList.remove('off');
+            screenFreq.textContent = 'RELAY';
+            screenStation.textContent = relay.name;
+            screenShow.textContent = relay.sub;
+            dialReadout.textContent = 'RELAY';
+            return;
+        }
         screenStatic.style.opacity = state.power ? String(Math.round((1 - signalLevel(state.freq)) * 0.85 * 100) / 100) : '0';
         setSignalBars(state.power ? signalLevel(state.freq) : 0);
         onair.classList.toggle('off', !state.power || !state.locked);
@@ -363,6 +399,13 @@
         opts = opts || {};
         state.freq = Math.min(MAX_FREQ, Math.max(MIN_FREQ, freq));
         if (!state.power) { renderScreen(); renderDial(); return; }
+        if (relay) {
+            // While a relay is on air, tuning stays cosmetic — the external
+            // broadcast continues uninterrupted on the speaker.
+            renderScreen();
+            renderDial();
+            return;
+        }
 
         const { station, distance } = nearestStation(state.freq);
         const wasLocked = state.locked;
@@ -422,6 +465,7 @@
         powerIndicator.classList.toggle('on', on);
         powerBtn.classList.toggle('on', on);
         if (on) {
+            relay = null; // a manual power-on always starts fresh
             RadioAudio.setVolume(state.volume);
             // Set external audio volume if we're using external audio
             if (state.usingExternalAudio) {
@@ -441,6 +485,7 @@
                 playWelcome(null);
             }
         } else {
+            relay = null;
             welcomeAudio.pause();
             if (welcomeEndTimer) { clearTimeout(welcomeEndTimer); welcomeEndTimer = null; }
             window.speechSynthesis.cancel();
@@ -520,10 +565,10 @@
         stationChips.appendChild(chip);
     });
 
-    /* ---------- external audio controls ---------- */
+    /* ---------- external audio / internet relay controls ---------- */
     function updateExternalAudioStatus() {
-        if (state.externalAudioUrl) {
-            externalAudioStatus.textContent = `External audio: ${state.externalAudioUrl}`;
+        if (relay) {
+            externalAudioStatus.textContent = 'Relaying: ' + relay.name + ' \u2014 ' + relay.url;
             externalAudioStatus.style.color = '#4CAF50'; // Green
         } else {
             externalAudioStatus.textContent = 'No external audio configured';
@@ -531,7 +576,87 @@
         }
     }
 
-    // Go Live button - automatically applies local WIWB Studio stream
+    function flashButton(btn, text, ms) {
+        const old = btn.textContent;
+        btn.textContent = text;
+        setTimeout(function () { btn.textContent = old; }, ms || 2000);
+    }
+
+    // Enter relay mode: stop the locally generated broadcast and pipe the
+    // internet stream through the radio instead. keyOrUrl is a RELAYS preset
+    // id or a direct stream URL; customLabel names non-preset sources.
+    function startRelay(keyOrUrl, customLabel) {
+        const preset = RELAYS[keyOrUrl] || null;
+        const url = preset ? preset.url : keyOrUrl;
+        if (!url) return;
+
+        RadioAudio.resume();
+
+        if (!state.power) {
+            state.power = true;
+            RadioAudio.power(true);
+            powerIndicator.classList.add('on');
+            powerBtn.classList.add('on');
+            RadioAudio.chime();
+        }
+
+        // Kill the locally generated broadcast — the relay is the only
+        // thing on the air now.
+        Playlist.stop();
+        RadioAudio.stopHymn();
+        RadioAudio.stopStation();
+        RadioAudio.setStatic(0);
+        window.speechSynthesis.cancel();
+        if (hymnTriggerTimer) { clearTimeout(hymnTriggerTimer); hymnTriggerTimer = null; }
+        if (welcomeEndTimer) { clearTimeout(welcomeEndTimer); welcomeEndTimer = null; }
+        try { welcomeAudio.pause(); } catch (e) { /* noop */ }
+        state.locked = null;
+
+        relay = {
+            key: preset ? keyOrUrl : null,
+            name: preset ? preset.name : (customLabel || 'External relay'),
+            sub:  preset ? preset.sub  : (customLabel || 'Live internet relay'),
+            url:  url
+        };
+        state.externalAudioUrl = url;
+        state.usingExternalAudio = true;
+        RadioAudio.setExternalAudio(url);
+        RadioAudio.setExternalAudioVolume(state.externalAudioVolume);
+        RadioAudio.setVolume(state.volume);
+        updateExternalAudioStatus();
+        renderScreen();
+        renderDial();
+    }
+
+    // Leave relay mode. If the radio is still powered on, resume the locally
+    // generated broadcast (welcome -> announcer -> music) for the tuned
+    // station so the radio keeps playing as before.
+    function stopRelay() {
+        relay = null;
+        state.externalAudioUrl = null;
+        state.usingExternalAudio = false;
+        RadioAudio.stopExternalAudio();
+        updateExternalAudioStatus();
+        if (state.power) {
+            tuneTo(state.freq, { announce: false });
+            if (state.locked) announce(stationLine(state.locked));
+        }
+        renderScreen();
+        renderDial();
+    }
+
+    // One-click relays.
+    $('relayAwrBtn').addEventListener('click', function () {
+        flashButton(this, '\u{1F534} AWR ON AIR', 2500);
+        startRelay('awr');
+    });
+
+    $('relayFaithFmBtn').addEventListener('click', function () {
+        flashButton(this, '\u{1F534} FAITH FM ON AIR', 2500);
+        startRelay('faithfm');
+    });
+
+    // GO LIVE — broadcast the local WIWB Studio feed through the radio.
     const goLiveBtn = $('goLiveBtn');
     goLiveBtn.addEventListener('click', () => {
         // Select the local WIWB Studio option
@@ -539,24 +664,9 @@
         // Hide custom URL input
         customUrlContainer.style.display = 'none';
         externalAudioUrlInput.value = '';
-        
-        // Apply the stream
-        const url = externalAudioSourceSelect.value;
-        if (url) {
-            state.externalAudioUrl = url;
-            state.usingExternalAudio = true;
-            RadioAudio.setExternalAudio(url);
-            RadioAudio.setExternalAudioVolume(state.externalAudioVolume);
-            updateExternalAudioStatus();
-            
-            // Show success feedback
-            goLiveBtn.textContent = 'LIVE!';
-            goLiveBtn.style.backgroundColor = '#4CAF50';
-            setTimeout(() => {
-                goLiveBtn.textContent = '���� GO LIVE';
-                goLiveBtn.style.backgroundColor = ''; // Reset to default
-            }, 2000);
-        }
+
+        startRelay('http://127.0.0.1:8000/wiwb', 'Local WIWB Studio');
+        flashButton(goLiveBtn, '\u{1F534} LIVE!', 2500);
     });
 
     // Handle dropdown selection
@@ -576,11 +686,11 @@
     configToggle.addEventListener('click', () => {
         configContent.classList.toggle('open');
         const isOpen = configContent.classList.contains('open');
-        configToggle.textContent = isOpen ? '�� Hide' : '�� Configure';
+        configToggle.textContent = isOpen ? '\u{1F527} Hide' : '\u{1F527} Configure';
     });
 
     externalAudioVolumeInput.addEventListener('input', () => {
-        const vol = parseInt(externalAudioVolumeInput.value);
+        const vol = parseInt(externalAudioVolumeInput.value, 10);
         externalAudioVolOut.textContent = vol;
         state.externalAudioVolume = vol / 100;
         // Update external audio volume if we're using external audio
@@ -592,7 +702,7 @@
     applyExternalAudioBtn.addEventListener('click', () => {
         let url = '';
         const selectedSource = externalAudioSourceSelect.value;
-        
+
         if (selectedSource === '') {
             // Use custom URL
             url = externalAudioUrlInput.value.trim();
@@ -600,54 +710,44 @@
             // Use selected preset URL
             url = selectedSource;
         }
-        
-        if (url) {
-            // Validate URL format (basic check)
-            if (/^https?:\/\//i.test(url)) {
-                state.externalAudioUrl = url;
-                state.usingExternalAudio = true;
-                RadioAudio.setExternalAudio(url);
-                RadioAudio.setExternalAudioVolume(state.externalAudioVolume);
-                updateExternalAudioStatus();
-                
-                // Reset form
-                externalAudioSourceSelect.value = 'http://127.0.0.1:8000/wiwb'; // Reset to default
-                customUrlContainer.style.display = 'none';
-                externalAudioUrlInput.value = '';
-                
-                // Show success feedback
-                applyExternalAudioBtn.textContent = 'Applied!';
-                setTimeout(() => {
-                    applyExternalAudioBtn.textContent = 'Apply Audio Stream';
-                }, 1500);
-            } else {
-                externalAudioStatus.textContent = 'Please enter a valid URL (http:// or https://)';
-                externalAudioStatus.style.color = '#f44336'; // Red
-                setTimeout(() => {
-                    updateExternalAudioStatus();
-                }, 2000);
-            }
-        } else {
-            externalAudioStatus.textContent = 'Please select or enter a URL';
-            externalAudioStatus.style.color = '#f44336'; // Red
-            setTimeout(() => {
-                updateExternalAudioStatus();
-            }, 2000);
-        }
-    });
 
-    clearExternalAudioBtn.addEventListener('click', () => {
-        state.externalAudioUrl = null;
-        state.usingExternalAudio = false;
-        RadioAudio.stopExternalAudio();
+        if (!url) {
+            externalAudioStatus.textContent = 'Please select or enter a stream URL';
+            externalAudioStatus.style.color = '#f44336'; // Red
+            setTimeout(updateExternalAudioStatus, 2000);
+            return;
+        }
+
+        // Validate URL format (basic check)
+        if (!/^https?:\/\//i.test(url)) {
+            externalAudioStatus.textContent = 'Please enter a valid URL (http:// or https://)';
+            externalAudioStatus.style.color = '#f44336'; // Red
+            setTimeout(updateExternalAudioStatus, 2000);
+            return;
+        }
+
+        // Label known presets by URL, otherwise call it a custom relay.
+        let label = 'External relay';
+        for (const k in RELAYS) {
+            if (RELAYS[k].url === url) label = RELAYS[k].name;
+        }
+        if (selectedSource === '') label = 'Custom relay: ' + url;
+
+        startRelay(url, label);
+        flashButton(applyExternalAudioBtn, 'Applied!', 1500);
+
+        // Reset form
         externalAudioSourceSelect.value = 'http://127.0.0.1:8000/wiwb'; // Reset to default
         customUrlContainer.style.display = 'none';
         externalAudioUrlInput.value = '';
-        updateExternalAudioStatus();
-        clearExternalAudioBtn.textContent = 'Cleared!';
-        setTimeout(() => {
-            clearExternalAudioBtn.textContent = 'Clear Stream';
-        }, 1500);
+    });
+
+    clearExternalAudioBtn.addEventListener('click', () => {
+        stopRelay();
+        externalAudioSourceSelect.value = 'http://127.0.0.1:8000/wiwb'; // Reset to default
+        customUrlContainer.style.display = 'none';
+        externalAudioUrlInput.value = '';
+        flashButton(clearExternalAudioBtn, 'Cleared!', 1500);
     });
 
     /* ---------- init ---------- */

@@ -40,7 +40,7 @@
     "isPartOf": { "@type": "WebSite", "name": "WhatIfWeBelieved", "url": "https://whatifwebelieved.vercel.app/" }
 }
 </script>
-<link rel="stylesheet" href="style.css?v=20260802e">
+<link rel="stylesheet" href="style.css?v=20260905a">
 </head>
 <body>
 
@@ -49,7 +49,7 @@
     <header class="page-header">
         <p class="brand">WHAT IF WE <span>BELIEVED</span></p>
         <h1 class="page-title">&#128251; What If We Believed Radio</h1>
-        <p class="page-tagline">Turn the dial, ride the static, and catch the broadcast.<br>All sounds are generated live in your browser &mdash; no streaming, just radio magic.</p>
+        <p class="page-tagline">Turn the dial, ride the static, and catch the broadcast.<br>All sounds are generated live in your browser &mdash; or relay Adventist World Radio (English) straight through the speaker.</p>
         <label class="announcer-toggle">
             <input type="checkbox" id="announcerToggle" checked>
             <span class="toggle-track"><span class="toggle-knob"></span></span>
@@ -58,7 +58,7 @@
     </header>
 
     <div class="soon-banner">
-        &#127909; <strong>On the air now:</strong> switch on, tune the dial, and enjoy the broadcast &mdash; all sounds are generated live in your browser. Catch worship, Bible stories, prayer, and hymns on the hour.
+        &#127909; <strong>On the air now:</strong> switch on, tune the dial, and enjoy the broadcast &mdash; all sounds are generated live in your browser. Catch worship, Bible stories, prayer, and hymns on the hour. Prefer the real thing? Hit <strong>&#128225; RELAY: Adventist World Radio (English)</strong> below and stream the AWR English service over the air.
     </div>
 
     <!-- THE RADIO -->
@@ -116,17 +116,23 @@
         </div>
     </div>
 
-    <!-- External Audio Configuration -->
+    <!-- External Audio / Internet Relay Configuration -->
     <div class="external-audio-config" id="externalAudioConfig">
         <div class="config-header">
-            <h3>���� External Audio Input</h3>
-            <button class="config-toggle" id="configToggle">�� Configure</button>
+            <h3>&#128225; External Audio / Internet Relay</h3>
+            <button class="config-toggle" id="configToggle">&#128295; Configure</button>
         </div>
         <div class="config-content" id="configContent">
+            <div class="config-row relay-buttons">
+                <button id="relayAwrBtn" class="btn relay-btn relay-awr">&#128225; RELAY: Adventist World Radio (English)</button>
+                <button id="relayFaithFmBtn" class="btn relay-btn">&#128225; RELAY: Faith FM (Australia)</button>
+            </div>
             <div class="config-row">
-                <label for="externalAudioSource">Audio Source:</label>
+                <label for="externalAudioSource">Audio Source (or pick a relay above):</label>
                 <select id="externalAudioSource">
                     <option value="http://127.0.0.1:8000/wiwb" selected>Local WIWB Studio (http://127.0.0.1:8000/wiwb)</option>
+                    <option value="https://edge.iono.fm/xice/187_medium.aac">AWR English Service &mdash; SID Media (South Africa)</option>
+                    <option value="https://stream1.faithfm.com.au/FaithFM.mp3">Faith FM (Australia)</option>
                     <option value="">Custom URL...</option>
                 </select>
             </div>
@@ -147,14 +153,15 @@
                 <span id="externalAudioStatus">No external audio configured</span>
             </div>
             <div class="config-row instructions">
-                <small>���� To broadcast from your local WIWB Studio:<br>
+                <small>&#128225; Internet relay: press a RELAY button above to stream one of the world&rsquo;s Adventist English radios right through this speaker. Any https:// stream URL works too &mdash; choose &ldquo;Custom URL&rdquo;, paste it, and hit &ldquo;Apply Audio Stream&rdquo;.<br><br>
+                &#128241; To broadcast from your local WIWB Studio:<br>
                 1. Start your WIWB Studio at http://127.0.0.1:4173/<br>
-                2. Click "POWER" then "START BROADCAST"<br>
-                3. Select "Local WIWB Studio" above and click "Apply Audio Stream"<br>
+                2. Click &ldquo;POWER&rdquo; then &ldquo;START BROADCAST&rdquo;<br>
+                3. Hit &ldquo;GO LIVE&rdquo; below (or select &ldquo;Local WIWB Studio&rdquo; and click &ldquo;Apply Audio Stream&rdquo;)<br>
                 4. Your desktop audio will now broadcast through the radio</small>
             </div>
             <div class="config-row">
-                <button id="goLiveBtn" class="btn go-live">���� GO LIVE</button>
+                <button id="goLiveBtn" class="btn go-live">&#128308; GO LIVE</button>
             </div>
         </div>
     </div>
@@ -180,12 +187,12 @@
     <footer class="page-footer">
         <a href="../index.html">&#8592; Back to WhatIfWeBelieved.vercel.app</a>
         <p>Station sounds are generated live in your browser with the Web Audio API, with pre-recorded welcome and music tracks on air.</p>
-        <p>External audio streaming allows you to broadcast live from local sources like WIWB Studio.</p>
+        <p>Internet relay pipes Adventist World Radio (English) &mdash; or any stream URL &mdash; straight through the speaker. Local sources like WIWB Studio can broadcast here too.</p>
     </footer>
 
 </div>
 
-<script src="radio-audio.js?v=20260807a"></script>
-<script src="radio-app.js?v=20260807b"></script>
+<script src="radio-audio.js?v=20260905b"></script>
+<script src="radio-app.js?v=20260905c"></script>
 </body>
 </html>
