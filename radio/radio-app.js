@@ -1,8 +1,11 @@
 /* ==========================================================================
    WHAT IF WE BELIEVED RADIO — app logic
    Power, tuning, signal strength, static, announcer voice.
-   Continuous broadcast: playlist ring + intermission that repeats the
-   station's opening (welcome jingle + announcer greeting) every few tracks.
+Continuous broadcast: playlist ring + intermission that repeats the
+    station's opening (welcome jingle + announcer greeting) every few tracks.
+    Placeholder programming: with AUTO_RELAY_PROGRAMMING on, the announcer
+    introduces the tuned station, then Adventist World Radio (English) fills
+    the air — interrupted every half hour for a fresh station greeting.
    ========================================================================== */
 (function () {
     'use strict';
@@ -55,6 +58,29 @@
     // generated broadcast. While a relay is live, the radio stops generating
     // sound and becomes a dedicated speaker/tuner for the internet stream.
     let relay = null;
+
+    // Placeholder programming: after the announcer introduces the tuned
+    // station, pipe Adventist World Radio (English) through the speaker, and
+    // interrupt the relay every half hour so the announcer can re-introduce
+    // the station. Flip AUTO_RELAY_PROGRAMMING to false to restore the full
+    // local broadcast (playlist ring + intermission) once it is ready.
+    const AUTO_RELAY_PROGRAMMING = true;
+    const AUTO_RELAY_KEY = 'awr';
+
+    // Half-hour station announcements during auto relay programming. For
+    // testing, shrink the wait with ?interrupt=10s (or 5m) in the URL.
+    const INTERRUPT_EVERY_MS = (function () {
+        try {
+            const m = /[?&]interrupt=(\d+)(m|s)/.exec(location.search);
+            if (m) return parseInt(m[1], 10) * (m[2] === 'm' ? 60000 : 1000);
+        } catch (e) { /* ignore */ }
+        return 30 * 60 * 1000;
+    })();
+
+    // False when the listener has taken over the radio (a manual relay, or
+    // Clear Stream) so the auto relay does not force its way back on air.
+    let userSwitchedToLocal = false;
+    let relayInterruptTimer = null;
 
     /* ---------- continuous playlist ring + intermission ---------- */
     // The broadcast loops through TRACKS forever. Every INTERMISSION_EVERY
@@ -290,6 +316,22 @@
         if (hymnPlayedForSeq === seq) return; // already started
         hymnPlayedForSeq = seq;
         if (hymnTriggerTimer) { clearTimeout(hymnTriggerTimer); hymnTriggerTimer = null; }
+
+        // Placeholder programming: once the announcer has said what the
+        // station is about, the broadcast continues on Adventist World Radio.
+        // resumeAutoRelay() covers the half-hour interrupts; enterAutoRelay()
+        // covers the power-on/station greeting. Flip AUTO_RELAY_PROGRAMMING
+        // to false to keep the local playlist ring instead.
+        if (AUTO_RELAY_PROGRAMMING && !userSwitchedToLocal) {
+            if (relay && relay.auto) {
+                resumeAutoRelay();
+            } else if (!relay) {
+                enterAutoRelay();
+            } else {
+                Playlist.start(seq); // manual relay on air: nothing to do
+            }
+            return;
+        }
         Playlist.start(seq);
     }
 
@@ -303,6 +345,11 @@
             welcomeAudio.onended = null;
             welcomeAudio.onerror = null;
             try { welcomeAudio.pause(); } catch (e) { /* noop */ }
+
+            // During auto relay programming the announcer takes the air over
+            // the AWR stream: silence the relay for the station intro, and
+            // let startHymnIfStillCurrent -> resumeAutoRelay bring it back.
+            if (relay && relay.auto) RadioAudio.pauseExternalAudio();
 
             const seq = ++utteranceSeq;
 
@@ -356,9 +403,19 @@
             setSignalBars(1);
             onair.classList.remove('off');
             screenFreq.textContent = 'RELAY';
-            screenStation.textContent = relay.name;
-            screenShow.textContent = relay.sub;
-            dialReadout.textContent = 'RELAY';
+            if (relay.station) {
+                // Auto relay: the speaker carries AWR but the dial still
+                // points at the tuned station, so the screen shows the
+                // station's identity with the relay source underneath.
+                screenFreq.textContent = state.freq.toFixed(1) + ' MHz';
+                screenStation.textContent = relay.station.emoji + ' ' + relay.station.name;
+                screenShow.textContent = relay.station.show + ' \u2014 via ' + relay.name;
+                dialReadout.textContent = state.freq.toFixed(1) + ' MHz';
+            } else {
+                screenStation.textContent = relay.name;
+                screenShow.textContent = relay.sub;
+                dialReadout.textContent = 'RELAY';
+            }
             return;
         }
         screenStatic.style.opacity = state.power ? String(Math.round((1 - signalLevel(state.freq)) * 0.85 * 100) / 100) : '0';
@@ -399,9 +456,9 @@
         opts = opts || {};
         state.freq = Math.min(MAX_FREQ, Math.max(MIN_FREQ, freq));
         if (!state.power) { renderScreen(); renderDial(); return; }
-        if (relay) {
-            // While a relay is on air, tuning stays cosmetic — the external
-            // broadcast continues uninterrupted on the speaker.
+        if (relay && !relay.auto) {
+            // While a manual relay is on air, tuning stays cosmetic — the
+            // external broadcast continues uninterrupted on the speaker.
             renderScreen();
             renderDial();
             return;
@@ -413,7 +470,15 @@
             if (state.locked !== station) {
                 state.locked = station;
                 RadioAudio.chime();
-                RadioAudio.startStation(station.pattern);
+                if (relay && relay.auto) {
+                    // Auto relay: keep the AWR stream on the speaker, just
+                    // re-brand the on-air identity for the new station. The
+                    // announcer intro (and pause/resume of the relay) runs
+                    // below exactly like a local re-tune.
+                    relay.station = station;
+                } else {
+                    RadioAudio.startStation(station.pattern);
+                }
             }
             if (opts.announce !== false) {
                 announce(stationLine(station));
@@ -424,8 +489,11 @@
                 RadioAudio.stopStation();
                 RadioAudio.stopHymn();
                 Playlist.stopTrack();
+                if (relay && relay.auto) relay.station = null;
             }
-            RadioAudio.setStatic(signalLevel(state.freq) < 1 ? 1 : 0);
+            // Keep the AWR stream audible while dialing through static;
+            // only the local radio emits static here.
+            if (!(relay && relay.auto)) RadioAudio.setStatic(signalLevel(state.freq) < 1 ? 1 : 0);
         }
         if (state.locked) RadioAudio.setStatic(0);
         renderScreen();
@@ -466,6 +534,8 @@
         powerBtn.classList.toggle('on', on);
         if (on) {
             relay = null; // a manual power-on always starts fresh
+            userSwitchedToLocal = false; // a power cycle restores auto relay programming
+            clearRelayInterrupt();
             RadioAudio.setVolume(state.volume);
             // Set external audio volume if we're using external audio
             if (state.usingExternalAudio) {
@@ -486,6 +556,7 @@
             }
         } else {
             relay = null;
+            clearRelayInterrupt();
             welcomeAudio.pause();
             if (welcomeEndTimer) { clearTimeout(welcomeEndTimer); welcomeEndTimer = null; }
             window.speechSynthesis.cancel();
@@ -585,12 +656,99 @@
     // Enter relay mode: stop the locally generated broadcast and pipe the
     // internet stream through the radio instead. keyOrUrl is a RELAYS preset
     // id or a direct stream URL; customLabel names non-preset sources.
+    /* ---------- auto relay programming (placeholder broadcast) ---------- */
+    // After the announcer introduces the tuned station, the radio pipes the
+    // AWR English service through the speaker until the full WIWB broadcast
+    // is ready. Every half hour the announcer interrupts the relay to
+    // re-introduce the station, then hands the air back to AWR.
+
+    function enterAutoRelay() {
+        if (!AUTO_RELAY_PROGRAMMING || userSwitchedToLocal) return;
+        if (!(state.power && state.locked)) return;
+        const preset = RELAYS[AUTO_RELAY_KEY];
+        if (!preset) return;
+
+        // Cut anything the local broadcast was still doing.
+        Playlist.stop();
+        RadioAudio.stopHymn();
+        RadioAudio.stopStation();
+        RadioAudio.setStatic(0);
+
+        relay = {
+            auto: true,
+            station: state.locked,
+            key: AUTO_RELAY_KEY,
+            name: preset.name,
+            sub: preset.sub,
+            url: preset.url
+        };
+        state.externalAudioUrl = preset.url;
+        state.usingExternalAudio = true;
+        RadioAudio.setExternalAudio(preset.url);
+        RadioAudio.setExternalAudioVolume(state.externalAudioVolume);
+        RadioAudio.setVolume(state.volume);
+        updateExternalAudioStatus();
+        renderScreen();
+        renderDial();
+        scheduleRelayInterrupt();
+    }
+
+    function resumeAutoRelay() {
+        if (!(state.power && relay && relay.auto)) return;
+        // Bring the AWR stream back to full volume after the announcer's
+        // station intro (pauseExternalAudio ducked it during the speech).
+        RadioAudio.resumeExternalAudio();
+        // Self-heal: if the stream dropped while the announcer was talking,
+        // reconnect it.
+        if (!RadioAudio.isExternalAudioActive() && state.externalAudioUrl) {
+            RadioAudio.setExternalAudio(state.externalAudioUrl);
+            RadioAudio.setExternalAudioVolume(state.externalAudioVolume);
+        }
+        updateExternalAudioStatus();
+        renderScreen();
+        scheduleRelayInterrupt();
+    }
+
+    function scheduleRelayInterrupt() {
+        clearRelayInterrupt();
+        if (!(AUTO_RELAY_PROGRAMMING && !userSwitchedToLocal && relay && relay.auto)) return;
+        relayInterruptTimer = setTimeout(function () {
+            relayInterruptTimer = null;
+            interruptForStationAnnounce();
+        }, INTERRUPT_EVERY_MS);
+    }
+
+    function clearRelayInterrupt() {
+        if (relayInterruptTimer) { clearTimeout(relayInterruptTimer); relayInterruptTimer = null; }
+    }
+
+    // The half-hour station announcement: the announcer takes the air over
+    // the AWR relay, says what the tuned station is about, then hands the
+    // broadcast back to Adventist World Radio.
+    function interruptForStationAnnounce() {
+        if (!(state.power && relay && relay.auto && !userSwitchedToLocal)) return;
+        if (!state.locked) {
+            // No station dialed in — keep relaying quietly until next time.
+            scheduleRelayInterrupt();
+            return;
+        }
+        const st = state.locked;
+        externalAudioStatus.textContent = 'Announcer: interrupting the AWR relay for the ' + st.name + ' station intro';
+        RadioAudio.pauseExternalAudio();
+        announce(stationLine(st) + ' And now, returning to the Adventist World Radio broadcast.');
+    }
+
     function startRelay(keyOrUrl, customLabel) {
         const preset = RELAYS[keyOrUrl] || null;
         const url = preset ? preset.url : keyOrUrl;
         if (!url) return;
 
         RadioAudio.resume();
+
+        // A manual relay takes over from the auto relay programming; the
+        // half-hour announcements stop until the next power cycle.
+        userSwitchedToLocal = true;
+        clearRelayInterrupt();
 
         if (!state.power) {
             state.power = true;
@@ -633,6 +791,10 @@
     // station so the radio keeps playing as before.
     function stopRelay() {
         relay = null;
+        clearRelayInterrupt();
+        // Clearing the stream hands the radio back to the listener: the auto
+        // relay programming won't force its way back until a power cycle.
+        userSwitchedToLocal = true;
         state.externalAudioUrl = null;
         state.usingExternalAudio = false;
         RadioAudio.stopExternalAudio();

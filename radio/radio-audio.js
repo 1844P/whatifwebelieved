@@ -30,6 +30,7 @@ const RadioAudio = (function () {
     let externalAudioUrl = null;
     let externalRelayFallback = false; // true = plain <audio> path (no graph)
     let externalVolume = 0.8;          // relay volume (setExternalAudioVolume)
+    let externalPaused = false;        // relay ducked during an announcer takeover
 
     function ensure() {
         if (ctx) return;
@@ -744,6 +745,36 @@ const RadioAudio = (function () {
         }
     }
 
+    // Duck the relay for an announcer takeover: the stream keeps rolling
+    // (no reconnect lag) but is silenced while the announcer speaks.
+    function pauseExternalAudio() {
+        if (!externalAudio) return;
+        externalPaused = true;
+        if (externalAudioGain && ctx) {
+            externalAudioGain.gain.setTargetAtTime(0, ctx.currentTime, 0.05);
+        }
+        if (externalAudio && externalRelayFallback) {
+            externalAudio.volume = 0;
+        }
+    }
+
+    function resumeExternalAudio() {
+        externalPaused = false;
+        if (!externalAudio) return;
+        if (externalAudioGain && ctx) {
+            externalAudioGain.gain.setTargetAtTime(externalVolume, ctx.currentTime, 0.05);
+        }
+        if (externalAudio && externalRelayFallback) {
+            externalAudio.volume = Math.max(0, Math.min(1, externalVolume));
+        }
+    }
+
+    // True while a relay element exists and is actually playing (used by the
+    // app to self-heal a stream that dropped during an announcement).
+    function isExternalAudioActive() {
+        return externalAudio !== null && !externalAudio.paused;
+    }
+
     return {
         resume: resume,
         setVolume: setVolume,
@@ -758,6 +789,9 @@ const RadioAudio = (function () {
         // External audio API
         setExternalAudio: setExternalAudio,
         stopExternalAudio: stopExternalAudio,
-        setExternalAudioVolume: setExternalAudioVolume
+        setExternalAudioVolume: setExternalAudioVolume,
+        pauseExternalAudio: pauseExternalAudio,
+        resumeExternalAudio: resumeExternalAudio,
+        isExternalAudioActive: isExternalAudioActive
     };
 })();
