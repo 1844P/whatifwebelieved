@@ -4,8 +4,9 @@
 Continuous broadcast: playlist ring + intermission that repeats the
     station's opening (welcome jingle + announcer greeting) every few tracks.
     Placeholder programming: with AUTO_RELAY_PROGRAMMING on, the announcer
-    introduces the tuned station, then Adventist World Radio (English) fills
-    the air — interrupted every half hour for a fresh station greeting.
+    introduces the tuned station, then the default relay station (currently
+    Faith FM, Australia) fills the air — interrupted every half hour for a
+    fresh station greeting.
    ========================================================================== */
 (function () {
     'use strict';
@@ -45,12 +46,14 @@ Continuous broadcast: playlist ring + intermission that repeats the
         awr: {
             name: 'Adventist World Radio (English)',
             sub:  'AWR SID Media \u00B7 South Africa \u2014 official AWR English service',
-            url:  'https://edge.iono.fm/xice/187_medium.aac'
+            url:  'https://edge.iono.fm/xice/187_medium.aac',
+            spoken: 'Adventist World Radio'
         },
         faithfm: {
-            name: 'Faith FM (English)',
+            name: 'Faith FM (Australia)',
             sub:  'Adventist radio \u00B7 Australia \u2014 24/7 English',
-            url:  'https://stream1.faithfm.com.au/FaithFM.mp3'
+            url:  'https://stream1.faithfm.com.au/FaithFM.mp3',
+            spoken: 'Faith FM'
         }
     };
 
@@ -60,12 +63,16 @@ Continuous broadcast: playlist ring + intermission that repeats the
     let relay = null;
 
     // Placeholder programming: after the announcer introduces the tuned
-    // station, pipe Adventist World Radio (English) through the speaker, and
-    // interrupt the relay every half hour so the announcer can re-introduce
-    // the station. Flip AUTO_RELAY_PROGRAMMING to false to restore the full
-    // local broadcast (playlist ring + intermission) once it is ready.
+    // station, pipe the default relay station (AUTO_RELAY_KEY) through the
+    // speaker, and interrupt the relay every half hour so the announcer can
+    // re-introduce the station. Flip AUTO_RELAY_PROGRAMMING to false to
+    // restore the full local broadcast (playlist ring + intermission) once
+    // it is ready.
     const AUTO_RELAY_PROGRAMMING = true;
-    const AUTO_RELAY_KEY = 'awr';
+    // Default hand-over station. 'faithfm' = Faith FM (Australia), the
+    // Australian Adventist English relay; 'awr' = AWR SID Media (South
+    // Africa), the official AWR English service.
+    const AUTO_RELAY_KEY = 'faithfm';
 
     // Half-hour station announcements during auto relay programming. For
     // testing, shrink the wait with ?interrupt=10s (or 5m) in the URL.
@@ -314,23 +321,32 @@ Continuous broadcast: playlist ring + intermission that repeats the
             'Sit back, take a breath, and enjoy the hour with us.';
     }
 
-    // Professional sign-off when the announcer hands the air over to
-    // Adventist World Radio (auto relay placeholder programming). The
+    // Spoken name of the default auto-relay station (avoids reading display
+    // labels like "Faith FM (Australia)" aloud). Falls back to the preset
+    // display name, then to AWR if AUTO_RELAY_KEY somehow has no preset.
+    function autoRelaySpokenName() {
+        const preset = RELAYS[AUTO_RELAY_KEY];
+        return (preset && preset.spoken) || (preset && preset.name) || 'Adventist World Radio';
+    }
+
+    // Professional sign-off when the announcer hands the air over to the
+    // default relay station (auto relay placeholder programming). The
     // half-hour return uses the "back over" variant. Both note that local
-    // programming is coming soon while AWR fills the air in the meantime.
-    function awrSignOff(again) {
+    // programming is coming soon while the relay fills the air in the meantime.
+    function relaySignOff(again) {
         if (!(AUTO_RELAY_PROGRAMMING && !userSwitchedToLocal)) return '';
+        const station = autoRelaySpokenName();
         const turn = again
-            ? 'I turn you back over to Adventist World Radio'
-            : 'I turn you over to Adventist World Radio';
+            ? 'I turn you back over to ' + station
+            : 'I turn you over to ' + station;
         return 'And now, local programming is coming soon. In the meantime, ' + turn + '. Enjoy the blessing.';
     }
 
-    // Full on-air station introduction: the greeting plus the AWR hand-off
-    // whenever the broadcast continues on the relay.
+    // Full on-air station introduction: the greeting plus the relay hand-off
+    // whenever the broadcast continues on the auto relay.
     function stationAnnounceText(st, again) {
         let text = stationLine(st);
-        const signOff = awrSignOff(again);
+        const signOff = relaySignOff(again);
         if (signOff) text += ' ' + signOff;
         return text;
     }
@@ -351,7 +367,7 @@ Continuous broadcast: playlist ring + intermission that repeats the
         if (hymnTriggerTimer) { clearTimeout(hymnTriggerTimer); hymnTriggerTimer = null; }
 
         // Placeholder programming: once the announcer has said what the
-        // station is about, the broadcast continues on Adventist World Radio.
+        // station is about, the broadcast continues on the relay preset.
         // resumeAutoRelay() covers the half-hour interrupts; enterAutoRelay()
         // covers the power-on/station greeting. Flip AUTO_RELAY_PROGRAMMING
         // to false to keep the local playlist ring instead.
@@ -756,8 +772,8 @@ Continuous broadcast: playlist ring + intermission that repeats the
     }
 
     // The half-hour station announcement: the announcer takes the air over
-    // the AWR relay, says what the tuned station is about, then hands the
-    // broadcast back to Adventist World Radio.
+    // the auto relay, says what the tuned station is about, then hands the
+    // broadcast back to the relay station.
     function interruptForStationAnnounce() {
         if (!(state.power && relay && relay.auto && !userSwitchedToLocal)) return;
         if (!state.locked) {
@@ -766,7 +782,7 @@ Continuous broadcast: playlist ring + intermission that repeats the
             return;
         }
         const st = state.locked;
-        externalAudioStatus.textContent = 'Announcer: interrupting the AWR relay for the ' + st.name + ' station intro';
+        externalAudioStatus.textContent = 'Announcer: interrupting the ' + autoRelaySpokenName() + ' relay for the ' + st.name + ' station intro';
         RadioAudio.pauseExternalAudio();
         announce(stationAnnounceText(st, true));
     }
