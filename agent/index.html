@@ -441,6 +441,25 @@
         .welcome-audio-btn:focus { outline: none; border-color: var(--amber); box-shadow: 0 0 0 3px var(--warm-glow); }
         .welcome-audio-btn.speaking { background: var(--warm-glow); border-color: var(--amber); color: var(--amber); }
         .welcome-audio-btn.speaking svg { animation: pulseHint 1.2s ease-in-out infinite; }
+        /* Displayed welcome (captions) */
+        .welcome-caption {
+            display: none;
+            max-width: 900px;
+            margin: 12px auto 0;
+            padding: 11px 20px;
+            border-radius: 12px;
+            background: linear-gradient(180deg, rgba(255,251,240,0.96), rgba(253,246,232,0.96));
+            border: 1px solid rgba(184, 134, 11, 0.22);
+            box-shadow: 0 6px 22px rgba(120, 80, 20, 0.08);
+            font-family: Georgia, 'Times New Roman', serif;
+            font-size: 0.95rem;
+            line-height: 1.55;
+            color: var(--text-secondary);
+            text-align: center;
+        }
+        .welcome-caption.show { display: block; animation: captionIn 0.4s ease; }
+        .welcome-caption .cap-model { color: var(--gold); font-weight: 600; white-space: nowrap; }
+        @keyframes captionIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
         .btn-gemini {
             display: inline-flex;
             align-items: center;
@@ -1533,6 +1552,9 @@
             </a>
         </div>
     </div>
+
+    <!-- Displayed welcome (captions shown alongside the voice) -->
+    <div id="welcomeCaption" class="welcome-caption" role="status" aria-live="polite"></div>
 
     <div class="api-section">
         <div class="api-inner">
@@ -2688,12 +2710,24 @@ Reasoning rules:
             setOpen(true);
         })();
 
-        // ----- Female-voice welcome (Web Speech API) -----
-        window.__WELCOME_TEXT = 'Welcome to the Adventist Theology and Christian Philosophy agent \u2014 a thoughtful guide to Scripture, doctrine, and Christian thought. To begin, choose a model from the menu above: Gemini or NVIDIA Nemotron 3 on our shared cloud, or your own key for a private session. Then ask your question.';
+        // ----- Female-voice welcome (Web Speech API) + displayed captions -----
+        // Single source so the spoken text and the on-screen caption always match.
+        var WELCOME_SRC = 'Welcome to the Adventist Theology and Christian Philosophy agent \u2014 a thoughtful guide to Scripture, doctrine, and Christian thought, seen through the lens of the Adventist worldview. To begin, choose a model from the menu above: {GEMINI} or {NVIDIA} on our shared cloud, or your own key for a private session. Then ask your question.';
+        var WELCOME_NAMES = { GEMINI: 'Gemini', NVIDIA: 'NVIDIA Nemotron 3' };
+        window.__WELCOME_TEXT = WELCOME_SRC.replace(/\{(\w+)\}/g, function (_, k) { return WELCOME_NAMES[k] || ''; });
+        window.__WELCOME_HTML = WELCOME_SRC.replace(/\{(\w+)\}/g, function (_, k) { return '<span class="cap-model">' + (WELCOME_NAMES[k] || '') + '</span>'; });
         (function () {
             var synth = window.speechSynthesis;
             var WELCOME_TEXT = window.__WELCOME_TEXT;
             var state = { spoken: false, speaking: false };
+
+            // Display the welcome on screen too (captions), with the models highlighted.
+            function caption(show) {
+                var el = document.getElementById('welcomeCaption');
+                if (!el) return;
+                if (el.innerHTML !== window.__WELCOME_HTML) el.innerHTML = window.__WELCOME_HTML;
+                el.classList.toggle('show', !!show);
+            }
 
             function pickVoice() {
                 if (!synth || typeof synth.getVoices !== 'function') return null;
@@ -2731,18 +2765,20 @@ Reasoning rules:
                     u.pitch = 1.05;  // clearly feminine without sounding artificial
                     u.volume = 1;
                     u.onstart = function () { state.spoken = true; state.speaking = true; setBtn(true); };
-                    u.onend = function () { state.speaking = false; setBtn(false); };
-                    u.onerror = function () { state.speaking = false; setBtn(false); };
+                    u.onend = function () { state.speaking = false; setBtn(false); setTimeout(function () { if (!state.speaking) caption(false); }, 1800); };
+                    u.onerror = function () { state.speaking = false; setBtn(false); caption(false); };
                     synth.speak(u);
+                    caption(true); // display the welcome on screen even if audio is muted/blocked
                     return true;
                 } catch (e) { setBtn(false); return false; }
             }
 
             function stop() {
-                if (!synth) return;
+            if (!synth) { caption(true); return; }
                 try { synth.cancel(); } catch (e) {}
                 state.speaking = false;
                 setBtn(false);
+                caption(false);
             }
 
             // Exposed for reuse/testing (consistent with window.handleModelChange).
