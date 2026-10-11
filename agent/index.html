@@ -421,6 +421,26 @@
         .model-dd-item.selected { background: var(--warm-glow); font-weight: 600; }
         #selectModelHint { animation: pulseHint 1.6s ease-in-out infinite; }
         @keyframes pulseHint { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        /* Voice welcome control */
+        .welcome-audio-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 7px 12px;
+            border: 1.5px solid rgba(184, 134, 11, 0.25);
+            border-radius: 10px;
+            background: white;
+            color: var(--gold);
+            font-size: 0.8rem;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+        }
+        .welcome-audio-btn:hover { background: var(--cream); border-color: var(--amber); color: var(--amber); }
+        .welcome-audio-btn:focus { outline: none; border-color: var(--amber); box-shadow: 0 0 0 3px var(--warm-glow); }
+        .welcome-audio-btn.speaking { background: var(--warm-glow); border-color: var(--amber); color: var(--amber); }
+        .welcome-audio-btn.speaking svg { animation: pulseHint 1.2s ease-in-out infinite; }
         .btn-gemini {
             display: inline-flex;
             align-items: center;
@@ -1531,6 +1551,10 @@
                 <input type="hidden" id="modelProvider" value="gemini">
             </div>
             <span id="selectModelHint" style="font-size:0.75rem;font-weight:700;padding:3px 10px;border-radius:12px;background:#fef3c7;color:#92400e;white-space:nowrap;">Please select model</span>
+            <button type="button" id="welcomeAudioBtn" class="welcome-audio-btn" aria-label="Play welcome message" title="Play welcome">
+                <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+                <span class="welcome-audio-label">Welcome</span>
+            </button>
             <span id="geminiStatus">Ready</span>
             <small id="apiHint" style="font-size:0.78rem;color:var(--text-muted);margin-left:4px;flex:1;">Primary API — Uses shared Cloudflare Worker with Gemini, NVIDIA Nemotron 3 & OpenRouter fallbacks.</small>
         </div>
@@ -2662,6 +2686,94 @@ Reasoning rules:
 
             // Open immediately so the model options are visible when the agent page loads.
             setOpen(true);
+        })();
+
+        // ----- Female-voice welcome (Web Speech API) -----
+        window.__WELCOME_TEXT = 'Welcome to the Adventist Theology and Christian Philosophy agent \u2014 a thoughtful guide to Scripture, doctrine, and Christian thought. To begin, choose a model from the menu above: Gemini or NVIDIA Nemotron 3 on our shared cloud, or your own key for a private session. Then ask your question.';
+        (function () {
+            var synth = window.speechSynthesis;
+            var WELCOME_TEXT = window.__WELCOME_TEXT;
+            var state = { spoken: false, speaking: false };
+
+            function pickVoice() {
+                if (!synth || typeof synth.getVoices !== 'function') return null;
+                var voices = synth.getVoices() || [];
+                if (!voices.length) return null;
+                // Preferred female, professional voices across Chrome / Edge / macOS / ChromeOS.
+                var prefs = ['google uk english female', 'microsoft aria', 'microsoft jenny', 'microsoft zira', 'samantha', 'karen', 'moira', 'tessa', 'fiona', 'victoria', 'serena', 'google us english'];
+                for (var i = 0; i < prefs.length; i++) {
+                    for (var j = 0; j < voices.length; j++) {
+                        if (voices[j].name.toLowerCase().indexOf(prefs[i]) !== -1) return voices[j];
+                    }
+                }
+                var en = voices.filter(function (v) { return /^en/i.test(v.lang); });
+                var fem = en.filter(function (v) { return /female|zira|aria|jenny|samantha|karen|moira|tessa|fiona|victoria|serena/i.test(v.name); });
+                return fem[0] || en[0] || voices[0];
+            }
+
+            function setBtn(active) {
+                var btn = document.getElementById('welcomeAudioBtn');
+                if (!btn) return;
+                btn.classList.toggle('speaking', !!active);
+                btn.setAttribute('aria-label', active ? 'Stop welcome message' : 'Play welcome message');
+                btn.setAttribute('title', active ? 'Stop welcome' : 'Play welcome');
+            }
+
+            function speak() {
+                if (!synth || typeof window.SpeechSynthesisUtterance !== 'function') return false;
+                if (state.speaking) return true;
+                try {
+                    synth.cancel();
+                    var u = new SpeechSynthesisUtterance(WELCOME_TEXT);
+                    var v = pickVoice();
+                    if (v) { u.voice = v; u.lang = v.lang; }
+                    u.rate = 0.98;   // calm, professional pace
+                    u.pitch = 1.05;  // clearly feminine without sounding artificial
+                    u.volume = 1;
+                    u.onstart = function () { state.spoken = true; state.speaking = true; setBtn(true); };
+                    u.onend = function () { state.speaking = false; setBtn(false); };
+                    u.onerror = function () { state.speaking = false; setBtn(false); };
+                    synth.speak(u);
+                    return true;
+                } catch (e) { setBtn(false); return false; }
+            }
+
+            function stop() {
+                if (!synth) return;
+                try { synth.cancel(); } catch (e) {}
+                state.speaking = false;
+                setBtn(false);
+            }
+
+            // Exposed for reuse/testing (consistent with window.handleModelChange).
+            window.speakWelcome = speak;
+            window.stopWelcome = stop;
+
+            if (!synth) return;
+
+            // Some browsers load the voice list asynchronously; getVoices() is re-read on each call.
+            if (typeof synth.onvoiceschanged !== 'undefined') {
+                synth.onvoiceschanged = function () {};
+            }
+
+            // 1) Attempt autoplay (works in Chrome/Edge desktop without a gesture).
+            setTimeout(speak, 700);
+
+            // 2) If autoplay was blocked (needs a gesture), speak on the first interaction.
+            var once = function (e) {
+                if (e && e.target && e.target.closest && e.target.closest('#welcomeAudioBtn')) return; // button handles its own click
+                if (!state.spoken) speak();
+                document.removeEventListener('pointerdown', once, true);
+                document.removeEventListener('keydown', once, true);
+            };
+            document.addEventListener('pointerdown', once, true);
+            document.addEventListener('keydown', once, true);
+
+            // 3) Manual replay / stop.
+            var btn = document.getElementById('welcomeAudioBtn');
+            if (btn) btn.addEventListener('click', function () {
+                if (state.speaking) stop(); else speak();
+            });
         })();
 
         // Handle query parameter for pre-populating questions
