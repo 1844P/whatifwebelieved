@@ -1302,6 +1302,12 @@
             position: relative;
             z-index: 1;
         }
+        /* The api-section creates its own stacking context (backdrop-filter) and shares
+           z-index:1 with later DOM siblings (#personalKeySection, .chat-container); as
+           those come later they painted OVER the open model menu, hiding every option
+           after the first (only Gemini showed). Out-rank them so the menu is fully
+           visible over the personal-key section and chat area. */
+        .api-section { z-index: 30; }
 
         /* PERSONAL KEY SECTION - integrated card style */
         #personalKeySection {
