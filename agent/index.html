@@ -366,6 +366,61 @@
             font-weight: 500;
         }
         .api-section small a:hover { text-decoration: underline; }
+        /* Custom model dropdown (auto-opens on load, closes once a model is chosen) */
+        .model-dd { position: relative; }
+        .model-dd-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            justify-content: space-between;
+            padding: 7px 12px;
+            border: 1.5px solid rgba(184, 134, 11, 0.2);
+            border-radius: 10px;
+            font-size: 0.85rem;
+            background: white;
+            color: var(--text);
+            cursor: pointer;
+            min-width: 155px;
+            font-family: inherit;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .model-dd-btn:hover { border-color: var(--amber); }
+        .model-dd-btn:focus { outline: none; border-color: var(--amber); box-shadow: 0 0 0 3px var(--warm-glow); }
+        .model-dd-btn svg { flex-shrink: 0; transition: transform 0.2s ease; }
+        .model-dd.open .model-dd-btn svg { transform: rotate(180deg); }
+        .model-dd-menu {
+            position: absolute;
+            top: calc(100% + 6px);
+            left: 0;
+            z-index: 80;
+            min-width: 100%;
+            background: white;
+            border: 1.5px solid rgba(184, 134, 11, 0.25);
+            border-radius: 10px;
+            box-shadow: 0 12px 32px rgba(44, 24, 16, 0.18);
+            padding: 5px;
+            display: none;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .model-dd-menu.open { display: flex; animation: fadeInScale 0.15s ease; }
+        .model-dd-item {
+            text-align: left;
+            padding: 9px 12px;
+            border: none;
+            background: transparent;
+            font-size: 0.85rem;
+            color: var(--text);
+            cursor: pointer;
+            border-radius: 7px;
+            font-family: inherit;
+            white-space: nowrap;
+            transition: background 0.15s ease;
+        }
+        .model-dd-item:hover, .model-dd-item:focus { background: var(--cream); outline: none; }
+        .model-dd-item.selected { background: var(--warm-glow); font-weight: 600; }
+        #selectModelHint { animation: pulseHint 1.6s ease-in-out infinite; }
+        @keyframes pulseHint { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
         .btn-gemini {
             display: inline-flex;
             align-items: center;
@@ -1461,13 +1516,21 @@
 
     <div class="api-section">
         <div class="api-inner">
-            <label for="modelProvider" style="font-size:0.85rem;font-weight:600;color:var(--text-secondary);white-space:nowrap;">Select Model:</label>
-            <select id="modelProvider" onchange="handleModelChange(this.value)">
-                <option value="gemini" selected>Gemini (Cloud Worker) — Primary</option>
-                <option value="gemini-direct">Gemini (Your Key) — Fallback</option>
-                <option value="nvidia">NVIDIA Nemotron 3 (NIM) — Fallback</option>
-                <option value="ollama">Ollama (Local)</option>
-            </select>
+            <label for="modelDdBtn" style="font-size:0.85rem;font-weight:600;color:var(--text-secondary);white-space:nowrap;">Select Model:</label>
+            <div class="model-dd" id="modelDd">
+                <button type="button" id="modelDdBtn" class="model-dd-btn" aria-haspopup="listbox" aria-expanded="true">
+                    <span id="modelDdLabel">Gemini (Cloud Worker) — Primary</span>
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+                <div class="model-dd-menu open" id="modelDdMenu" role="listbox" aria-label="Select model">
+                    <button type="button" class="model-dd-item selected" role="option" aria-selected="true" data-value="gemini">Gemini (Cloud Worker) — Primary</button>
+                    <button type="button" class="model-dd-item" role="option" aria-selected="false" data-value="gemini-direct">Gemini (Your Key) — Fallback</button>
+                    <button type="button" class="model-dd-item" role="option" aria-selected="false" data-value="nvidia">NVIDIA Nemotron 3 (NIM) — Fallback</button>
+                    <button type="button" class="model-dd-item" role="option" aria-selected="false" data-value="ollama">Ollama (Local)</button>
+                </div>
+                <input type="hidden" id="modelProvider" value="gemini">
+            </div>
+            <span id="selectModelHint" style="font-size:0.75rem;font-weight:700;padding:3px 10px;border-radius:12px;background:#fef3c7;color:#92400e;white-space:nowrap;">Please select model</span>
             <span id="geminiStatus">Ready</span>
             <small id="apiHint" style="font-size:0.78rem;color:var(--text-muted);margin-left:4px;flex:1;">Primary API — Uses shared Cloudflare Worker with Gemini, NVIDIA Nemotron 3 & OpenRouter fallbacks.</small>
         </div>
@@ -1748,7 +1811,7 @@ Reasoning rules:
                 status.textContent = 'Worker';
                 status.style.background = '#dbeafe';
                 status.style.color = '#1e40af';
-                apiHint.textContent = 'Primary API — Uses shared Cloudflare Worker with Gemini, Groq & OpenRouter fallbacks.';
+                apiHint.textContent = 'Primary API — Uses shared Cloudflare Worker with Gemini, NVIDIA Nemotron 3 & OpenRouter fallbacks.';
             } else if (provider === 'gemini-direct') {
                 ollamaControls.style.display = 'none';
                 status.style.display = '';
@@ -2542,6 +2605,64 @@ Reasoning rules:
         currentProvider = 'gemini';
         window.handleModelChange('gemini');
         document.getElementById('modelProvider').value = 'gemini';
+
+        // ----- Model dropdown: auto-opens on load, closes once a model is chosen -----
+        (function () {
+            var dd = document.getElementById('modelDd');
+            var btn = document.getElementById('modelDdBtn');
+            var menu = document.getElementById('modelDdMenu');
+            var ddLabel = document.getElementById('modelDdLabel');
+            var valueInput = document.getElementById('modelProvider');
+            var hint = document.getElementById('selectModelHint');
+            if (!dd || !btn || !menu || !valueInput) return;
+
+            function setOpen(open) {
+                menu.classList.toggle('open', open);
+                dd.classList.toggle('open', open);
+                btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+            }
+
+            function choose(item) {
+                var value = item.getAttribute('data-value');
+                if (!value) return;
+                valueInput.value = value;
+                if (ddLabel) ddLabel.textContent = item.textContent;
+                var opts = menu.querySelectorAll('.model-dd-item');
+                for (var i = 0; i < opts.length; i++) {
+                    var on = opts[i] === item;
+                    opts[i].classList.toggle('selected', on);
+                    opts[i].setAttribute('aria-selected', on ? 'true' : 'false');
+                }
+                setOpen(false);                        // menu stops displaying once a model is selected
+                if (hint) hint.style.display = 'none'; // hide the "Please select model" prompt
+                window.handleModelChange(value);
+            }
+
+            btn.addEventListener('click', function (e) {
+                e.stopPropagation();
+                setOpen(!menu.classList.contains('open'));
+            });
+
+            var items = menu.querySelectorAll('.model-dd-item');
+            for (var i = 0; i < items.length; i++) {
+                (function (item) {
+                    item.addEventListener('click', function (e) {
+                        e.stopPropagation();
+                        choose(item);
+                    });
+                })(items[i]);
+            }
+
+            document.addEventListener('click', function (e) {
+                if (!dd.contains(e.target)) setOpen(false);
+            });
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape' || e.key === 'Esc') setOpen(false);
+            });
+
+            // Open immediately so the model options are visible when the agent page loads.
+            setOpen(true);
+        })();
 
         // Handle query parameter for pre-populating questions
         const urlParams = new URLSearchParams(window.location.search);
