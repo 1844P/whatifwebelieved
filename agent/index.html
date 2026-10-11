@@ -983,6 +983,30 @@
             color: var(--amber);
             text-decoration: underline;
         }
+        .disclaimer {
+            max-width: 880px;
+            margin: 0 auto 16px;
+            padding: 14px 20px;
+            text-align: left;
+            border: 1px solid rgba(184, 134, 11, 0.22);
+            border-radius: 8px;
+            background: rgba(184, 134, 11, 0.06);
+            color: rgba(245, 230, 208, 0.62);
+            font-size: 0.78rem;
+            line-height: 1.65;
+        }
+        .disclaimer strong {
+            display: block;
+            margin-bottom: 5px;
+            color: var(--gold-light);
+            font-size: 0.78rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+        .disclaimer p {
+            margin: 0;
+        }
 
         /* WELCOME */
         .welcome {
@@ -1751,6 +1775,10 @@
     </div>
 
 <div class="footer">
+        <div class="disclaimer" role="note" aria-label="Accuracy disclaimer">
+            <strong>Accuracy Disclaimer</strong>
+            <p>This agent is designed to exercise extreme caution with respect to accuracy, grounding its responses in Scripture, the writings of Ellen G. White, and Adventist scholarship. It remains an AI system, however, and may still produce occasional inaccuracies, omissions, or imprecise citations. Please verify important doctrinal, historical, and bibliographic details against the original sources, and consult qualified pastoral or scholarly guidance before relying on any response.</p>
+        </div>
         <p>Built by <a href="https://www.youtube.com/@paulos1844" target="_blank">WhatIfWeBelieved</a> · Primary: Gemini API · Fallbacks: NVIDIA (Nemotron 3) & OpenRouter</p>
     </div>
 
