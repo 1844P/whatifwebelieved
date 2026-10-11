@@ -1465,10 +1465,11 @@
             <select id="modelProvider" onchange="handleModelChange(this.value)">
                 <option value="gemini" selected>Gemini (Cloud Worker) — Primary</option>
                 <option value="gemini-direct">Gemini (Your Key) — Fallback</option>
+                <option value="nvidia">NVIDIA Nemotron 3 (NIM) — Fallback</option>
                 <option value="ollama">Ollama (Local)</option>
             </select>
             <span id="geminiStatus">Ready</span>
-            <small id="apiHint" style="font-size:0.78rem;color:var(--text-muted);margin-left:4px;flex:1;">Primary API — Uses shared Cloudflare Worker with Gemini, Groq & OpenRouter fallbacks.</small>
+            <small id="apiHint" style="font-size:0.78rem;color:var(--text-muted);margin-left:4px;flex:1;">Primary API — Uses shared Cloudflare Worker with Gemini, NVIDIA Nemotron 3 & OpenRouter fallbacks.</small>
         </div>
         <div id="ollamaControls" style="display:none;max-width:900px;margin:6px auto 0;padding:0 32px 4px;">
             <span style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
@@ -1761,6 +1762,13 @@ Reasoning rules:
                     status.style.color = '#92400e';
                 }
                 apiHint.textContent = 'Fallback API — Uses your own Gemini API key directly from the browser. No backend needed. Get a free key below.';
+            } else if (provider === 'nvidia') {
+                ollamaControls.style.display = 'none';
+                status.style.display = '';
+                status.textContent = 'NVIDIA NIM';
+                status.style.background = '#d1fae5';
+                status.style.color = '#065f46';
+                apiHint.textContent = 'Fallback API — Uses the shared NVIDIA key on the Cloudflare Worker. No key needed from you. Nemotron 3 Super 120B via NVIDIA NIM.';
             } else if (provider === 'ollama') {
                 ollamaControls.style.display = '';
                 status.style.display = 'none';
@@ -1834,11 +1842,12 @@ Reasoning rules:
             filePreview.style.display = 'none';
         }
 
-        async function callWorker(message, history) {
+        async function callWorker(message, history, opts) {
             const body = {
                 message: message,
                 history: history
             };
+            if (opts && opts.useNvidia) body.useNvidia = true;
             if (selectedFile && fileContent) {
                 body.fileContent = fileContent;
                 body.fileName = selectedFile.name;
@@ -2006,7 +2015,7 @@ Reasoning rules:
 
             if ((!message && !selectedFile) || isLoading) return;
 
-            if (currentProvider === 'gemini' && WORKER_URL === 'https://YOUR-WORKER-NAME.workers.dev') {
+            if ((currentProvider === 'gemini' || currentProvider === 'nvidia') && WORKER_URL === 'https://YOUR-WORKER-NAME.workers.dev') {
                 addMessage('The Cloudflare Worker is not deployed. Switch to "Gemini (Your Key)" and add your own API key below, or deploy the worker and update WORKER_URL.', 'error');
                 return;
             }
@@ -2051,13 +2060,14 @@ Reasoning rules:
                     }
                     const directResult = await callGeminiDirect(fullMessage, conversationHistory, fileInfo);
                     responseText = directResult.text;
-                } else if (currentProvider === 'gemini') {
-                    const res = await callWorker(fullMessage, conversationHistory);
+                } else if (currentProvider === 'gemini' || currentProvider === 'nvidia') {
+                    const res = await callWorker(fullMessage, conversationHistory, { useNvidia: currentProvider === 'nvidia' });
                     const data = await res.json();
                     responseText = data.text;
                     essayMarkdown = data.essay || null;
                     if (data.provider && data.provider !== 'gemini') {
-                        responseText = '> *Powered by ' + data.provider.charAt(0).toUpperCase() + data.provider.slice(1) + '*\n\n' + responseText;
+                        const pname = String(data.provider).toLowerCase().startsWith('nvidia') ? 'NVIDIA NIM' : (data.provider.charAt(0).toUpperCase() + data.provider.slice(1));
+                        responseText = '> *Powered by ' + pname + '*\n\n' + responseText;
                     }
                 } else if (currentProvider === 'ollama') {
                     responseText = await callOllama(fullMessage, conversationHistory);
@@ -2094,7 +2104,7 @@ Reasoning rules:
                     } else {
                         addMessage('Direct Gemini error: ' + msg, 'error');
                     }
-                } else if (currentProvider === 'gemini') {
+                } else if (currentProvider === 'gemini' || currentProvider === 'nvidia') {
                     if (msg.includes('quota') || msg.includes('429') || msg.includes('RESOURCE_EXHAUSTED')) {
                         addMessage('Cloud Worker hit rate limits. Switch to "Gemini (Your Key)" to use your own API key and bypass shared limits.', 'error');
                     } else {
